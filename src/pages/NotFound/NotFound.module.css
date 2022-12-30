@@ -1,0 +1,58 @@
+.notFoundPageWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 600px;
+    width: 100%;
+    text-align: center;
+}
+.fourOrFourTitle {
+    font-size: 100px;
+    color: #000;
+    font-weight: 700;
+}
+.fourOrFourInfo {
+    font-size: 50px;
+    color: #000;
+    font-weight: 700;
+    font-style: italic;
+}
+/* Start Small Devices */
+@media only screen and (max-width: 767px) {
+    .notFoundPageWrapper {
+        height: 300px;
+    }
+    .fourOrFourTitle {
+        font-size: 80px;
+    }
+    .fourOrFourInfo {
+        font-size: 30px;
+        color: #fff;
+        font-weight: 700;
+        font-style: italic;
+    }
+} /* End Small Devices */
+
+/* Start Medium Devices */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .notFoundPageWrapper {
+        height: 290px;
+    }
+    .fourOrFourTitle {
+        font-size: 80px;
+    }
+    .fourOrFourInfo {
+        font-size: 30px;
+        color: #fff;
+        font-weight: 700;
+        font-style: italic;
+    }
+} /* End Medium Devices */
+
+/* Start Large Devices */
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+    .notFoundPageWrapper {
+        height: 300px;
+    }
+} /* End Large Devices */

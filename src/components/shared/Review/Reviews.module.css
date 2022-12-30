@@ -1,0 +1,9 @@
+.reviewImg{
+    width: 50px;
+    height: 50px;
+}
+.reviewCardWrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

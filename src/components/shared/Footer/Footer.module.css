@@ -1,0 +1,53 @@
+.footer {
+    background-color: #273f59;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    text-align: center;
+}
+.topFooterTitle {
+    margin: 0;
+    color: #fff;
+    font-size: 30px;
+}
+.topFooterInfo {
+    font-size: 18px;
+    color: #515b60;
+    margin-top: 5px;
+}
+.bottomFooter {
+    border-top: 1px solid #515b60 !important;
+    margin-top: 50px;
+    padding-top: 50px;
+}
+.bottomFooterList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+.bottomFooterListItem {
+    display: inline-block;
+}
+.bottomFooterListItemIcon {
+    color: #fff;
+    font-size: 20px;
+    margin: 0 5px;
+}
+.bottomFooterCopyRight {
+    margin: 15px 0 0;
+    color: #fff;
+}
+
+/* Start Small Devices */
+@media only screen and (max-width: 767px) {
+    .footer {
+        padding-top: 45px;
+        padding-bottom: 45px;
+    }
+    .bottomFooter {
+        margin-top: 24px;
+        padding-top: 24px;
+    }
+    .bottomFooterCopyRight {
+       font-size: 14px;
+    }
+} /* End Small Devices */

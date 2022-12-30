@@ -1,0 +1,52 @@
+.termCondition {
+    padding: 35px;
+}
+.title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #121221;
+    margin-bottom: 14px;
+    text-align: center;
+}
+.description {
+    font-size: 18px;
+    font-weight: 400;
+    color: #121221;
+}
+
+/* Start Small Devices */
+@media only screen and (max-width: 767px) {
+    .termCondition {
+        padding: 20px !important;
+    }
+    .title {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+    .description {
+        font-size: 16px;
+    }
+} /* End Small Devices */
+
+/* Start Medium Devices */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .termCondition {
+        padding: 31px !important;
+    }
+    .title {
+        font-size: 26px;
+    }
+    .description {
+        font-size: 17px;
+    }
+} /* End Medium Devices */
+
+/* Start Large Devices */
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+    .title {
+        font-size: 26px;
+    }
+    .description {
+        font-size: 17px;
+    }
+} /* End Large Devices */

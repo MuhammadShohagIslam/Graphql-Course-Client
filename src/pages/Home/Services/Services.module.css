@@ -1,0 +1,12 @@
+.seeAllButton {
+    background-color: #7f56fd !important;
+    border: none !important;
+    font-size: 18px !important;
+    border: 1px solid #7f56fd !important;
+    transition: all 0.4s !important;
+    font-weight: 500 !important;
+}
+.seeAllButton:hover {
+    background-color: transparent !important;
+    color: #191c36 !important;
+}

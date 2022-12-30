@@ -1,0 +1,7 @@
+.contactInfo{
+  border: 1px solid transparent;
+  transition: all .3s;
+}
+.contactInfo:hover{
+  border: 1px solid #7f56fd;
+}

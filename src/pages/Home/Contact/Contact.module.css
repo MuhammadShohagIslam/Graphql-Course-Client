@@ -1,0 +1,11 @@
+.contactIcon {
+    width: 44px;
+    height: 44px;
+    color: #7f56fd;
+    background-color: #eef7ff;
+    border-radius: 50%;
+    padding: 0px 12px;
+    transition: all 0.5 !important;
+    cursor: pointer;
+}
+
