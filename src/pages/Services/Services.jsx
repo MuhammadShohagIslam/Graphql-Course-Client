@@ -5,7 +5,6 @@ import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import ServiceCard from "../../components/shared/ServiceCard/ServiceCard";
 import Main from "../../layout/Main";
-// import useFetch from "./../../hooks/useFetch";
 
 const GET_ALL_SERVICES = gql`
     query GetAllServices {

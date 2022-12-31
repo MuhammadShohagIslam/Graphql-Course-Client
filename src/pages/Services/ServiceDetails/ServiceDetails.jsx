@@ -1,5 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { gql, useQuery } from "@apollo/client";
+import axios from "axios";
 import { Button, Col, Container, Image, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
@@ -9,37 +10,79 @@ import Review from "../../../components/shared/Review/Review";
 import ReviewModal from "../../../components/shared/ReviewModal/ReviewModal";
 import { useAuth } from "../../../contexts/AuthProvider/AuthProvider";
 import Main from "../../../layout/Main";
-import useFetch from "./../../../hooks/useFetch";
 import { avgRating } from "./../../../utils/avgRating";
 import classes from "./ServiceDetails.module.css";
+
+const GET_SERVICE_BY_ID = gql`
+    query GetService($serviceId: ID!) {
+        getService(serviceId: $serviceId) {
+            _id
+            name
+            description
+            img
+            price
+        }
+    }
+`;
+
+const GET_REVIEWS_BY_SERVICE_ID = gql`
+    query GetAllReview($query: ID) {
+        getAllReview(query: $query) {
+            _id
+            _service
+            comment
+            img
+            name
+            serviceName
+            star
+            createdAt
+        }
+    }
+`;
 
 const ServiceDetails = () => {
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [comment, setComment] = useState("");
     const [reviews, setReviews] = useState([]);
     const [star, setStar] = useState(0);
+    const [service, setService] = useState({});
 
     const { id } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
     const { user } = useAuth();
-    const { data, loading } = useFetch(`https://server-smoky-ten.vercel.app/services/${id}`);
-    const { _id, name, description, price, img } = data;
+
+    const { loading, error, data } = useQuery(GET_SERVICE_BY_ID, {
+        variables: { serviceId: id },
+    });
+
+    const {
+        loading: loadingReviews,
+        error: LoadingReviews,
+        data: reviewsData,
+    } = useQuery(GET_REVIEWS_BY_SERVICE_ID, {
+        variables: { query: id },
+    });
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, []);
 
     useEffect(() => {
-        const loadingReviews = async () => {
-            const response = await axios.get(
-                `https://server-smoky-ten.vercel.app/reviews?id=${id}`
-            );
-            const data = await response.data;
-            setReviews(data);
-        };
-        loadingReviews();
-    }, [id]);
+        if (data && data?.getService) {
+            setService(data.getService);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (reviewsData && reviewsData?.getAllReview) {
+            setReviews(reviewsData.getAllReview);
+        }
+    }, [reviewsData]);
+
+    const { _id, name, img, description, price } = service;
+
+    console.log(reviews);
 
     const handleReviewShowModal = () => {
         if (user && user?.uid) {
@@ -109,7 +152,8 @@ const ServiceDetails = () => {
             toast.error(error.message);
         }
     };
-    console.log(reviews);
+    if (error) return `Error! ${error}`;
+
     return (
         <Main>
             <Helmet>
@@ -190,7 +234,6 @@ const ServiceDetails = () => {
                                                 <>
                                                     {reviews.map((review) => (
                                                         <Review
-                                            
                                                             key={review._id}
                                                             review={review}
                                                         />

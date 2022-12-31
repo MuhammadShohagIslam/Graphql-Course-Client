@@ -5,7 +5,7 @@ import StarRatings from "react-star-ratings";
 import ReviewedImg from "../../../images/tutor.png";
 const Review = ({ review }) => {
 
-    const { name, comment, img, star, reviewedAt } = review;
+    const { name, comment, img, star, createdAt } = review;
     return (
         <Card className="mb-3">
             <Card.Body>
@@ -28,7 +28,7 @@ const Review = ({ review }) => {
                 <Card.Title className="pt-2">{name}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">
                     ReviewedAt:{" "}
-                    {new Date(reviewedAt).toString().substring(4, 16)}
+                    {new Date(createdAt).toString().substring(4, 16)}
                 </Card.Subtitle>
                 <Card.Text className="pb-2">{comment}</Card.Text>
             </Card.Body>
