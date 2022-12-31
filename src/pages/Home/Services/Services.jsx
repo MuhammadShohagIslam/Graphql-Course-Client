@@ -1,15 +1,29 @@
 import React from "react";
+import { useQuery, gql } from "@apollo/client";
 import { Button, Container, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import SectionTitle from "./../../../components/shared/SectionTitle/SectionTitle";
 import ServiceCard from "./../../../components/shared/ServiceCard/ServiceCard";
-import useFetch from "./../../../hooks/useFetch";
-import classes from './Services.module.css';
+import classes from "./Services.module.css";
+
+const GET_ALL_SERVICES_UNDER_LIMIT = gql`
+    query GetAllServices($limit: Int) {
+        getAllServices(limit: $limit) {
+            _id
+            description
+            img
+            name
+            price
+        }
+    }
+`;
 
 const Services = () => {
-    const { data, loading } = useFetch(
-        "https://server-smoky-ten.vercel.app/services?limit=3"
-    );
+    const { loading, error, data } = useQuery(GET_ALL_SERVICES_UNDER_LIMIT, {
+        variables: { limit: 3 },
+    });
+
+    if (error) return `Error! ${error}`;
 
     return (
         <>
@@ -31,9 +45,10 @@ const Services = () => {
                         </div>
                     ) : (
                         <>
-                            {data.length > 0 ? (
+                            {data?.getAllServices &&
+                            data?.getAllServices.length > 0 ? (
                                 <>
-                                    {data.map((service) => (
+                                    {data.getAllServices.map((service) => (
                                         <ServiceCard
                                             key={service._id}
                                             service={service}
@@ -47,7 +62,10 @@ const Services = () => {
                             )}
                             <div className="text-center">
                                 <Link to="/services">
-                                    <Button className={`${classes.seeAllButton} btn`} size="lg">
+                                    <Button
+                                        className={`${classes.seeAllButton} btn`}
+                                        size="lg"
+                                    >
                                         See All
                                     </Button>
                                 </Link>

@@ -1,47 +1,37 @@
+import React, { useState } from "react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
 import ReviewTable from "../../components/shared/ReviewTable/ReviewTable";
 import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
 import Main from "../../layout/Main";
+import { gql, useQuery } from "@apollo/client";
+
+const GET_REVIEWS_BY_SPECIFIC_USER = gql`
+    query GetReviewBySpecificUser($email: String!, $name: String) {
+        getReviewBySpecificUser(email: $email, name: $name) {
+            _id
+            _service
+            comment
+            createdAt
+            email
+            img
+            name
+            serviceName
+            star
+        }
+    }
+`;
+
 const MyReviews = () => {
     const [reviewsBySpecificUser, setReviewsBySpecificUser] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const { user, logOut } = useAuth();
+    const { state } = useAuth();
+    const { user } = state;
 
-    useEffect(() => {
-        setLoading(true);
-        axios
-            .get(
-                `https://server-smoky-ten.vercel.app/reviews/user?name=${user?.displayName}&email=${user?.email}`,
-                {
-                    headers: {
-                        authorization: `Bear ${localStorage.getItem(
-                            "tutor-token"
-                        )}`,
-                    },
-                }
-            )
-            .then((res) => {
-                const data = res.data;
-                setReviewsBySpecificUser(data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                if (
-                    error.response.status === 401 ||
-                    error.response.status === 403
-                ) {
-                    return logOut();
-                }
-                setLoading(false);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, [user?.displayName, user?.email, logOut]);
+    const { loading, error, data } = useQuery(GET_REVIEWS_BY_SPECIFIC_USER, {
+        variables: { email: user?.email, name: user?.name },
+    });
 
     const handleReviewDelete = async (e, id, serviceName) => {
         console.log(id);
@@ -63,6 +53,7 @@ const MyReviews = () => {
             setReviewsBySpecificUser([...remainingReviews]);
         }
     };
+    if (error) return `Error! ${error}`;
 
     return (
         <Main>
@@ -86,10 +77,11 @@ const MyReviews = () => {
                         </div>
                     ) : (
                         <>
-                            {reviewsBySpecificUser.length > 0 ? (
+                            {data?.getReviewBySpecificUser &&
+                            data?.getReviewBySpecificUser?.length > 0 ? (
                                 <ReviewTable
                                     reviewsBySpecificUser={
-                                        reviewsBySpecificUser
+                                        data.getReviewBySpecificUser
                                     }
                                     handleReviewDelete={handleReviewDelete}
                                 />

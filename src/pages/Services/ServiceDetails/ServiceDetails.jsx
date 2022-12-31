@@ -58,7 +58,7 @@ const ServiceDetails = () => {
 
     const {
         loading: loadingReviews,
-        error: LoadingReviews,
+        error: errorReviews,
         data: reviewsData,
     } = useQuery(GET_REVIEWS_BY_SERVICE_ID, {
         variables: { query: id },
@@ -81,8 +81,6 @@ const ServiceDetails = () => {
     }, [reviewsData]);
 
     const { _id, name, img, description, price } = service;
-
-    console.log(reviews);
 
     const handleReviewShowModal = () => {
         if (user && user?.uid) {
@@ -152,14 +150,14 @@ const ServiceDetails = () => {
             toast.error(error.message);
         }
     };
-    if (error) return `Error! ${error}`;
+    if (error || errorReviews) return `Error! ${error}`;
 
     return (
         <Main>
             <Helmet>
                 <title>ServiceDetails</title>
             </Helmet>
-            {loading ? (
+            {loading || loadingReviews ? (
                 <div
                     style={{ height: "400px" }}
                     className="d-flex justify-content-center align-items-center"

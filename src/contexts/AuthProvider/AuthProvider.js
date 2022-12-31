@@ -53,6 +53,7 @@ const AuthProvider = ({ children }) => {
                     type: "LOG_IN_USER",
                     payload: {
                         token: idTokenResult.token,
+                        name: user.displayName,
                         email: user.email,
                     },
                 });
