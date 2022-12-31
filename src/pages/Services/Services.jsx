@@ -1,18 +1,33 @@
-import AOS from 'aos';
 import React, { useEffect } from "react";
+import { gql, useQuery } from "@apollo/client";
+import AOS from "aos";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import ServiceCard from "../../components/shared/ServiceCard/ServiceCard";
 import Main from "../../layout/Main";
-import useFetch from "./../../hooks/useFetch";
+// import useFetch from "./../../hooks/useFetch";
+
+const GET_ALL_SERVICES = gql`
+    query GetAllServices {
+        getAllServices {
+            _id
+            name
+            description
+            img
+            price
+        }
+    }
+`;
 
 const Services = () => {
-    const { data, loading } = useFetch("https://server-smoky-ten.vercel.app/services");
+    const { loading, error, data } = useQuery(GET_ALL_SERVICES);
 
     useEffect(() => {
         window.scrollTo(0, 0);
         AOS.init();
     }, []);
+
+    if (error) return `Error! ${error.message}`;
 
     return (
         <Main>
@@ -33,9 +48,9 @@ const Services = () => {
                         </div>
                     ) : (
                         <>
-                            {data.length > 0 ? (
+                            {data?.getAllServices && data?.getAllServices?.length > 0 ? (
                                 <>
-                                    {data.map((service) => (
+                                    {data?.getAllServices.map((service) => (
                                         <ServiceCard
                                             key={service._id}
                                             service={service}

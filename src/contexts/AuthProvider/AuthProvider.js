@@ -27,7 +27,7 @@ export const useAuth = () => {
 
 const authUserReducer = (state, action) => {
     switch (action.type) {
-        case "LOGIN_USER":
+        case "LOG_IN_USER":
             return { ...state, user: action.payload };
         default:
             return state;
@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
             if (user) {
                 const idTokenResult = await user.getIdTokenResult();
                 dispatch({
-                    type: "LOGIN_USER",
+                    type: "LOG_IN_USER",
                     payload: {
                         token: idTokenResult.token,
                         email: user.email,
@@ -58,7 +58,7 @@ const AuthProvider = ({ children }) => {
                 });
             } else {
                 dispatch({
-                    type: "LOGIN_USER",
+                    type: "LOG_IN_USER",
                     payload: null,
                 });
             }
