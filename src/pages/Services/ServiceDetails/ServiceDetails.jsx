@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { gql, useQuery } from "@apollo/client";
-import axios from "axios";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Button, Col, Container, Image, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
@@ -40,6 +39,22 @@ const GET_REVIEWS_BY_SERVICE_ID = gql`
     }
 `;
 
+const CREATE_NEW_REVIEW = gql`
+    mutation CreateNewReview($input: CreateNewReviewInput!) {
+        createNewReview(input: $input) {
+            _id
+            _service
+            comment
+            createdAt
+            email
+            img
+            name
+            serviceName
+            star
+        }
+    }
+`;
+
 const ServiceDetails = () => {
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [comment, setComment] = useState("");
@@ -50,18 +65,54 @@ const ServiceDetails = () => {
     const { id } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { state, user: currentUser } = useAuth();
+    const { user } = state;
 
     const { loading, error, data } = useQuery(GET_SERVICE_BY_ID, {
         variables: { serviceId: id },
+    });
+
+    const [
+        addReview,
+        {
+            data: createdReviewData,
+            error: createdReviewError,
+            loading: createdReviewLoading,
+        },
+    ] = useMutation(CREATE_NEW_REVIEW, {
+        // read query from cache / write query to cache
+        update: (cache, { data: { addReview } }) => {
+            // read Query from cache
+            const { getAllReview } = cache.readQuery({
+                query: GET_REVIEWS_BY_SERVICE_ID,
+                variables: { query: id }
+            });
+            // write Query to cache
+            cache.writeQuery({
+                query: GET_REVIEWS_BY_SERVICE_ID,
+                variables: { query: id },
+                data: {
+                    getAllReview: [addReview, ...getAllReview]
+                }
+            });
+        },
+        refetchQueries: [
+            {
+                query: GET_REVIEWS_BY_SERVICE_ID,
+                variables: { query: id },
+                awaitRefetchQueries: true,
+            },
+        ]
     });
 
     const {
         loading: loadingReviews,
         error: errorReviews,
         data: reviewsData,
+        refetch,
     } = useQuery(GET_REVIEWS_BY_SERVICE_ID, {
         variables: { query: id },
+        fetchPolicy: "network-only",
     });
 
     useEffect(() => {
@@ -83,7 +134,7 @@ const ServiceDetails = () => {
     const { _id, name, img, description, price } = service;
 
     const handleReviewShowModal = () => {
-        if (user && user?.uid) {
+        if (user && user?.token) {
             setShowReviewModal((prev) => !prev);
             return;
         }
@@ -96,57 +147,41 @@ const ServiceDetails = () => {
         setStar(newRating);
     };
 
-    const createReview = async (reviewObj) => {
-        axios
-            .post("https://server-smoky-ten.vercel.app/reviews", reviewObj, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            .then(async (res) => {
-                const data = res.data;
-                if (data?.acknowledged) {
-                    Swal.fire({
-                        position: "top",
-                        icon: "success",
-                        title: "Review Created Successfully",
-                        showConfirmButton: false,
-                        timer: 2500,
-                    });
-                }
-                const response = await axios.get(
-                    `https://server-smoky-ten.vercel.app/reviews?id=${_id}`
-                );
-                const d = await response.data;
-                setReviews(d);
-            })
-            .catch((error) => {
-                Swal.fire({
-                    position: "top",
-                    icon: "error",
-                    title: `${error.response.data.message}`,
-                    showConfirmButton: false,
-                    timer: 2500,
-                });
-            });
-    };
-
     const handleReviewSubmit = async (event) => {
         try {
             event.preventDefault();
             const reviewObj = {
-                serviceId: _id,
+                _service: _id,
                 serviceName: name,
-                name: user?.displayName,
+                name: user?.name,
                 email: user?.email,
-
-                img: user?.photoURL,
+                img: currentUser?.photoURL,
                 comment,
                 star,
             };
-            createReview(reviewObj);
+            addReview({
+                variables: {
+                    input: reviewObj,
+                },
+            });
+            if (createdReviewData && createdReviewData?.createNewReview) {
+                Swal.fire({
+                    position: "top",
+                    icon: "success",
+                    title: "Review Created Successfully",
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            }
             setComment("");
         } catch (error) {
+            Swal.fire({
+                position: "top",
+                icon: "error",
+                title: `${error}`,
+                showConfirmButton: false,
+                timer: 2500,
+            });
             toast.error(error.message);
         }
     };
@@ -157,7 +192,7 @@ const ServiceDetails = () => {
             <Helmet>
                 <title>ServiceDetails</title>
             </Helmet>
-            {loading || loadingReviews ? (
+            {loading  ? (
                 <div
                     style={{ height: "400px" }}
                     className="d-flex justify-content-center align-items-center"
@@ -200,7 +235,7 @@ const ServiceDetails = () => {
                                                 handleReviewShowModal()
                                             }
                                         >
-                                            {user && user?.uid
+                                            {user && user?.name && user?.token
                                                 ? "Review The Service"
                                                 : "Please login to add a review"}
                                         </Button>
