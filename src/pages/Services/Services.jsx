@@ -1,22 +1,11 @@
 import React, { useEffect } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import AOS from "aos";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import ServiceCard from "../../components/shared/ServiceCard/ServiceCard";
 import Main from "../../layout/Main";
-
-const GET_ALL_SERVICES = gql`
-    query GetAllServices {
-        getAllServices {
-            _id
-            name
-            description
-            img
-            price
-        }
-    }
-`;
+import { GET_ALL_SERVICES } from "../../graphql/queries";
 
 const Services = () => {
     const { loading, error, data } = useQuery(GET_ALL_SERVICES);
@@ -47,7 +36,8 @@ const Services = () => {
                         </div>
                     ) : (
                         <>
-                            {data?.getAllServices && data?.getAllServices?.length > 0 ? (
+                            {data?.getAllServices &&
+                            data?.getAllServices?.length > 0 ? (
                                 <>
                                     {data?.getAllServices.map((service) => (
                                         <ServiceCard

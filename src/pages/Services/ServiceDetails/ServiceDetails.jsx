@@ -72,7 +72,6 @@ const ServiceDetails = () => {
         loading: loadingReviews,
         error: errorReviews,
         data: reviewsData,
-        refetch,
     } = useQuery(GET_REVIEWS_BY_SERVICE_ID, {
         variables: { query: id },
     });
@@ -89,8 +88,7 @@ const ServiceDetails = () => {
 
     useEffect(() => {
         getService({ variables: { serviceId: id } });
-        refetch();
-    }, [id, refetch, getService]);
+    }, [id, getService]);
 
     const { _id, name, img, description, price } = service;
 
@@ -124,6 +122,12 @@ const ServiceDetails = () => {
                 variables: {
                     input: reviewObj,
                 },
+                refetchQueries: [
+                    {
+                        query: GET_REVIEWS_BY_SERVICE_ID,
+                        variables: { query: id },
+                    },
+                ],
             });
             setComment("");
         } catch (error) {

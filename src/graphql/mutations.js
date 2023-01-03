@@ -1,5 +1,14 @@
 import { gql } from "@apollo/client";
-import { REVIEW_FIELD } from "./fragments";
+import { REVIEW_FIELD, SERVICE_FIELD } from "./fragments";
+
+export const CREATE_NEW_SERVICE = gql`
+    mutation CreateNewService($input: CreateNewServiceInput!) {
+        createNewService(input: $input) {
+            ...CoreServiceFields
+        }
+    }
+    ${SERVICE_FIELD}
+`;
 
 export const CREATE_NEW_REVIEW = gql`
     mutation CreateNewReview($input: CreateNewReviewInput!) {

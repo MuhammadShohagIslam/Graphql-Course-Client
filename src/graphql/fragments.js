@@ -12,3 +12,13 @@ export const REVIEW_FIELD = gql`
         createdAt
     }
 `;
+
+export const SERVICE_FIELD = gql`
+    fragment CoreServiceFields on Service {
+        _id
+        name
+        description
+        img
+        price
+    }
+`;

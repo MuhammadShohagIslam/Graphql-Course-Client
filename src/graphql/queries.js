@@ -1,5 +1,40 @@
 import { gql } from "@apollo/client";
-import { REVIEW_FIELD } from "./fragments";
+import { REVIEW_FIELD, SERVICE_FIELD } from "./fragments";
+
+export const GET_ALL_SERVICES = gql`
+    query GetAllServices {
+        getAllServices {
+            ...CoreServiceFields
+        }
+    }
+    ${SERVICE_FIELD}
+`;
+
+export const GET_SERVICE_BY_ID = gql`
+    query GetService($serviceId: ID!) {
+        getService(serviceId: $serviceId) {
+            ...CoreServiceFields
+        }
+    }
+    ${SERVICE_FIELD}
+`;
+
+export const GET_ALL_SERVICES_UNDER_LIMIT = gql`
+    query GetAllServices($limit: Int) {
+        getAllServices(limit: $limit) {
+            ...CoreServiceFields
+        }
+    }
+    ${SERVICE_FIELD}
+`;
+
+export const GET_ALL_REVIEWS_UNDER_QUERY = gql`
+    query GetAllReview($query: ID) {
+        getAllReview(query: $query) {
+            star
+        }
+    }
+`;
 
 export const GET_REVIEWS_BY_SERVICE_ID = gql`
     query GetAllReview($query: ID) {
@@ -8,18 +43,6 @@ export const GET_REVIEWS_BY_SERVICE_ID = gql`
         }
     }
     ${REVIEW_FIELD}
-`;
-
-export const GET_SERVICE_BY_ID = gql`
-    query GetService($serviceId: ID!) {
-        getService(serviceId: $serviceId) {
-            _id
-            name
-            description
-            img
-            price
-        }
-    }
 `;
 
 export const GET_REVIEWS_BY_SPECIFIC_USER = gql`

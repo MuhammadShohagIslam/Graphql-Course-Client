@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useQuery } from "@apollo/client";
 import AOS from "aos";
 import React, { useEffect } from "react";
 import { Button, Card, Col } from "react-bootstrap";
@@ -5,18 +7,21 @@ import { FaArrowRight } from "react-icons/fa";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { Link } from "react-router-dom";
 import { avgRating } from "../../../utils/avgRating";
-import useFetch from "./../../../hooks/useFetch";
 import classes from "./ServiceCard.module.css";
+import { GET_ALL_REVIEWS_UNDER_QUERY } from "../../../graphql/queries";
 
 const ServiceCard = ({ service }) => {
     const { _id, img, name, description, price } = service;
-    const { data: reviews } = useFetch(
-        `https://server-smoky-ten.vercel.app/reviews?id=${_id}`
-    );
+    const { data, refetch } = useQuery(GET_ALL_REVIEWS_UNDER_QUERY, {
+        variables: {
+            query: _id,
+        },
+    });
 
     useEffect(() => {
         AOS.init();
         AOS.refresh();
+        refetch();
     }, []);
 
     return (
@@ -31,7 +36,7 @@ const ServiceCard = ({ service }) => {
             >
                 <Card className={classes.serviceCard}>
                     <Card.Header className="bg-white text-center py-2 pb-3">
-                        {avgRating(reviews)}
+                        {avgRating(data?.getAllReview)}
                     </Card.Header>
                     <PhotoProvider
                         speed={() => 800}

@@ -1,12 +1,47 @@
-import axios from "axios";
 import React from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
 import Main from "../../layout/Main";
+import { useMutation } from "@apollo/client";
+import { CREATE_NEW_SERVICE } from "./../../graphql/mutations";
+import {
+    GET_ALL_SERVICES,
+    GET_ALL_SERVICES_UNDER_LIMIT,
+} from "./../../graphql/queries";
 
 const AddService = () => {
+    const [createNewService, { error: createdServiceError }] = useMutation(
+        CREATE_NEW_SERVICE,
+        {
+            // update the cache of all reviews corresponding by service id
+            update(cache, data) {
+                // read the data of all reviews corresponding by service id
+                const { getAllServices } = cache.readQuery({
+                    query: GET_ALL_SERVICES,
+                });
+                // write the cached
+                cache.writeQuery({
+                    query: GET_ALL_SERVICES,
+                    data: {
+                        getAllServices: [
+                            data?.data.createNewService,
+                            ...getAllServices,
+                        ],
+                    },
+                });
+                Swal.fire({
+                    position: "top",
+                    icon: "success",
+                    title: "Service Created Successfully",
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            },
+        }
+    );
+
     const handleServiceSubmit = (event) => {
         event.preventDefault();
         const form = event.target;
@@ -36,31 +71,20 @@ const AddService = () => {
             description,
         };
 
-        createNewService(newServiceObj);
-        form.reset();
-    };
-    const createNewService = async (newServiceObj) => {
-        try {
-            const response = await axios.post(
-                `https://server-smoky-ten.vercel.app/services`,
-                newServiceObj,
+        createNewService({
+            variables: {
+                input: newServiceObj,
+            },
+            refetchQueries: [
                 {
-                    headers: {
-                        "Content-Type": "application/json",
+                    query: GET_ALL_SERVICES_UNDER_LIMIT,
+                    variables: {
+                        limit: 3,
                     },
-                }
-            );
-            const data = await response.data;
-            if (data.acknowledged) {
-                Swal.fire({
-                    position: "top",
-                    icon: "success",
-                    title: `${newServiceObj?.name} Service Is Created`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
-            }
-        } catch (error) {}
+                },
+            ],
+        });
+        form.reset();
     };
     return (
         <Main>

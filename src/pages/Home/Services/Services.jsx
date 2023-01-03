@@ -5,18 +5,8 @@ import { Link } from "react-router-dom";
 import SectionTitle from "./../../../components/shared/SectionTitle/SectionTitle";
 import ServiceCard from "./../../../components/shared/ServiceCard/ServiceCard";
 import classes from "./Services.module.css";
+import { GET_ALL_SERVICES_UNDER_LIMIT } from './../../../graphql/queries';
 
-const GET_ALL_SERVICES_UNDER_LIMIT = gql`
-    query GetAllServices($limit: Int) {
-        getAllServices(limit: $limit) {
-            _id
-            description
-            img
-            name
-            price
-        }
-    }
-`;
 
 const Services = () => {
     const { loading, error, data } = useQuery(GET_ALL_SERVICES_UNDER_LIMIT, {
