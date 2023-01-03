@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@apollo/client";
+import React, { useEffect, useState, useMemo } from "react";
+import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import { Button, Col, Container, Image, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
@@ -20,7 +20,6 @@ import {
 const ServiceDetails = () => {
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [comment, setComment] = useState("");
-    const [reviews, setReviews] = useState([]);
     const [star, setStar] = useState(0);
     const [service, setService] = useState({});
 
@@ -30,51 +29,49 @@ const ServiceDetails = () => {
     const { state, user: currentUser } = useAuth();
     const { user } = state;
 
-    const { loading, error, data } = useQuery(GET_SERVICE_BY_ID, {
-        variables: { serviceId: id },
-    });
+    const [getService, { loading, error, data }] =
+        useLazyQuery(GET_SERVICE_BY_ID);
 
-    const [
-        createNewReview,
+    const [createNewReview, { error: createdReviewError }] = useMutation(
+        CREATE_NEW_REVIEW,
         {
-            data: createdReviewData,
-            error: createdReviewError,
-            loading: createdReviewLoading,
-        },
-    ] = useMutation(CREATE_NEW_REVIEW, {
-        // update the cache of all reviews corresponding by service id
-        update(cache, data) {
-            // read the data of all reviews corresponding by service id
-            const { getAllReview } = cache.readQuery({
-                query: GET_REVIEWS_BY_SERVICE_ID,
-                variables: {
-                    query: id,
-                },
-            });
-            cache.writeQuery({
-                query: GET_REVIEWS_BY_SERVICE_ID,
-                variables: {
-                    query: id,
-                },
-                data: {
-                    getAllReview: [data.data.createNewReview, ...getAllReview],
-                },
-            });
-            Swal.fire({
-                position: "top",
-                icon: "success",
-                title: "Review Created Successfully",
-                showConfirmButton: false,
-                timer: 2500,
-            });
-        },
-    });
+            // update the cache of all reviews corresponding by service id
+            update(cache, data) {
+                // read the data of all reviews corresponding by service id
+                const { getAllReview } = cache.readQuery({
+                    query: GET_REVIEWS_BY_SERVICE_ID,
+                    variables: {
+                        query: id,
+                    },
+                });
+                // write the cached
+                cache.writeQuery({
+                    query: GET_REVIEWS_BY_SERVICE_ID,
+                    variables: {
+                        query: id,
+                    },
+                    data: {
+                        getAllReview: [
+                            data.data.createNewReview,
+                            ...getAllReview,
+                        ],
+                    },
+                });
+                Swal.fire({
+                    position: "top",
+                    icon: "success",
+                    title: "Review Created Successfully",
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            },
+        }
+    );
 
     const {
         loading: loadingReviews,
         error: errorReviews,
         data: reviewsData,
-        refetch,
     } = useQuery(GET_REVIEWS_BY_SERVICE_ID, {
         variables: { query: id },
     });
@@ -83,17 +80,15 @@ const ServiceDetails = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, []);
 
-    useEffect(() => {
+    useMemo(() => {
         if (data && data?.getService) {
             setService(data.getService);
         }
     }, [data]);
 
     useEffect(() => {
-        if (reviewsData && reviewsData?.getAllReview) {
-            setReviews(reviewsData.getAllReview);
-        }
-    }, [reviewsData]);
+        getService({ variables: { serviceId: id } });
+    }, [id]);
 
     const { _id, name, img, description, price } = service;
 
@@ -140,7 +135,7 @@ const ServiceDetails = () => {
             toast.error(error.message);
         }
     };
-    if (error || errorReviews) return `Error! ${error}`;
+    if (error || errorReviews || createdReviewError) return `Error! ${error}`;
 
     return (
         <Main>
@@ -179,7 +174,7 @@ const ServiceDetails = () => {
                                     >
                                         <h2>{name}</h2>
                                         <h5>Per Month: ${price}</h5>
-                                        {avgRating(reviews)}
+                                        {avgRating(reviewsData?.getAllReview)}
                                         <hr className="border border-white opacity-50 mt-3"></hr>
                                         <p className="pb-2">{description}</p>
 
@@ -206,7 +201,7 @@ const ServiceDetails = () => {
                                     <h4 className="mb-4">
                                         Reviews From Student of {name}
                                     </h4>
-                                    {loading ? (
+                                    {loading || loadingReviews ? (
                                         <div
                                             style={{ height: "400px" }}
                                             className="d-flex justify-content-center align-items-center"
@@ -218,14 +213,18 @@ const ServiceDetails = () => {
                                         </div>
                                     ) : (
                                         <>
-                                            {reviews.length > 0 ? (
+                                            {reviewsData &&
+                                            reviewsData?.getAllReview.length >
+                                                0 ? (
                                                 <>
-                                                    {reviews.map((review) => (
-                                                        <Review
-                                                            key={review._id}
-                                                            review={review}
-                                                        />
-                                                    ))}
+                                                    {reviewsData?.getAllReview.map(
+                                                        (review) => (
+                                                            <Review
+                                                                key={review._id}
+                                                                review={review}
+                                                            />
+                                                        )
+                                                    )}
                                                 </>
                                             ) : (
                                                 <h6 className="mt-5 text-dark">
