@@ -1,57 +1,55 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
 import ReviewTable from "../../components/shared/ReviewTable/ReviewTable";
 import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
 import Main from "../../layout/Main";
-import { gql, useQuery } from "@apollo/client";
-
-const GET_REVIEWS_BY_SPECIFIC_USER = gql`
-    query GetReviewBySpecificUser($email: String!, $name: String) {
-        getReviewBySpecificUser(email: $email, name: $name) {
-            _id
-            _service
-            comment
-            createdAt
-            email
-            img
-            name
-            serviceName
-            star
-        }
-    }
-`;
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_REVIEWS_BY_SPECIFIC_USER } from "./../../graphql/queries";
+import { REMOVED_REVIEW } from "../../graphql/mutations";
 
 const MyReviews = () => {
-    const [reviewsBySpecificUser, setReviewsBySpecificUser] = useState([]);
     const { state } = useAuth();
     const { user } = state;
 
-    const { loading, error, data } = useQuery(GET_REVIEWS_BY_SPECIFIC_USER, {
-        variables: { email: user?.email, name: user?.name },
+    const { loading, error, data, refetch } = useQuery(
+        GET_REVIEWS_BY_SPECIFIC_USER,
+        {
+            variables: { email: user?.email, name: user?.name },
+        }
+    );
+
+    useEffect(() => {
+        refetch();
+    }, [refetch]);
+
+    const [removeReview] = useMutation(REMOVED_REVIEW, {
+        update(cache, data) {
+            if (data?.data?.removeReview?.deletedCount > 0) {
+                Swal.fire({
+                    position: "top",
+                    icon: "error",
+                    title: `Review Deleted Successfully`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        },
     });
 
     const handleReviewDelete = async (e, id, serviceName) => {
-        console.log(id);
-        const response = await axios.delete(
-            `https://server-smoky-ten.vercel.app/reviews/${id}`
-        );
-        const data = await response.data;
-        if (data?.deletedCount > 0) {
-            Swal.fire({
-                position: "top",
-                icon: "error",
-                title: `Review ${serviceName} Deleted Successfully`,
-                showConfirmButton: false,
-                timer: 1500,
-            });
-            const remainingReviews = reviewsBySpecificUser.filter(
-                (review) => review._id !== id
-            );
-            setReviewsBySpecificUser([...remainingReviews]);
-        }
+        removeReview({
+            variables: {
+                reviewId: id,
+            },
+            refetchQueries: [
+                {
+                    query: GET_REVIEWS_BY_SPECIFIC_USER,
+                    variables: { email: user?.email, name: user?.name },
+                },
+            ],
+        });
     };
     if (error) return `Error! ${error}`;
 
@@ -62,7 +60,8 @@ const MyReviews = () => {
             </Helmet>
             <Container className="mt-4">
                 <h3 className="text-center py-3">
-                    '''Reviews Service By {user?.displayName}'''
+                    '''{data?.getReviewBySpecificUser.length} Reviews On Service
+                    By {user?.name}'''
                 </h3>
                 <Row className="m-0">
                     {loading ? (

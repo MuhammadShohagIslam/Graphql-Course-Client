@@ -10,3 +10,12 @@ export const CREATE_NEW_REVIEW = gql`
     }
     ${REVIEW_FIELD}
 `;
+
+export const REMOVED_REVIEW = gql`
+    mutation RemoveReview($reviewId: ID!) {
+        removeReview(reviewId: $reviewId) {
+            acknowledged
+            deletedCount
+        }
+    }
+`;
