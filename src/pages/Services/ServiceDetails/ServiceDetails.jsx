@@ -72,6 +72,7 @@ const ServiceDetails = () => {
         loading: loadingReviews,
         error: errorReviews,
         data: reviewsData,
+        refetch,
     } = useQuery(GET_REVIEWS_BY_SERVICE_ID, {
         variables: { query: id },
     });
@@ -88,7 +89,8 @@ const ServiceDetails = () => {
 
     useEffect(() => {
         getService({ variables: { serviceId: id } });
-    }, [id]);
+        refetch();
+    }, [id, refetch, getService]);
 
     const { _id, name, img, description, price } = service;
 

@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
@@ -8,7 +7,7 @@ import Swal from "sweetalert2";
 import Main from "../../../layout/Main";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_SINGLE_REVIEW } from "./../../../graphql/queries";
-import { UPDATED_REVIEW } from './../../../graphql/mutations';
+import { UPDATED_REVIEW } from "./../../../graphql/mutations";
 
 const UpdateReview = () => {
     const [comment, setComment] = useState("");
@@ -21,7 +20,7 @@ const UpdateReview = () => {
         useLazyQuery(GET_SINGLE_REVIEW);
 
     const [updateReview] = useMutation(UPDATED_REVIEW, {
-        update(cache, data){
+        update(cache, data) {
             if (data?.data.updateReview.modifiedCount > 0) {
                 Swal.fire({
                     position: "top",
@@ -32,8 +31,8 @@ const UpdateReview = () => {
                 });
                 refetch();
             }
-        }
-    })
+        },
+    });
 
     useEffect(() => {
         getReview({
@@ -41,8 +40,8 @@ const UpdateReview = () => {
         });
         setReview(data?.getReview);
         setStar(data?.getReview.star);
-
-    }, [id, data]);
+        setComment(data?.getReview.comment);
+    }, [id, data, getReview]);
 
     const handleClickRating = (newRating) => {
         setStar(newRating);
@@ -64,8 +63,8 @@ const UpdateReview = () => {
         updateReview({
             variables: {
                 reviewId: id,
-                input: reviewUpdateObj
-            }
+                input: reviewUpdateObj,
+            },
         });
         setActive(true);
     };
