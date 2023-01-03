@@ -6,56 +6,43 @@ import { useParams } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import Swal from "sweetalert2";
 import Main from "../../../layout/Main";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { GET_SINGLE_REVIEW } from "./../../../graphql/queries";
+import { UPDATED_REVIEW } from './../../../graphql/mutations';
 
 const UpdateReview = () => {
     const [comment, setComment] = useState("");
     const [review, setReview] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [active, setActive] = useState(true);
     const [star, setStar] = useState(0);
     const { id } = useParams();
 
-    useEffect(() => {
-        loadingReviewById(id);
-    }, [id]);
+    const [getReview, { data, error, loading, refetch }] =
+        useLazyQuery(GET_SINGLE_REVIEW);
 
-    const loadingReviewById = async (id) => {
-        try {
-            setLoading(true);
-            const response = await axios.get(
-                `https://server-smoky-ten.vercel.app/reviews/${id}`
-            );
-            const data = await response.data;
-            setReview(data);
-            setStar(data.star);
-            setLoading(false);
-        } catch (error) {
-            setLoading(false);
-            console.log(error.message);
-        }
-    };
-
-    const updateReview = async (reviewUpdateObj) => {
-        const response = await axios.put(
-            `https://server-smoky-ten.vercel.app/reviews/${id}`,
-            reviewUpdateObj,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                },
+    const [updateReview] = useMutation(UPDATED_REVIEW, {
+        update(cache, data){
+            if (data?.data.updateReview.modifiedCount > 0) {
+                Swal.fire({
+                    position: "top",
+                    icon: "success",
+                    title: `Review Updated`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                refetch();
             }
-        );
-        const data = await response.data;
-        if (data.modifiedCount > 0) {
-            Swal.fire({
-                position: "top",
-                icon: "success",
-                title: `${review?.serviceName} Service Review Updated`,
-                showConfirmButton: false,
-                timer: 1500,
-            });
         }
-    };
+    })
+
+    useEffect(() => {
+        getReview({
+            variables: { reviewId: id },
+        });
+        setReview(data?.getReview);
+        setStar(data?.getReview.star);
+
+    }, [id, data]);
 
     const handleClickRating = (newRating) => {
         setStar(newRating);
@@ -74,7 +61,12 @@ const UpdateReview = () => {
             comment,
             star,
         };
-        updateReview(reviewUpdateObj);
+        updateReview({
+            variables: {
+                reviewId: id,
+                input: reviewUpdateObj
+            }
+        });
         setActive(true);
     };
 
@@ -101,7 +93,8 @@ const UpdateReview = () => {
                                 Update Review
                             </h2>
                             <h5 className="text-center">
-                                The Service Name Of {review?.serviceName}
+                                The Service Name Of{" "}
+                                {data?.getReview.serviceName}
                             </h5>
                             <Form>
                                 <Form.Group
@@ -127,7 +120,7 @@ const UpdateReview = () => {
                                     changeRating={handleClickRating}
                                     numberOfStars={5}
                                     starDimension="30px"
-                                    name={review._id}
+                                    name={review?._id}
                                 />
 
                                 <div className="pt-4">

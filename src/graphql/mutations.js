@@ -19,3 +19,15 @@ export const REMOVED_REVIEW = gql`
         }
     }
 `;
+
+export const UPDATED_REVIEW = gql`
+    mutation UpdateReview($reviewId: ID!, $input: UpdateReviewInput!) {
+        updateReview(reviewId: $reviewId, input: $input) {
+            acknowledged
+            matchedCount
+            modifiedCount
+            upsertedCount
+            upsertedId
+        }
+    }
+`;

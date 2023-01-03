@@ -31,3 +31,13 @@ export const GET_REVIEWS_BY_SPECIFIC_USER = gql`
     }
     ${REVIEW_FIELD}
 `;
+
+export const GET_SINGLE_REVIEW = gql`
+    query GetReview($reviewId: ID!) {
+        getReview(reviewId: $reviewId) {
+            email
+            ...CoreReviewFields
+        }
+    }
+    ${REVIEW_FIELD}
+`;
