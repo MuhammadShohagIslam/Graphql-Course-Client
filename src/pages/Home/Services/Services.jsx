@@ -1,17 +1,18 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Button, Container, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import SectionTitle from "./../../../components/shared/SectionTitle/SectionTitle";
 import ServiceCard from "./../../../components/shared/ServiceCard/ServiceCard";
 import classes from "./Services.module.css";
-import { GET_ALL_SERVICES_UNDER_LIMIT } from './../../../graphql/queries';
+import { GET_ALL_SERVICES_UNDER_THE_LIMIT } from './../../../graphql/queries';
 
 
 const Services = () => {
-    const { loading, error, data } = useQuery(GET_ALL_SERVICES_UNDER_LIMIT, {
+    const { loading, error, data } = useQuery(GET_ALL_SERVICES_UNDER_THE_LIMIT, {
         variables: { limit: 3 },
     });
+    console.log(data)
 
     if (error) return `Error! ${error}`;
 
@@ -35,10 +36,10 @@ const Services = () => {
                         </div>
                     ) : (
                         <>
-                            {data?.getAllServices &&
-                            data?.getAllServices.length > 0 ? (
+                            {data?.getAllServicesUnderLimit &&
+                            data?.getAllServicesUnderLimit.length > 0 ? (
                                 <>
-                                    {data.getAllServices.map((service) => (
+                                    {data.getAllServicesUnderLimit.map((service) => (
                                         <ServiceCard
                                             key={service._id}
                                             service={service}

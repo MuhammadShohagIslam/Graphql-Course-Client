@@ -1,9 +1,21 @@
 import { gql } from "@apollo/client";
 import { REVIEW_FIELD, SERVICE_FIELD } from "./fragments";
 
-export const GET_ALL_SERVICES = gql`
-    query GetAllServices {
-        getAllServices {
+export const GET_ALL_SERVICES_BY_PAGE = gql`
+    query GetAllServiceByPage($page: Int!) {
+        getAllServiceByPage(page: $page) {
+            servicesByPagination {
+                ...CoreServiceFields
+            }
+            totalService
+        }
+    }
+    ${SERVICE_FIELD}
+`;
+
+export const GET_ALL_SERVICES_UNDER_THE_LIMIT = gql`
+    query GetAllServicesUnderLimit($limit: Int) {
+        getAllServicesUnderLimit(limit: $limit) {
             ...CoreServiceFields
         }
     }
@@ -13,15 +25,6 @@ export const GET_ALL_SERVICES = gql`
 export const GET_SERVICE_BY_ID = gql`
     query GetService($serviceId: ID!) {
         getService(serviceId: $serviceId) {
-            ...CoreServiceFields
-        }
-    }
-    ${SERVICE_FIELD}
-`;
-
-export const GET_ALL_SERVICES_UNDER_LIMIT = gql`
-    query GetAllServices($limit: Int) {
-        getAllServices(limit: $limit) {
             ...CoreServiceFields
         }
     }

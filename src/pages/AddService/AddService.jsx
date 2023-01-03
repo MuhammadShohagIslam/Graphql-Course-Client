@@ -7,8 +7,8 @@ import Main from "../../layout/Main";
 import { useMutation } from "@apollo/client";
 import { CREATE_NEW_SERVICE } from "./../../graphql/mutations";
 import {
-    GET_ALL_SERVICES,
-    GET_ALL_SERVICES_UNDER_LIMIT,
+    GET_ALL_SERVICES_BY_PAGE,
+    GET_ALL_SERVICES_UNDER_THE_LIMIT,
 } from "./../../graphql/queries";
 
 const AddService = () => {
@@ -18,16 +18,22 @@ const AddService = () => {
             // update the cache of all reviews corresponding by service id
             update(cache, data) {
                 // read the data of all reviews corresponding by service id
-                const { getAllServices } = cache.readQuery({
-                    query: GET_ALL_SERVICES,
+                const { getAllServicesUnderLimit } = cache.readQuery({
+                    query: GET_ALL_SERVICES_UNDER_THE_LIMIT,
+                    variables: {
+                        limit: 3,
+                    },
                 });
                 // write the cached
                 cache.writeQuery({
-                    query: GET_ALL_SERVICES,
+                    query: GET_ALL_SERVICES_UNDER_THE_LIMIT,
+                    variables: {
+                        limit: 3,
+                    },
                     data: {
-                        getAllServices: [
+                        getAllServicesUnderLimit: [
                             data?.data.createNewService,
-                            ...getAllServices,
+                            ...getAllServicesUnderLimit,
                         ],
                     },
                 });
@@ -77,9 +83,9 @@ const AddService = () => {
             },
             refetchQueries: [
                 {
-                    query: GET_ALL_SERVICES_UNDER_LIMIT,
+                    query: GET_ALL_SERVICES_BY_PAGE,
                     variables: {
-                        limit: 3,
+                        page: 1,
                     },
                 },
             ],

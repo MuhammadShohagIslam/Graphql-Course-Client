@@ -75,3 +75,21 @@ footer {
     background-color: transparent !important;
     border: 1px solid #7f56fd !important;
 }
+.page-link {
+    font-size: 19px;
+    color: #fff !important;
+    padding: 5px 10px !important;
+}
+.page-link span {
+    font-size: 16px !important;
+    color: #000 !important;
+}
+.active>.page-link, .page-link.active {
+    z-index: 3;
+    color:#fff !important;
+    background-color: #7f56fd !important;
+    border-color: #7f56fd !important;;
+}
+.page-link:focus {
+    box-shadow: 0 0 0 0.25rem rgba(127, 86, 253, 0.25) !important;
+}
