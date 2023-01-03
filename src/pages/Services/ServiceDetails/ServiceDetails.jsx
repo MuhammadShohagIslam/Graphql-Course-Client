@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { Button, Col, Container, Image, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
@@ -11,49 +11,11 @@ import { useAuth } from "../../../contexts/AuthProvider/AuthProvider";
 import Main from "../../../layout/Main";
 import { avgRating } from "./../../../utils/avgRating";
 import classes from "./ServiceDetails.module.css";
-
-const GET_SERVICE_BY_ID = gql`
-    query GetService($serviceId: ID!) {
-        getService(serviceId: $serviceId) {
-            _id
-            name
-            description
-            img
-            price
-        }
-    }
-`;
-
-const GET_REVIEWS_BY_SERVICE_ID = gql`
-    query GetAllReview($query: ID) {
-        getAllReview(query: $query) {
-            _id
-            _service
-            comment
-            img
-            name
-            serviceName
-            star
-            createdAt
-        }
-    }
-`;
-
-const CREATE_NEW_REVIEW = gql`
-    mutation CreateNewReview($input: CreateNewReviewInput!) {
-        createNewReview(input: $input) {
-            _id
-            _service
-            comment
-            createdAt
-            email
-            img
-            name
-            serviceName
-            star
-        }
-    }
-`;
+import { CREATE_NEW_REVIEW } from "./../../../graphql/mutations";
+import {
+    GET_REVIEWS_BY_SERVICE_ID,
+    GET_SERVICE_BY_ID,
+} from "../../../graphql/queries";
 
 const ServiceDetails = () => {
     const [showReviewModal, setShowReviewModal] = useState(false);
@@ -73,36 +35,39 @@ const ServiceDetails = () => {
     });
 
     const [
-        addReview,
+        createNewReview,
         {
             data: createdReviewData,
             error: createdReviewError,
             loading: createdReviewLoading,
         },
     ] = useMutation(CREATE_NEW_REVIEW, {
-        // read query from cache / write query to cache
-        update: (cache, { data: { addReview } }) => {
-            // read Query from cache
+        // update the cache of all reviews corresponding by service id
+        update(cache, data) {
+            // read the data of all reviews corresponding by service id
             const { getAllReview } = cache.readQuery({
                 query: GET_REVIEWS_BY_SERVICE_ID,
-                variables: { query: id }
+                variables: {
+                    query: id,
+                },
             });
-            // write Query to cache
             cache.writeQuery({
                 query: GET_REVIEWS_BY_SERVICE_ID,
-                variables: { query: id },
+                variables: {
+                    query: id,
+                },
                 data: {
-                    getAllReview: [addReview, ...getAllReview]
-                }
+                    getAllReview: [data.data.createNewReview, ...getAllReview],
+                },
+            });
+            Swal.fire({
+                position: "top",
+                icon: "success",
+                title: "Review Created Successfully",
+                showConfirmButton: false,
+                timer: 2500,
             });
         },
-        refetchQueries: [
-            {
-                query: GET_REVIEWS_BY_SERVICE_ID,
-                variables: { query: id },
-                awaitRefetchQueries: true,
-            },
-        ]
     });
 
     const {
@@ -112,7 +77,6 @@ const ServiceDetails = () => {
         refetch,
     } = useQuery(GET_REVIEWS_BY_SERVICE_ID, {
         variables: { query: id },
-        fetchPolicy: "network-only",
     });
 
     useEffect(() => {
@@ -159,20 +123,11 @@ const ServiceDetails = () => {
                 comment,
                 star,
             };
-            addReview({
+            createNewReview({
                 variables: {
                     input: reviewObj,
                 },
             });
-            if (createdReviewData && createdReviewData?.createNewReview) {
-                Swal.fire({
-                    position: "top",
-                    icon: "success",
-                    title: "Review Created Successfully",
-                    showConfirmButton: false,
-                    timer: 2500,
-                });
-            }
             setComment("");
         } catch (error) {
             Swal.fire({
@@ -192,7 +147,7 @@ const ServiceDetails = () => {
             <Helmet>
                 <title>ServiceDetails</title>
             </Helmet>
-            {loading  ? (
+            {loading ? (
                 <div
                     style={{ height: "400px" }}
                     className="d-flex justify-content-center align-items-center"
