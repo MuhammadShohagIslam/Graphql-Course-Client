@@ -1,25 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import AOS from "aos";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import ServiceCard from "../../components/shared/ServiceCard/ServiceCard";
-import Main from "../../layout/Main";
 import { GET_ALL_SERVICES_BY_PAGE } from "../../graphql/queries";
+import Main from "../../layout/Main";
 import PaginationBar from "./../../components/shared/PaginationBar/PaginationBar";
 
 const Services = () => {
     const [page, setPage] = useState(1);
-    const { loading, error, data } = useQuery(GET_ALL_SERVICES_BY_PAGE, {
-        variables:{
-            page: page
-        }
-    });
-    console.log(data)
+
+    const [getAllServiceByPage, { loading, error, data }] = useLazyQuery(
+        GET_ALL_SERVICES_BY_PAGE
+    );
+    const pages =
+        data?.getAllServiceByPage?.totalService &&
+        Math.ceil(data?.getAllServiceByPage?.totalService / 3);
+
     useEffect(() => {
         window.scrollTo(0, 0);
         AOS.init();
     }, []);
+
+    useEffect(() => {
+        getAllServiceByPage({
+            variables: {
+                page: page,
+            },
+        });
+    }, [page, getAllServiceByPage]);
 
     if (error) return `Error! ${error.message}`;
 
@@ -29,6 +39,7 @@ const Services = () => {
                 <title>Services</title>
             </Helmet>
             <Container className="pt-5 pb-3">
+                {JSON.stringify(data?.getAllServiceByPage?.totalService)}
                 <Row>
                     {loading ? (
                         <div
@@ -43,8 +54,8 @@ const Services = () => {
                     ) : (
                         <>
                             {data?.getAllServiceByPage?.servicesByPagination &&
-                            data?.getAllServiceByPage?.servicesByPagination.length >
-                                0 ? (
+                            data?.getAllServiceByPage?.servicesByPagination
+                                .length > 0 ? (
                                 <>
                                     {data?.getAllServiceByPage.servicesByPagination.map(
                                         (service) => (
@@ -62,9 +73,13 @@ const Services = () => {
                             )}
                         </>
                     )}
-                </Row>
 
-                <PaginationBar page={page} setPage={setPage} />
+                    <PaginationBar
+                        page={page}
+                        setPage={setPage}
+                        pages={pages}
+                    />
+                </Row>
             </Container>
         </Main>
     );

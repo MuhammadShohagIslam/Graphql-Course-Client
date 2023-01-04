@@ -77,7 +77,7 @@ footer {
 }
 .page-link {
     font-size: 19px;
-    color: #fff !important;
+    color: #000 !important;
     padding: 5px 10px !important;
 }
 .page-link span {
@@ -89,7 +89,16 @@ footer {
     color:#fff !important;
     background-color: #7f56fd !important;
     border-color: #7f56fd !important;;
+    cursor: pointer !important;
+}
+.page-link:hover {
+    opacity: .8;
+    color:#fff !important;
+    background-color: #7f56fd !important;
+    border-color: #7f56fd !important;;
+    cursor: pointer !important;
 }
 .page-link:focus {
     box-shadow: 0 0 0 0.25rem rgba(127, 86, 253, 0.25) !important;
+    cursor: pointer !important;
 }

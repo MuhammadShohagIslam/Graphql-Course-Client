@@ -12,7 +12,6 @@ const Services = () => {
     const { loading, error, data } = useQuery(GET_ALL_SERVICES_UNDER_THE_LIMIT, {
         variables: { limit: 3 },
     });
-    console.log(data)
 
     if (error) return `Error! ${error}`;
 
