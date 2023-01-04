@@ -1,0 +1,56 @@
+.leftSideListWrapper{
+    padding: 0px 0px 0px 30px;
+    background-color: #000;
+    height: 100vh;
+    margin-bottom: 0;
+}
+.leftSideProfileImg{
+    width: 32px;
+    height: 32px;
+}
+.leftSideTopListItemWrapper{
+    margin-bottom: 14px;
+    margin-right: 23px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.leftSideListItemWrapper{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 19px;
+    color: #fff;
+}
+.leftSideProfileIcon{
+    font-size: 32px;
+    color: #7f56fd;
+    margin-right: 10px;
+}
+.navLink{
+    cursor: pointer;
+    margin-bottom: 0;
+    font-weight: 600 !important;
+    font-size: 18px !important;
+    color: #fff !important;
+    transition: all .4s;
+}
+.navLink:hover{
+    color: #7f56fd !important;
+}
+
+@media only screen and (max-width: 767px) {
+    .leftSideListWrapper{
+        padding: 0px 0px 0px 30px;
+        height: 380px;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .leftSideListWrapper{
+        padding: 0px 0px 0px 30px;
+        height: 380px;
+    }
+}
+

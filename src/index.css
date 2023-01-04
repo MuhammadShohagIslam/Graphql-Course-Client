@@ -55,6 +55,23 @@ a {
 .nav-link {
     color: #000 !important;
 }
+.dropdown-toggle::after {
+    border-top: 0.3em solid #fff !important;
+}
+.dropdown-item:focus, .dropdown-item:hover {
+    color: #fff !important;
+    background-color: #7f56fd!important;
+}
+.dropdown-item.active, .dropdown-item:active {
+    color: #fff !important;
+    background-color: #7f56fd!important;
+}
+.dropdown-item {
+    color: #000 !important;
+}
+.dropdown-divider {
+    margin: 0 !important;
+}
 footer {
     position: absolute;
     width: 100%;

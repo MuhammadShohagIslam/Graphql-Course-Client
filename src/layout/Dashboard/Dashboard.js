@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { AiOutlineBars } from "react-icons/ai";
 import classes from "./Dashboard.module.css";
 import Footer from "../../components/shared/Footer/Footer";
-import ProfileLeftSideBar from "../../components/shared/ProfileLeftSideBar/ProfileLeftSideBar";
-import MediaNavBar from './../../components/shared/NavBar/MediaNavBar/MediaNavBar';
+import DashboardLeftSideBar from './../../components/shared/DashboardLeftSideBar/DashboardLeftSideBar';
+import NavBar from './../../components/shared/NavBar/NavBar';
 
-const ProfileLayout = ({ children }) => {
+const Dashboard = ({ children }) => {
     const [openLeftSideBar, setOpenLeftSideBar] = useState(false);
 
     const handleOpenMenu = () => {
@@ -15,7 +15,7 @@ const ProfileLayout = ({ children }) => {
     return (
         <>
             <header>
-                <MediaNavBar />
+                <NavBar />
                 <section className="d-block d-md-block d-lg-none">
                     <div className={classes.bottomSideBarShowWrapper}>
                         <span
@@ -29,7 +29,7 @@ const ProfileLayout = ({ children }) => {
                             )}
                         </span>
                     </div>
-                    {openLeftSideBar && <ProfileLeftSideBar />}
+                    {openLeftSideBar && <DashboardLeftSideBar />}
                 </section>
             </header>
             <main className={classes.profileLayout}>
@@ -37,7 +37,7 @@ const ProfileLayout = ({ children }) => {
                     className="d-none d-md-none d-lg-block"
                     style={{ height: "100%" }}
                 >
-                    <ProfileLeftSideBar />
+                    <DashboardLeftSideBar />
                 </div>
                 <div className="pt-4">{children}</div>
             </main>
@@ -46,4 +46,4 @@ const ProfileLayout = ({ children }) => {
     );
 };
 
-export default ProfileLayout;
+export default Dashboard;

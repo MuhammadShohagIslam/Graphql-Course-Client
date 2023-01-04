@@ -13,10 +13,9 @@
     font-weight: 700 !important;
 }
 .logOutIcon{
-    font-size: 22px !important;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+    font-size: 20px !important;
+    cursor: pointer !important;
+    margin-left: 15px;
 }
 .navbarFormWrapper{
     width: 52%;
@@ -38,8 +37,16 @@
 .navItemMiddle {
     display: flex;
 }
+.dashboardProfileName{
+    font-size: 16px;
+    color: #000;
+    text-align: center;
+}
 
 @media only screen and (max-width: 767px) {
+    .navBar {
+        padding: 12px 0px 24px !important;
+    }
     .navbarWrapper{
         display: block; 
         position: relative;
@@ -56,10 +63,6 @@
     }
     .navbarForm{
         width: 100%;
-    }
-    .centerNavbar{
-        width: 100%;
-        text-align: start;
     }
     .navLink {
         font-size: 18px !important;
@@ -80,6 +83,9 @@
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
+    .navBar {
+        padding: 12px 0px 24px !important;
+    }
     .navbarWrapper{
         display: block;
         position: relative;
@@ -97,10 +103,6 @@
     .navbarForm{
         width: 100%;
     }
-    .centerNavbar{
-        width: 100%;
-        text-align: start;
-    }
     .navLink {
         font-size: 18px !important;
     }
@@ -114,12 +116,5 @@
         text-align: start;  
         padding-bottom: 17px;
     }
-    .centerNavbar {
-        margin-left: 2%;
-    }
 }
-@media only screen and (min-width: 992px) and (max-width: 1200px) {
-    .centerNavbar {
-        margin-left: 11%;
-    }
-}
+

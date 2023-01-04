@@ -24,6 +24,7 @@ import PrivateRouter from "./routers/PrivateRouter/PrivateRouter";
 import SignupV2 from "./pages/Auth/Signup";
 import CompleteSignUp from "./pages/Auth/CompleteSignup";
 import { useAuth } from "./contexts/AuthProvider/AuthProvider";
+import DashboardHome from "./pages/Dashboard/DashboardHome";
 
 function App() {
     const { state } = useAuth();
@@ -84,6 +85,7 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/v2/signup" element={<SignupV2 />} />
                 <Route path="/completeSignup" element={<CompleteSignUp />} />
+                <Route path="/dashboard" element={<DashboardHome />} />
                 <Route path="/term-condition" element={<TermCondition />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="*" element={<NotFound />} />

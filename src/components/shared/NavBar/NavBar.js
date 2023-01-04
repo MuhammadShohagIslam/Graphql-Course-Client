@@ -3,18 +3,16 @@ import {
     Container,
     Navbar,
     Nav,
-    Tooltip,
     Image,
-    OverlayTrigger,
     Form,
     Button,
+    NavDropdown,
 } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { FaUserAlt } from "react-icons/fa";
 import { AiOutlineLogout } from "react-icons/ai";
 import classes from "./NavBar.module.css";
-import { useAuth } from './../../../contexts/AuthProvider/AuthProvider';
-
+import { useAuth } from "./../../../contexts/AuthProvider/AuthProvider";
 
 const MediaNavBar = () => {
     const { user, logOut } = useAuth();
@@ -36,9 +34,7 @@ const MediaNavBar = () => {
             >
                 <Container>
                     <LinkContainer className={classes.logo} to="/">
-                        <Navbar.Brand>
-                            ShohagTutor
-                        </Navbar.Brand>
+                        <Navbar.Brand>ShohagTutor</Navbar.Brand>
                     </LinkContainer>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse
@@ -67,59 +63,54 @@ const MediaNavBar = () => {
                                         Home
                                     </Nav.Link>
                                 </LinkContainer>
-                                <LinkContainer to="/media">
+                                <LinkContainer to="/services">
                                     <Nav.Link className={classes.navLink}>
-                                        Media
+                                        Services
                                     </Nav.Link>
                                 </LinkContainer>
-                                <LinkContainer to="/message">
+                                <LinkContainer to="/blog">
                                     <Nav.Link className={classes.navLink}>
-                                        Message
+                                        Blog
                                     </Nav.Link>
                                 </LinkContainer>
                                 {user && user?.uid ? (
                                     <>
-                                        <LinkContainer to="/profile">
-                                            <Nav.Link
-                                                className={classes.navLink}
-                                            >
-                                                {user?.photoURL ? (
-                                                    <OverlayTrigger
-                                                        placement="left"
-                                                        overlay={
-                                                            <Tooltip
-                                                                id={`tooltip-left`}
-                                                            >
-                                                                {
-                                                                    user?.displayName
-                                                                }
-                                                            </Tooltip>
-                                                        }
-                                                    >
+                                        <NavDropdown
+                                            title={
+                                                <>
+                                                    {user?.photoURL ? (
                                                         <Image
                                                             width={35}
                                                             height={35}
                                                             roundedCircle
                                                             src={`${user?.photoURL}`}
                                                         />
-                                                    </OverlayTrigger>
-                                                ) : (
-                                                    <span
-                                                        className={
-                                                            classes.logOutIcon
-                                                        }
-                                                    >
-                                                        <FaUserAlt className="text-white fs-5" />
-                                                    </span>
-                                                )}
-                                            </Nav.Link>
-                                        </LinkContainer>
-                                        <li
-                                            onClick={handleLogOut}
-                                            className={classes.logOutIcon}
+                                                    ) : (
+                                                        <span
+                                                            className={
+                                                                classes.logOutIcon
+                                                            }
+                                                        >
+                                                            <FaUserAlt className="text-white fs-5" />
+                                                        </span>
+                                                    )}
+                                                </>
+                                            }
+                                            id="navbarScrollingDropdown"
                                         >
-                                            <AiOutlineLogout className="text-white fs-4" />
-                                        </li>
+                                            <LinkContainer to="/dashboard">
+                                                <NavDropdown.Item href="/dashboard">
+                                                    Dashboard
+                                                </NavDropdown.Item>
+                                            </LinkContainer>
+                                            <NavDropdown.Divider />
+                                            <li
+                                                onClick={handleLogOut}
+                                                className={`${classes.logOutIcon}`}
+                                            >
+                                                <AiOutlineLogout className="text-black" />
+                                            </li>
+                                        </NavDropdown>
                                     </>
                                 ) : (
                                     <>
