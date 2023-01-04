@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
-import ReviewTable from "../../components/shared/ReviewTable/ReviewTable";
-import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_REVIEWS_BY_SPECIFIC_USER } from "./../../graphql/queries";
-import { REMOVED_REVIEW } from "../../graphql/mutations";
-import Main from './../../layout/Main/Main';
+import { GET_REVIEWS_BY_SPECIFIC_USER } from "../../../../graphql/queries";
+import { REMOVED_REVIEW } from "../../../../graphql/mutations";
+import Dashboard from './../../../../layout/Dashboard/Dashboard';
+import ReviewTable from './../../../../components/shared/ReviewTable/ReviewTable';
+import { useAuth } from './../../../../contexts/AuthProvider/AuthProvider';
 
 const MyReviews = () => {
     const { state } = useAuth();
@@ -54,7 +54,7 @@ const MyReviews = () => {
     if (error) return `Error! ${error}`;
 
     return (
-        <Main>
+        <Dashboard>
             <Helmet>
                 <title>MyReviews</title>
             </Helmet>
@@ -93,7 +93,7 @@ const MyReviews = () => {
                     )}
                 </Row>
             </Container>
-        </Main>
+        </Dashboard>
     );
 };
 

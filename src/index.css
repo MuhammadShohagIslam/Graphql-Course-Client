@@ -119,3 +119,6 @@ footer {
     box-shadow: 0 0 0 0.25rem rgba(127, 86, 253, 0.25) !important;
     cursor: pointer !important;
 }
+[type=search] {
+    padding-bottom: 7px !important;
+}

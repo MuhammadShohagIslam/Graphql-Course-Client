@@ -4,12 +4,12 @@ import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
 import { useMutation } from "@apollo/client";
-import { CREATE_NEW_SERVICE } from "./../../graphql/mutations";
-import Main from './../../layout/Main/Main';
+import { CREATE_NEW_SERVICE } from "../../../../graphql/mutations";
 import {
     GET_ALL_SERVICES_BY_PAGE,
     GET_ALL_SERVICES_UNDER_THE_LIMIT,
-} from "./../../graphql/queries";
+} from "../../../../graphql/queries";
+import Dashboard from "../../../../layout/Dashboard/Dashboard";
 
 const AddService = () => {
     const [createNewService, { error: createdServiceError }] = useMutation(
@@ -93,7 +93,7 @@ const AddService = () => {
         form.reset();
     };
     return (
-        <Main>
+        <Dashboard>
             <Helmet>
                 <title>AddService</title>
             </Helmet>
@@ -163,7 +163,7 @@ const AddService = () => {
                     </Col>
                 </Row>
             </Container>
-        </Main>
+        </Dashboard>
     );
 };
 

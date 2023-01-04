@@ -44,7 +44,7 @@ const DashboardLeftSideBar = () => {
             <li className="mb-3">
                 <LinkContainer
                     className={classes.leftSideListItemWrapper}
-                    to="/add-service"
+                    to="/dashboard/add-service"
                 >
                     <Nav.Link className={classes.navLink}>
                         <ImBlogger className={classes.leftSideProfileIcon} />
@@ -55,7 +55,7 @@ const DashboardLeftSideBar = () => {
             <li className="mb-3">
                 <LinkContainer
                     className={classes.leftSideListItemWrapper}
-                    to="/my-reviews"
+                    to="/dashboard/my-reviews"
                 >
                     <Nav.Link className={classes.navLink}>
                         <HiOutlineUserGroup

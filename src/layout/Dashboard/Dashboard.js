@@ -32,7 +32,7 @@ const Dashboard = ({ children }) => {
                     {openLeftSideBar && <DashboardLeftSideBar />}
                 </section>
             </header>
-            <main className={classes.profileLayout}>
+            <main className={classes.dashboardLayout}>
                 <div
                     className="d-none d-md-none d-lg-block"
                     style={{ height: "100%" }}

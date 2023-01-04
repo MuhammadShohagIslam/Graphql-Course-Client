@@ -5,9 +5,9 @@ import { useParams } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import Swal from "sweetalert2";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { GET_SINGLE_REVIEW } from "./../../../graphql/queries";
-import { UPDATED_REVIEW } from "./../../../graphql/mutations";
-import Main from './../../../layout/Main/Main';
+import { GET_SINGLE_REVIEW } from "../../../../../graphql/queries";
+import {UPDATED_REVIEW} from "../../../../../graphql/mutations"
+import Dashboard from "../../../../../layout/Dashboard/Dashboard";
 
 const UpdateReview = () => {
     const [comment, setComment] = useState("");
@@ -70,7 +70,7 @@ const UpdateReview = () => {
     };
 
     return (
-        <Main>
+        <Dashboard>
             <Helmet>
                 <title>UpdateReview</title>
             </Helmet>
@@ -140,7 +140,7 @@ const UpdateReview = () => {
                     )}
                 </Row>
             </Container>
-        </Main>
+        </Dashboard>
     );
 };
 

@@ -8,12 +8,9 @@ import {
     concat,
 } from "@apollo/client";
 import { Toaster } from "react-hot-toast";
-import AddService from "./pages/AddService/AddService";
 import Blogs from "./pages/Blogs/Blogs";
 import Home from "./pages/Home/Home/Home";
 import Login from "./pages/Login/Login";
-import MyReviews from "./pages/MyReviews/MyReviews";
-import UpdateReview from "./pages/MyReviews/UpdateReview/UpdateReview";
 import NotFound from "./pages/NotFound/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
 import ServiceDetails from "./pages/Services/ServiceDetails/ServiceDetails";
@@ -25,6 +22,11 @@ import SignupV2 from "./pages/Auth/Signup";
 import CompleteSignUp from "./pages/Auth/CompleteSignup";
 import { useAuth } from "./contexts/AuthProvider/AuthProvider";
 import DashboardHome from "./pages/Dashboard/DashboardHome";
+import MyReviews from './pages/Dashboard/User/MyReviews/MyReviews';
+import UpdateReview from './pages/Dashboard/User/MyReviews/UpdateReview/UpdateReview';
+import AddService from './pages/Dashboard/Admin/AddService/AddService';
+
+
 
 function App() {
     const { state } = useAuth();
@@ -56,8 +58,9 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/:id" element={<ServiceDetails />} />
+                <Route path="/dashboard" element={<DashboardHome />} />
                 <Route
-                    path="/add-service"
+                    path="/dashboard/add-service"
                     element={
                         <PrivateRouter>
                             <AddService />
@@ -65,7 +68,7 @@ function App() {
                     }
                 />
                 <Route
-                    path="/my-reviews"
+                    path="/dashboard/my-reviews"
                     element={
                         <PrivateRouter>
                             <MyReviews />
@@ -73,7 +76,7 @@ function App() {
                     }
                 />
                 <Route
-                    path="/my-reviews/update/:id"
+                    path="/dashboard/my-reviews/update/:id"
                     element={
                         <PrivateRouter>
                             <UpdateReview />
@@ -85,7 +88,6 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/v2/signup" element={<SignupV2 />} />
                 <Route path="/completeSignup" element={<CompleteSignUp />} />
-                <Route path="/dashboard" element={<DashboardHome />} />
                 <Route path="/term-condition" element={<TermCondition />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="*" element={<NotFound />} />

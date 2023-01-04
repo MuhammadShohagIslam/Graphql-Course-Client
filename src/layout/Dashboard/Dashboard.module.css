@@ -1,13 +1,16 @@
-.profileLayout {
+.dashboardLayout {
     display: grid;
     grid-template-columns: 400px auto;
+    min-height: 100% !important;
+    position: relative !important;
+    max-height: 100%;
 }
 .bottomSideBarShowWrapper {
     position: absolute;
-    font-size: 20px;
+    font-size: 22px;
     color: #fff;
-    right: 87px;
-    top: 15px;
+    right: 81px;
+    top: 22px;
     cursor: pointer;
     width: 36px;
     height: 35px;
@@ -20,14 +23,14 @@
 }
 
 @media only screen and (max-width: 767px) {
-    .profileLayout {
+    .dashboardLayout {
         display: block;
         grid-template-columns: 1fr;
     }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
-    .profileLayout {
+    .dashboardLayout {
         display: grid;
         grid-template-columns: 1fr;
     }
@@ -37,7 +40,7 @@
     }
 }
 @media only screen and (min-width: 992px) and (max-width: 1200px) {
-    .profileLayout {
+    .dashboardLayout {
         display: grid;
         grid-template-columns: 300px auto;
     }
