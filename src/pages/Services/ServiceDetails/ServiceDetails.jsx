@@ -8,10 +8,10 @@ import Swal from "sweetalert2";
 import Review from "../../../components/shared/Review/Review";
 import ReviewModal from "../../../components/shared/ReviewModal/ReviewModal";
 import { useAuth } from "../../../contexts/AuthProvider/AuthProvider";
-import Main from "../../../layout/Main";
 import { avgRating } from "./../../../utils/avgRating";
 import classes from "./ServiceDetails.module.css";
 import { CREATE_NEW_REVIEW } from "./../../../graphql/mutations";
+import Main from './../../../layout/Main/Main';
 import {
     GET_REVIEWS_BY_SERVICE_ID,
     GET_SERVICE_BY_ID,

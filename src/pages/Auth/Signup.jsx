@@ -8,8 +8,8 @@ import { toast } from "react-hot-toast";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import Main from "../../layout/Main";
 import { useAuth } from "./../../contexts/AuthProvider/AuthProvider";
+import Main from './../../layout/Main/Main';
 
 const Signup = () => {
     const [accepted, setAccepted] = useState(false);

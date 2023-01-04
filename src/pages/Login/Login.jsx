@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import Main from "../../layout/Main";
+import Main from './../../layout/Main/Main';
 import { useAuth } from "./../../contexts/AuthProvider/AuthProvider";
 
 const Login = () => {

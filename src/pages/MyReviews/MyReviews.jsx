@@ -4,10 +4,10 @@ import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
 import ReviewTable from "../../components/shared/ReviewTable/ReviewTable";
 import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
-import Main from "../../layout/Main";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_REVIEWS_BY_SPECIFIC_USER } from "./../../graphql/queries";
 import { REMOVED_REVIEW } from "../../graphql/mutations";
+import Main from './../../layout/Main/Main';
 
 const MyReviews = () => {
     const { state } = useAuth();

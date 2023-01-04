@@ -1,14 +1,30 @@
 .navBar {
-    padding: 12px 0px !important;
+    padding: 12px 0px 12px !important;
 }
-.centerNavbar {
+.navbarWrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    margin-left: 35%;
 }
-.logo {
+.logo{
     font-size: 28px !important;
     color: #fff !important;
     font-weight: 700 !important;
+}
+.logOutIcon{
+    font-size: 22px !important;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.navbarFormWrapper{
+    width: 52%;
+    display: flex;
+    justify-content: flex-end;
+}
+.navbarForm{
+    width: 60%;
 }
 .navLink {
     font-size: 20px !important;
@@ -24,26 +40,79 @@
 }
 
 @media only screen and (max-width: 767px) {
-    .logo {
-        font-size: 22px !important;
+    .navbarWrapper{
+        display: block; 
+        position: relative;
+        top: 13px;
+    }
+    .mediaLayoutLogo{
+        display: block;
+        font-size: 28px !important;
+        color: #D76826 !important;
+        font-weight: 700 !important;
+    }
+    .navbarFormWrapper{
+        width: 100%;
+    }
+    .navbarForm{
+        width: 100%;
+    }
+    .centerNavbar{
+        width: 100%;
+        text-align: start;
     }
     .navLink {
         font-size: 18px !important;
     }
     .navItemMiddle {
         display: block;
+        width: 100%;
+        text-align: start;
     }
     .centerNavbar {
         margin-left: 2%;
     }
+    .rightNavbar{
+        width: 100%;
+        text-align: start;  
+        padding-bottom: 17px;
+    }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
+    .navbarWrapper{
+        display: block;
+        position: relative;
+        top: 13px;
+    }
+    .mediaLayoutLogo{
+        display: block;
+        font-size: 28px !important;
+        color: #D76826 !important;
+        font-weight: 700 !important;
+    }
+    .navbarFormWrapper{
+        width: 100%;
+    }
+    .navbarForm{
+        width: 100%;
+    }
+    .centerNavbar{
+        width: 100%;
+        text-align: start;
+    }
     .navLink {
         font-size: 18px !important;
     }
     .navItemMiddle {
         display: block;
+        width: 100%;
+        text-align: start;
+    }
+    .rightNavbar{
+        width: 100%;
+        text-align: start;  
+        padding-bottom: 17px;
     }
     .centerNavbar {
         margin-left: 2%;

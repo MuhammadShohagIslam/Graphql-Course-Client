@@ -3,9 +3,9 @@ import { Container } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { Row } from "react-bootstrap";
 import classes from "./PrivacyPolicy.module.css";
-import Main from "./../../layout/Main";
 import SectionTitle from "../../components/shared/SectionTitle/SectionTitle";
 import { Helmet } from "react-helmet-async";
+import Main from './../../layout/Main/Main';
 
 const PrivacyPolicy = () => {
     

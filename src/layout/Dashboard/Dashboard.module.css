@@ -1,0 +1,47 @@
+.profileLayout {
+    display: grid;
+    grid-template-columns: 400px auto;
+}
+.bottomSideBarShowWrapper {
+    position: absolute;
+    font-size: 20px;
+    color: #fff;
+    right: 87px;
+    top: 15px;
+    cursor: pointer;
+    width: 36px;
+    height: 35px;
+    background: #d76826;
+    border-radius: 50%;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+@media only screen and (max-width: 767px) {
+    .profileLayout {
+        display: block;
+        grid-template-columns: 1fr;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .profileLayout {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    .bottomSideBarShowWrapper {
+        right: 110px;
+        top: 22px;
+    }
+}
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+    .profileLayout {
+        display: grid;
+        grid-template-columns: 300px auto;
+    }
+    .previewPostImageWrapper {
+        display: none;
+    }
+}

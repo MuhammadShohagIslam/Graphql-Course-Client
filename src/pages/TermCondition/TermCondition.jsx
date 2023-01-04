@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import Main from "../../layout/Main";
 import { Container } from "react-bootstrap";
 import { Row } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import classes from "./TermCondition.module.css";
 import SectionTitle from "../../components/shared/SectionTitle/SectionTitle";
 import { Helmet } from "react-helmet-async";
+import Main from './../../layout/Main/Main';
 
 const TermCondition = () => {
     

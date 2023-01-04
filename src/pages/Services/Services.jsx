@@ -5,8 +5,8 @@ import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import ServiceCard from "../../components/shared/ServiceCard/ServiceCard";
 import { GET_ALL_SERVICES_BY_PAGE } from "../../graphql/queries";
-import Main from "../../layout/Main";
 import PaginationBar from "./../../components/shared/PaginationBar/PaginationBar";
+import Main from './../../layout/Main/Main';
 
 const Services = () => {
     const [page, setPage] = useState(1);

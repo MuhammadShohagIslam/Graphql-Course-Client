@@ -1,6 +1,7 @@
 import React from "react";
-import Footer from "../components/shared/Footer/Footer";
-import NavBar from "../components/shared/NavBar/NavBar";
+import NavBar from './../../components/shared/NavBar/NavBar';
+import Footer from './../../components/shared/Footer/Footer';
+
 
 const Main = ({children}) => {
     return (

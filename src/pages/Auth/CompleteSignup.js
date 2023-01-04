@@ -7,7 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { updatePassword } from "firebase/auth";
-import Main from "./../../layout/Main";
+import Main from './../../layout/Main/Main';
+
 
 const CompleteSignUp = () => {
     const [loadingRegister, setLoadingRegister] = useState(false);

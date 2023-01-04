@@ -4,10 +4,10 @@ import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import Swal from "sweetalert2";
-import Main from "../../../layout/Main";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_SINGLE_REVIEW } from "./../../../graphql/queries";
 import { UPDATED_REVIEW } from "./../../../graphql/mutations";
+import Main from './../../../layout/Main/Main';
 
 const UpdateReview = () => {
     const [comment, setComment] = useState("");

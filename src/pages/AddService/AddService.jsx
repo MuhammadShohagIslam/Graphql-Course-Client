@@ -3,9 +3,9 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
-import Main from "../../layout/Main";
 import { useMutation } from "@apollo/client";
 import { CREATE_NEW_SERVICE } from "./../../graphql/mutations";
+import Main from './../../layout/Main/Main';
 import {
     GET_ALL_SERVICES_BY_PAGE,
     GET_ALL_SERVICES_UNDER_THE_LIMIT,
