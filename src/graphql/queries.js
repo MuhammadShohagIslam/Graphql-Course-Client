@@ -31,6 +31,15 @@ export const GET_SERVICE_BY_ID = gql`
     ${SERVICE_FIELD}
 `;
 
+export const GET_SEARCH_DATA = gql`
+    query GetSearchResult($search: String!) {
+        getSearchResult(search: $search) {
+            ...CoreServiceFields
+        }
+    }
+    ${SERVICE_FIELD}
+`;
+
 export const GET_ALL_REVIEWS_UNDER_QUERY = gql`
     query GetAllReview($query: ID) {
         getAllReview(query: $query) {

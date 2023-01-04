@@ -4,8 +4,6 @@ import {
     Navbar,
     Nav,
     Image,
-    Form,
-    Button,
     NavDropdown,
 } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
@@ -13,6 +11,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { AiOutlineLogout } from "react-icons/ai";
 import classes from "./NavBar.module.css";
 import { useAuth } from "./../../../contexts/AuthProvider/AuthProvider";
+import Search from "../Search/Search";
 
 const MediaNavBar = () => {
     const { user, logOut } = useAuth();
@@ -42,17 +41,7 @@ const MediaNavBar = () => {
                         className={classes.navbarWrapper}
                     >
                         <div className={`${classes.navbarFormWrapper}`}>
-                            <Form className={`${classes.navbarForm} d-flex`}>
-                                <Form.Control
-                                    type="search"
-                                    placeholder="Search"
-                                    className="me-2"
-                                    aria-label="Search"
-                                />
-                                <Button variant="outline-success">
-                                    Search
-                                </Button>
-                            </Form>
+                            <Search className={classes.navbarForm} />
                         </div>
                         <Nav
                             className={`d-flex justify-content-lg-between align-items-lg-center`}

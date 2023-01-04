@@ -25,6 +25,7 @@ import DashboardHome from "./pages/Dashboard/DashboardHome";
 import MyReviews from './pages/Dashboard/User/MyReviews/MyReviews';
 import UpdateReview from './pages/Dashboard/User/MyReviews/UpdateReview/UpdateReview';
 import AddService from './pages/Dashboard/Admin/AddService/AddService';
+import SearchResult from './pages/SearchResult/SearchResult';
 
 
 
@@ -88,6 +89,7 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/v2/signup" element={<SignupV2 />} />
                 <Route path="/completeSignup" element={<CompleteSignUp />} />
+                <Route path="/search/:searchQuery" element={<SearchResult />} />
                 <Route path="/term-condition" element={<TermCondition />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="*" element={<NotFound />} />
