@@ -7,11 +7,15 @@ import { toast } from "react-hot-toast";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import Main from '../../layout/Main/Main';
+import Main from "../../layout/Main/Main";
 import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
+import { GET_CURRENT_USER } from "./../../graphql/queries";
+import { useLazyQuery } from "@apollo/client";
 
 const Login = () => {
     const [isFetching, setIsFetching] = useState(true);
+    const [email, setEmail] = useState("");
+    const [token, setToken] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
@@ -19,8 +23,12 @@ const Login = () => {
         loginWithEmailAndPassword,
         registerAndLoginWithProvider,
         setLoading,
+        dispatch,
+        auth,
     } = useAuth();
     const googleProvider = new GoogleAuthProvider();
+    const [currentUser, { loading, error, data }] =
+        useLazyQuery(GET_CURRENT_USER);
 
     useEffect(() => {
         setTimeout(function () {
@@ -42,31 +50,31 @@ const Login = () => {
         }
 
         loginWithEmailAndPassword(email, password)
-            .then((result) => {
+            .then(async (result) => {
                 const user = result.user;
-
-                const currentUser = {
-                    name: user.displayName,
-                    email: user.email,
-                };
-                axios
-                    .post("https://server-smoky-ten.vercel.app/jwt", currentUser, {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    })
-                    .then((res) => {
-                        const data = res.data;
-                        localStorage.setItem("tutor-token", data.token);
-                        Swal.fire({
-                            position: "top",
-                            icon: "success",
-                            title: "Login Successfully",
-                            showConfirmButton: false,
-                            timer: 2500,
-                        });
-                        navigate(from, { replace: true });
-                    });
+                currentUser({
+                    email: email,
+                });
+                setEmail(email);
+                setToken(result.user.token);
+                console.log(data, "current user");
+                dispatch({
+                    type: "LOGGED_IN_USER",
+                    payload: {
+                        email: email,
+                        name: user.displayName,
+                        role: data?.currentUser?.role || "",
+                        token: result.user?.token,
+                    },
+                });
+                Swal.fire({
+                    position: "top",
+                    icon: "success",
+                    title: "Login Successfully",
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+                navigate(from, { replace: true });
                 form.reset();
             })
             .catch((error) => {
@@ -94,11 +102,15 @@ const Login = () => {
                     email: user?.email,
                 };
                 axios
-                    .post("https://server-smoky-ten.vercel.app/jwt", currentUser, {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    })
+                    .post(
+                        "https://server-smoky-ten.vercel.app/jwt",
+                        currentUser,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        }
+                    )
                     .then((res) => {
                         const data = res.data;
                         localStorage.setItem("tutor-token", data.token);
@@ -112,7 +124,7 @@ const Login = () => {
                 setLoading(false);
             });
     };
-
+    console.log(data,"data");
     return (
         <Main>
             <Helmet>

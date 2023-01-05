@@ -8,7 +8,7 @@ import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { updatePassword } from "firebase/auth";
 import Main from "./../../layout/Main/Main";
-import { useMutation } from "@apollo/client";
+import { useMutation, useLazyQuery } from "@apollo/client";
 import { CREATE_NEW_USER } from "./../../graphql/mutations";
 import { GET_CURRENT_USER } from "./../../graphql/queries";
 
@@ -25,35 +25,34 @@ const CompleteSignUp = () => {
         formState: { errors },
     } = useForm();
 
-    const { createUser, userProfileUpdate, setLoading, dispatch, auth } =
+    const { createUser, userProfileUpdate, setLoading, dispatch, auth, state } =
         useAuth();
 
-    const navigate = useNavigate();
-    const [getService, { loading, error, data }] =
-    useLazyQuery(GET_SERVICE_BY_ID);
+    const { user } = state;
 
-    const [createNewUser, {data:userData}] = useMutation(CREATE_NEW_USER, {
+    const navigate = useNavigate();
+    const [currentUser, { loading, error, data: currentUserData }] =
+        useLazyQuery(GET_CURRENT_USER);
+
+    const [createNewUser, { data: userData }] = useMutation(CREATE_NEW_USER, {
         // update the cache of all reviews corresponding by service id
         update(cache, data) {
-            // read the data of all reviews corresponding by service id
-            const { currentUser } = cache.readQuery({
-                query: GET_CURRENT_USER,
+            currentUser({
                 variables: {
                     email: email,
                 },
             });
-            if (currentUser) {
-                dispatch({
-                    type: "LOGGED_IN_USER",
-                    payload: {
-                        email: currentUser.email,
-                        name: currentUser.fullName,
-                        role: currentUser.role,
-                        token: token,
-                    },
-                });
-            }
-            console.log("a");
+            dispatch({
+                type: "LOGGED_IN_USER",
+                payload: {
+                    email: user.email,
+                    name: user.displayName,
+                    role: currentUserData.currentUser?.role,
+                    token: token,
+                },
+            });
+
+            console.log("a",currentUserData);
         },
     });
 
@@ -66,7 +65,7 @@ const CompleteSignUp = () => {
 
     const handleCompleteSignUp = (data) => {
         const profileURL = data.profileImg[0];
-        const { fullName, password} = data;
+        const { fullName, password } = data;
 
         const formData = new FormData();
         formData.append("image", profileURL);
@@ -96,7 +95,7 @@ const CompleteSignUp = () => {
                         });
 
                         setLoading(false);
-                        console.log("b",userData);
+                        console.log("b", userData, currentUserData);
                         // Clear email from storage.
                         window.localStorage.removeItem("emailForSignIn");
                         toast.success("Registered Successfully!");

@@ -3,13 +3,13 @@ import React, {
     useContext,
     useEffect,
     useState,
-    useReducer,
+    useReducer
 } from "react";
 import app from "./../../firebase/firebase.config";
+
 import {
     sendSignInLinkToEmail,
     signInWithEmailLink,
-    createUserWithEmailAndPassword,
     getAuth,
     onAuthStateChanged,
     signInWithEmailAndPassword,
@@ -57,6 +57,7 @@ const AuthProvider = ({ children }) => {
                         email: user.email,
                     },
                 });
+        
             } else {
                 dispatch({
                     type: "LOGGED_IN_USER",
@@ -75,7 +76,7 @@ const AuthProvider = ({ children }) => {
         return sendSignInLinkToEmail(auth, email, actionCodeSettings);
     };
 
-    const createUser = (email,location) => {
+    const createUser = (email, location) => {
         setLoading(true);
         return signInWithEmailLink(auth, email, location);
     };
