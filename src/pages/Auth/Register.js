@@ -1,15 +1,15 @@
 import axios from "axios";
-import { useForm } from "react-hook-form";
 import { GoogleAuthProvider } from "firebase/auth";
 import React, { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
+import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useAuth } from './../../contexts/AuthProvider/AuthProvider';
 import Main from '../../layout/Main/Main';
+import { useAuth } from './../../contexts/AuthProvider/AuthProvider';
 
 const Register = () => {
     const [accepted, setAccepted] = useState(false);
@@ -35,6 +35,8 @@ const Register = () => {
         const { email } = data;
         sendForSignInLinkToEmail(email, actionCodeSettings)
             .then(() => {
+                // save the user email for local storage
+                window.localStorage.setItem("emailForSignIn", email);
                 Swal.fire({
                     position: "top",
                     icon: "success",

@@ -1,7 +1,15 @@
 import { gql } from "@apollo/client";
-import { REVIEW_FIELD, SERVICE_FIELD } from "./fragments";
+import { REVIEW_FIELD, SERVICE_FIELD, USER_FIELD } from "./fragments";
 
 /* -----------------  Users ---------------------------- */
+export const GET_CURRENT_USER = gql`
+    query CurrentUser($email: String!) {
+        currentUser(email: $email) {
+            ...CoreUserFields
+        }
+    }
+    ${USER_FIELD}
+`;
 export const GET_IS_ADMIN_USER = gql`
     query Query {
         getAdminUser

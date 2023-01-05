@@ -1,11 +1,10 @@
 import { Route, Routes } from "react-router-dom";
+import { setContext } from "@apollo/client/link/context";
 import {
     ApolloClient,
     InMemoryCache,
     ApolloProvider,
     HttpLink,
-    ApolloLink,
-    concat,
     split,
 } from "@apollo/client";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
@@ -15,15 +14,12 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { Toaster } from "react-hot-toast";
 import Blogs from "./pages/Blogs/Blogs";
 import Home from "./pages/Home/Home/Home";
-import Login from "./pages/Login/Login";
 import NotFound from "./pages/NotFound/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
 import ServiceDetails from "./pages/Services/ServiceDetails/ServiceDetails";
 import Services from "./pages/Services/Services";
-import Signup from "./pages/Signup/Signup";
 import TermCondition from "./pages/TermCondition/TermCondition";
 import PrivateRouter from "./routers/PrivateRouter/PrivateRouter";
-import SignupV2 from "./pages/Auth/Signup";
 import CompleteSignUp from "./pages/Auth/CompleteSignup";
 import { useAuth } from "./contexts/AuthProvider/AuthProvider";
 import DashboardHome from "./pages/Dashboard/DashboardHome";
@@ -31,24 +27,25 @@ import MyReviews from "./pages/Dashboard/User/MyReviews/MyReviews";
 import UpdateReview from "./pages/Dashboard/User/MyReviews/UpdateReview/UpdateReview";
 import AddService from "./pages/Dashboard/Admin/AddService/AddService";
 import SearchResult from "./pages/SearchResult/SearchResult";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
 
 function App() {
     const { state } = useAuth();
     const { user } = state;
 
     const httpLink = new HttpLink({ uri: process.env.REACT_APP_GRAPHQL_API });
-    const authMiddleware = new ApolloLink((operation, forward) => {
-        operation.setContext(({ headers = {} }) => ({
+    const authLink = setContext((_, { headers }) => {
+        return {
             headers: {
                 ...headers,
                 authorization: user ? user.token : null,
             },
-        }));
-
-        return forward(operation);
+        };
     });
+
     // 4. concat http and authtoken link
-    const httpAuthLink = authMiddleware.concat(httpLink);
+    const httpAuthLink = authLink.concat(httpLink);
 
     const wsLink = new GraphQLWsLink(
         createClient({
@@ -111,9 +108,11 @@ function App() {
                 />
                 <Route path="/blog" element={<Blogs />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/v2/signup" element={<SignupV2 />} />
-                <Route path="/completeSignup" element={<CompleteSignUp />} />
+                <Route path="/register" element={<Register />} />
+                <Route
+                    path="/complete-registration"
+                    element={<CompleteSignUp />}
+                />
                 <Route path="/search/:searchQuery" element={<SearchResult />} />
                 <Route path="/term-condition" element={<TermCondition />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />

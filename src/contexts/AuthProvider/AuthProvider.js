@@ -27,7 +27,7 @@ export const useAuth = () => {
 
 const authUserReducer = (state, action) => {
     switch (action.type) {
-        case "LOG_IN_USER":
+        case "LOGGED_IN_USER":
             return { ...state, user: action.payload };
         default:
             return state;
@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
             if (user) {
                 const idTokenResult = await user.getIdTokenResult();
                 dispatch({
-                    type: "LOG_IN_USER",
+                    type: "LOGGED_IN_USER",
                     payload: {
                         token: idTokenResult.token,
                         name: user.displayName,
@@ -59,7 +59,7 @@ const AuthProvider = ({ children }) => {
                 });
             } else {
                 dispatch({
-                    type: "LOG_IN_USER",
+                    type: "LOGGED_IN_USER",
                     payload: null,
                 });
             }
@@ -75,15 +75,11 @@ const AuthProvider = ({ children }) => {
         return sendSignInLinkToEmail(auth, email, actionCodeSettings);
     };
 
-    const createUser2 = (email) => {
+    const createUser = (email,location) => {
         setLoading(true);
-        return signInWithEmailLink(auth, email, window.location.href);
+        return signInWithEmailLink(auth, email, location);
     };
 
-    const createUser = (email, password) => {
-        setLoading(true);
-        return createUserWithEmailAndPassword(auth, email, password);
-    };
     const userProfileUpdate = (profile) => {
         setLoading(true);
         return updateProfile(auth.currentUser, profile);
@@ -111,7 +107,6 @@ const AuthProvider = ({ children }) => {
         state,
         dispatch,
         sendForSignInLinkToEmail,
-        createUser2,
         userProfileUpdate,
         setLoading,
         createUser,

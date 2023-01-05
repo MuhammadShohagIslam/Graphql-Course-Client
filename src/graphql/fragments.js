@@ -1,5 +1,15 @@
 import { gql } from "@apollo/client";
 
+export const USER_FIELD = gql`
+    fragment CoreUserFields on User {
+        _id
+        email
+        fullName
+        profileImage
+        role
+    }
+`;
+
 export const REVIEW_FIELD = gql`
     fragment CoreReviewFields on Review {
         _id

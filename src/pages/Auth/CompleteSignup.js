@@ -7,12 +7,15 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { updatePassword } from "firebase/auth";
-import Main from './../../layout/Main/Main';
-
+import Main from "./../../layout/Main/Main";
+import { useMutation } from "@apollo/client";
+import { CREATE_NEW_USER } from "./../../graphql/mutations";
+import { GET_CURRENT_USER } from "./../../graphql/queries";
 
 const CompleteSignUp = () => {
     const [loadingRegister, setLoadingRegister] = useState(false);
     const [email, setEmail] = useState("");
+    const [token, setToken] = useState("");
     const [accepted, setAccepted] = useState(false);
     const url = `https://api.imgbb.com/1/upload?key=1a70c36c9c3fbf67a973f27648af9f7c`;
     const {
@@ -22,10 +25,37 @@ const CompleteSignUp = () => {
         formState: { errors },
     } = useForm();
 
-    const { createUser2, userProfileUpdate, setLoading, dispatch, auth } =
+    const { createUser, userProfileUpdate, setLoading, dispatch, auth } =
         useAuth();
 
     const navigate = useNavigate();
+    const [getService, { loading, error, data }] =
+    useLazyQuery(GET_SERVICE_BY_ID);
+
+    const [createNewUser, {data:userData}] = useMutation(CREATE_NEW_USER, {
+        // update the cache of all reviews corresponding by service id
+        update(cache, data) {
+            // read the data of all reviews corresponding by service id
+            const { currentUser } = cache.readQuery({
+                query: GET_CURRENT_USER,
+                variables: {
+                    email: email,
+                },
+            });
+            if (currentUser) {
+                dispatch({
+                    type: "LOGGED_IN_USER",
+                    payload: {
+                        email: currentUser.email,
+                        name: currentUser.fullName,
+                        role: currentUser.role,
+                        token: token,
+                    },
+                });
+            }
+            console.log("a");
+        },
+    });
 
     useEffect(() => {
         const email = localStorage.getItem("emailForSignIn");
@@ -36,8 +66,7 @@ const CompleteSignUp = () => {
 
     const handleCompleteSignUp = (data) => {
         const profileURL = data.profileImg[0];
-        const { fullName, password, email } = data;
-        console.log(email, "");
+        const { fullName, password} = data;
 
         const formData = new FormData();
         formData.append("image", profileURL);
@@ -46,21 +75,30 @@ const CompleteSignUp = () => {
             .post(url, formData)
             .then((imgData) => {
                 const productImgUrl = imgData.data.data.url;
-                createUser2(email).then(async (result) => {
+                console.log(window.location.href, productImgUrl, email);
+
+                createUser(email, window.location.href).then(async (result) => {
                     if (result.user.emailVerified) {
-                        window.localStorage.removeItem("emailForSignIn");
                         handleProfileUpdate(fullName, productImgUrl);
                         let user = auth.currentUser;
                         await updatePassword(user, password);
                         const idTokenResult = await user.getIdTokenResult();
-                        dispatch({
-                            type: "LOGIN_USER",
-                            payload: {
-                                email: email,
-                                token: idTokenResult.token,
+                        const currentUserObject = {
+                            email: email,
+                            fullName: fullName,
+                            profileImage: productImgUrl,
+                        };
+                        setToken(idTokenResult);
+                        createNewUser({
+                            variables: {
+                                input: currentUserObject,
                             },
                         });
+
                         setLoading(false);
+                        console.log("b",userData);
+                        // Clear email from storage.
+                        window.localStorage.removeItem("emailForSignIn");
                         toast.success("Registered Successfully!");
                         navigate("/");
                     }
