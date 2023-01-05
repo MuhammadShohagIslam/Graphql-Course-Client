@@ -1,6 +1,19 @@
 import { gql } from "@apollo/client";
 import { REVIEW_FIELD, SERVICE_FIELD } from "./fragments";
 
+/* -----------------  Users ---------------------------- */
+export const GET_IS_ADMIN_USER = gql`
+    query Query {
+        getAdminUser
+    }
+`;
+export const GET_IS_USER = gql`
+    query Query {
+        getUser
+    }
+`;
+
+/* -----------------  Services ---------------------------- */
 export const GET_ALL_SERVICES_BY_PAGE = gql`
     query GetAllServiceByPage($page: Int!) {
         getAllServiceByPage(page: $page) {
@@ -39,6 +52,8 @@ export const GET_SEARCH_DATA = gql`
     }
     ${SERVICE_FIELD}
 `;
+
+/* -----------------  Reviews ---------------------------- */
 
 export const GET_ALL_REVIEWS_UNDER_QUERY = gql`
     query GetAllReview($query: ID) {

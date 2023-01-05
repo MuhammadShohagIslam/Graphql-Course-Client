@@ -8,10 +8,10 @@ import { toast } from "react-hot-toast";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useAuth } from "./../../contexts/AuthProvider/AuthProvider";
-import Main from './../../layout/Main/Main';
+import { useAuth } from './../../contexts/AuthProvider/AuthProvider';
+import Main from '../../layout/Main/Main';
 
-const Signup = () => {
+const Register = () => {
     const [accepted, setAccepted] = useState(false);
     const {
         handleSubmit,
@@ -27,16 +27,14 @@ const Signup = () => {
     const googleProvider = new GoogleAuthProvider();
     const navigate = useNavigate();
     const actionCodeSettings = {
-        url: "http://localhost:3000/completeSignup",
+        url: process.env.REACT_APP_COMPLETED_REGISTRATION,
         handleCodeInApp: true,
     };
 
     const handleSignUp = (data) => {
         const { email } = data;
-
         sendForSignInLinkToEmail(email, actionCodeSettings)
             .then(() => {
-                window.localStorage.setItem("emailForSignIn", email);
                 Swal.fire({
                     position: "top",
                     icon: "success",
@@ -46,8 +44,7 @@ const Signup = () => {
                 });
             })
             .catch((error) => {
-                const errorMessage = error.message;
-                console.log(errorMessage);
+                console.log(error.message);
             });
     };
 
@@ -165,4 +162,4 @@ const Signup = () => {
     );
 };
 
-export default Signup;
+export default Register;

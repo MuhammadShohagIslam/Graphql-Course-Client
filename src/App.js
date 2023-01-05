@@ -6,7 +6,12 @@ import {
     HttpLink,
     ApolloLink,
     concat,
+    split,
 } from "@apollo/client";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
+import { getMainDefinition } from "@apollo/client/utilities";
+
 import { Toaster } from "react-hot-toast";
 import Blogs from "./pages/Blogs/Blogs";
 import Home from "./pages/Home/Home/Home";
@@ -22,17 +27,14 @@ import SignupV2 from "./pages/Auth/Signup";
 import CompleteSignUp from "./pages/Auth/CompleteSignup";
 import { useAuth } from "./contexts/AuthProvider/AuthProvider";
 import DashboardHome from "./pages/Dashboard/DashboardHome";
-import MyReviews from './pages/Dashboard/User/MyReviews/MyReviews';
-import UpdateReview from './pages/Dashboard/User/MyReviews/UpdateReview/UpdateReview';
-import AddService from './pages/Dashboard/Admin/AddService/AddService';
-import SearchResult from './pages/SearchResult/SearchResult';
-
-
+import MyReviews from "./pages/Dashboard/User/MyReviews/MyReviews";
+import UpdateReview from "./pages/Dashboard/User/MyReviews/UpdateReview/UpdateReview";
+import AddService from "./pages/Dashboard/Admin/AddService/AddService";
+import SearchResult from "./pages/SearchResult/SearchResult";
 
 function App() {
     const { state } = useAuth();
     const { user } = state;
-    console.log(user)
 
     const httpLink = new HttpLink({ uri: process.env.REACT_APP_GRAPHQL_API });
     const authMiddleware = new ApolloLink((operation, forward) => {
@@ -45,11 +47,34 @@ function App() {
 
         return forward(operation);
     });
+    // 4. concat http and authtoken link
+    const httpAuthLink = authMiddleware.concat(httpLink);
+
+    const wsLink = new GraphQLWsLink(
+        createClient({
+            url: process.env.REACT_APP_WS_GRAPHQL_API,
+            connectionParams: {
+                authorization: user ? user.token : null,
+            },
+        })
+    );
+
+    const splitLink = split(
+        ({ query }) => {
+            const definition = getMainDefinition(query);
+            return (
+                definition.kind === "OperationDefinition" &&
+                definition.operation === "subscription"
+            );
+        },
+        wsLink,
+        httpAuthLink
+    );
 
     const client = new ApolloClient({
         uri: process.env.REACT_APP_GRAPHQL_API,
+        link: splitLink,
         cache: new InMemoryCache(),
-        link: concat(authMiddleware, httpLink),
     });
 
     return (
