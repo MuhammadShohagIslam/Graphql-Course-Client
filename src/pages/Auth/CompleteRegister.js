@@ -2,20 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { toast } from "react-hot-toast";
-import { useAuth } from "./../../contexts/AuthProvider/AuthProvider";
+import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { updatePassword } from "firebase/auth";
-import Main from "./../../layout/Main/Main";
-import { useMutation, useLazyQuery } from "@apollo/client";
-import { CREATE_NEW_USER } from "./../../graphql/mutations";
-import { GET_CURRENT_USER } from "./../../graphql/queries";
+import Main from "../../layout/Main/Main";
+import { useMutation } from "@apollo/client";
+import { CREATE_OR_UPDATE_NEW_USER } from "../../graphql/mutations";
 
-const CompleteSignUp = () => {
+const CompleteRegister = () => {
     const [loadingRegister, setLoadingRegister] = useState(false);
     const [email, setEmail] = useState("");
-    const [token, setToken] = useState("");
     const [accepted, setAccepted] = useState(false);
     const url = `https://api.imgbb.com/1/upload?key=1a70c36c9c3fbf67a973f27648af9f7c`;
     const {
@@ -25,36 +23,12 @@ const CompleteSignUp = () => {
         formState: { errors },
     } = useForm();
 
-    const { createUser, userProfileUpdate, setLoading, dispatch, auth, state } =
+    const { createUser, userProfileUpdate, setLoading, dispatch, auth } =
         useAuth();
 
-    const { user } = state;
-
     const navigate = useNavigate();
-    const [currentUser, { loading, error, data: currentUserData }] =
-        useLazyQuery(GET_CURRENT_USER);
 
-    const [createNewUser, { data: userData }] = useMutation(CREATE_NEW_USER, {
-        // update the cache of all reviews corresponding by service id
-        update(cache, data) {
-            currentUser({
-                variables: {
-                    email: email,
-                },
-            });
-            dispatch({
-                type: "LOGGED_IN_USER",
-                payload: {
-                    email: user.email,
-                    name: user.displayName,
-                    role: currentUserData.currentUser?.role,
-                    token: token,
-                },
-            });
-
-            console.log("a",currentUserData);
-        },
-    });
+    const [createOrUpdateNewUser] = useMutation(CREATE_OR_UPDATE_NEW_USER);
 
     useEffect(() => {
         const email = localStorage.getItem("emailForSignIn");
@@ -84,22 +58,28 @@ const CompleteSignUp = () => {
                         const idTokenResult = await user.getIdTokenResult();
                         const currentUserObject = {
                             email: email,
-                            fullName: fullName,
-                            profileImage: productImgUrl,
+                            name: fullName,
                         };
-                        setToken(idTokenResult);
-                        createNewUser({
+                        createOrUpdateNewUser({
                             variables: {
                                 input: currentUserObject,
                             },
                         });
-
-                        setLoading(false);
-                        console.log("b", userData, currentUserData);
+                        dispatch({
+                            type: "LOGGED_IN_USER",
+                            payload: {
+                                name:result.user.displayName || fullName, 
+                                email:result.user.email ||  email,
+                                token: idTokenResult
+                            },
+                        });
+                        setLoadingRegister(false);
                         // Clear email from storage.
                         window.localStorage.removeItem("emailForSignIn");
                         toast.success("Registered Successfully!");
                         navigate("/");
+                        setLoading(false);
+                        reset();
                     }
                 });
             })
@@ -263,7 +243,7 @@ const CompleteSignUp = () => {
                                     type="submit"
                                     disabled={!accepted}
                                 >
-                                    Register
+                                    {loadingRegister ? "Loading" : "Register"}
                                 </Button>
                                 <hr className="border border-white border-1 opacity-50 mt-4"></hr>
                                 <p className="text-white text-center">
@@ -284,4 +264,4 @@ const CompleteSignUp = () => {
     );
 };
 
-export default CompleteSignUp;
+export default CompleteRegister;

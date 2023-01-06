@@ -20,8 +20,7 @@ import ServiceDetails from "./pages/Services/ServiceDetails/ServiceDetails";
 import Services from "./pages/Services/Services";
 import TermCondition from "./pages/TermCondition/TermCondition";
 import PrivateRouter from "./routers/PrivateRouter/PrivateRouter";
-import CompleteSignUp from "./pages/Auth/CompleteSignup";
-import { useAuth } from "./contexts/AuthProvider/AuthProvider";
+import CompleteRegister from "./pages/Auth/CompleteRegister";
 import DashboardHome from "./pages/Dashboard/DashboardHome";
 import MyReviews from "./pages/Dashboard/User/MyReviews/MyReviews";
 import UpdateReview from "./pages/Dashboard/User/MyReviews/UpdateReview/UpdateReview";
@@ -29,6 +28,9 @@ import AddService from "./pages/Dashboard/Admin/AddService/AddService";
 import SearchResult from "./pages/SearchResult/SearchResult";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
+import { useAuth } from "./contexts/AuthProvider/AuthProvider";
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import UpdatePassword from './pages/Auth/UpdatePassword';
 
 function App() {
     const { state } = useAuth();
@@ -111,7 +113,15 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route
                     path="/complete-registration"
-                    element={<CompleteSignUp />}
+                    element={<CompleteRegister />}
+                />
+                <Route
+                    path="/forgot-password"
+                    element={<ForgotPassword />}
+                />
+                <Route
+                    path="/update-password"
+                    element={<UpdatePassword />}
                 />
                 <Route path="/search/:searchQuery" element={<SearchResult />} />
                 <Route path="/term-condition" element={<TermCondition />} />

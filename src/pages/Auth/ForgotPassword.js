@@ -1,34 +1,15 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import { auth } from "./../../firebase";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { Container, Button, Row, Col, Form } from "react-bootstrap";
+import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
+import Main from "../../layout/Main/Main";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
-    const { user } = useSelector((state) => ({ ...state }));
-    const location = useLocation();
+    const { state, forgotPassword } = useAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        let intended = location.state;
-        if (intended) {
-            return;
-        } else {
-            if (
-                user &&
-                user.token &&
-                (user.role === "admin" || user.role === "subscriber")
-            ) {
-                navigate("/");
-            } else {
-                navigate("/forgot/password");
-            }
-        }
-    }, [user, navigate]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -46,7 +27,7 @@ const ForgotPassword = () => {
             handleCodeInApp: true,
         };
         setLoading(true);
-        sendPasswordResetEmail(auth, email, actionCodeSettings)
+        forgotPassword(email, actionCodeSettings)
             .then(() => {
                 toast.success(
                     `Email is sent to the ${email}.Click the link to complete to the password reset process`
@@ -61,38 +42,49 @@ const ForgotPassword = () => {
                     `Something wrong! for password reset like ${error.message}`
                 );
                 setLoading(false);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
-
-    const forgotPasswordForm = () => (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="email"
-                className="form-control"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter Your Email"
-                autoFocus
-            />
-            <br />
-            <button
-                type="submit"
-                className="btn btn-outline-primary"
-                disabled={loading}
-            >
-                {loading ? "Loading..." : "Submit"}
-            </button>
-        </form>
-    );
     return (
-        <div className="container p-5">
-            <div className="row">
-                <div className="col-md-6 offset-md-3">
-                    <h4>Forgot Password</h4>
-                    {forgotPasswordForm()}
-                </div>
-            </div>
-        </div>
+        <Main>
+            <Container className="my-5">
+                <Row className="m-0">
+                    <Col lg={6} className="m-auto bg-dark p-lg-5 p-4">
+                        <h2 className="text-white text-center mb-3">
+                            Forgot Password
+                        </h2>
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group
+                                className="mb-3"
+                                controlId="formBasicEmail"
+                            >
+                                <Form.Label className="text-white">
+                                    Email Address
+                                </Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Enter Your Email"
+                                    autoFocus
+                                />
+                            </Form.Group>
+
+                            <Button
+                                size="lg"
+                                disabled={loading}
+                                className="text-white"
+                                type="submit"
+                            >
+                                {loading ? "Loading..." : "Submit"}
+                            </Button>
+                        </Form>
+                    </Col>
+                </Row>
+            </Container>
+        </Main>
     );
 };
 

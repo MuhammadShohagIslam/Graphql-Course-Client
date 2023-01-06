@@ -4,8 +4,7 @@ export const USER_FIELD = gql`
     fragment CoreUserFields on User {
         _id
         email
-        fullName
-        profileImage
+        name
         role
     }
 `;

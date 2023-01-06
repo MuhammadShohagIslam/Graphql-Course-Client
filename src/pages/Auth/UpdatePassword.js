@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
-import { auth } from "../../firebase";
-import { updatePassword } from "firebase/auth";
-import { useSelector } from "react-redux";
-import AdminNavigation from "../../components/navigation/AdminNavigation";
-import UserNavigation from "../../components/navigation/UserNavigation";
+import { toast } from "react-hot-toast";
+import { Container, Button, Row, Col, Form } from "react-bootstrap";
+import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
+import Dashboard from "../../layout/Dashboard/Dashboard";
 
 const UpdatePassword = () => {
     const [newPassword, setNewPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const {user} = useSelector((state)=> ({...state}));
+    const { updateThePassword } = useAuth();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -23,7 +21,7 @@ const UpdatePassword = () => {
             return;
         }
         setLoading(true);
-        updatePassword(auth.currentUser, newPassword)
+        updateThePassword(newPassword)
             .then(() => {
                 toast.success("Password Is Updated!");
                 // set loading false
@@ -39,38 +37,46 @@ const UpdatePassword = () => {
             });
     };
 
-    const updatePasswordForm = () => (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="password"
-                className="form-control"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Enter Your New Password"
-                autoFocus
-            />
-            <br />
-            <button type="submit" className="btn btn-outline-primary"  disabled={loading || newPassword.length < 6}>
-                {loading ? "Loading..." : "Submit"}
-            </button>
-        </form>
-    );
     return (
-        <div className="container-fluid">
-            <div className="row">
-                <div className="col-md-2">
-                    {user && user.role === "admin" ? (
-                        <AdminNavigation/>
-                    ): (
-                        <UserNavigation/>
-                    )}
-                </div>
-                <div className="col-md-8 pt-5">
-                    {loading ? <h2>Loading</h2> : <h4>Update Password</h4>}
-                    {updatePasswordForm()}
-                </div>
-            </div>
-        </div>
+        <Dashboard>
+            <Container className="my-5">
+                <Row className="m-0">
+                    <Col lg={6} className="m-auto bg-dark p-lg-5 p-4">
+                        <h2 className="text-white text-center mb-3">
+                            Forgot Password
+                        </h2>
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group
+                                className="mb-3"
+                                controlId="formBasicEmail"
+                            >
+                                <Form.Label className="text-white">
+                                    Email Address
+                                </Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={newPassword}
+                                    onChange={(e) =>
+                                        setNewPassword(e.target.value)
+                                    }
+                                    placeholder="Enter Your New Password"
+                                    autoFocus
+                                />
+                            </Form.Group>
+
+                            <Button
+                                size="lg"
+                                disabled={loading}
+                                className="text-white"
+                                type="submit"
+                            >
+                                {loading ? "Loading..." : "Submit"}
+                            </Button>
+                        </Form>
+                    </Col>
+                </Row>
+            </Container>
+        </Dashboard>
     );
 };
 
