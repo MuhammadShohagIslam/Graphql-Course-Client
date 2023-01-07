@@ -4,7 +4,7 @@
     position: relative;
     margin-bottom: 5px;
 }
-.previewCrossIcon{
+.previewCrossIcon {
     position: absolute;
     font-size: 22px;
     color: #fff;
@@ -13,20 +13,29 @@
     cursor: pointer;
     width: 32px;
     height: 32px;
-    background: #d76726b9;
+    background: #6851ab;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all .3s;
+    transition: all 0.3s;
 }
-.previewCrossIcon:hover{
-    background: #d76826;
+.previewCrossIcon:hover {
+    background: #7f56fd;
 }
 .previewImage {
     height: 100%;
     width: 100%;
     border-radius: 5px;
 }
-
-
+.uploadButton {
+    color: #fff;
+    padding: 10px 37px;
+    background-color: #6851ab;
+    display: inline-block;
+    transition: all 0.4s;
+}
+.uploadButton:hover {
+    background-color: #7f56fd;
+    cursor: pointer;
+}

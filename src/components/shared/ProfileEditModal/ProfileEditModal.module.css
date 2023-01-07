@@ -1,0 +1,59 @@
+.profileUpdateButton:hover {
+    color: #000 !important;
+}
+.uploadPhotoWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #d76826;
+    padding: 14px 14px;
+    border-radius: 6px;
+}
+.uploadTitle {
+    font-size: 16px;
+    line-height: 1;
+    margin-bottom: 0px !important;
+}
+.uploadPhotoIcon {
+    color: #d76826;
+    font-size: 19px;
+    margin-right: 3px;
+    margin-top: -4px;
+    cursor: pointer;
+}
+.uploadPhotoIconTitle {
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+}
+.previewPostImageWrapper {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 5px;
+    width: 194px;
+}
+.previewPostCrossIcon {
+    position: absolute;
+    font-size: 22px;
+    color: #fff;
+    right: 7px;
+    top: 0;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    background: #d76726b9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+.previewPostCrossIcon:hover {
+    background: #d76826;
+}
+.previewPostImage {
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+}

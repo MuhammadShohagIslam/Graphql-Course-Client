@@ -79,6 +79,10 @@ const Register = () => {
                 const currentUser = {
                     fullName: user?.displayName,
                     email: user?.email,
+                    image:{
+                        url: user?.photoURL,
+                        public_id: `${Date.now()}`
+                    }
                 };
                 createNewUser({
                     variables: {

@@ -25,8 +25,9 @@
 }
 .leftSideProfileIcon{
     font-size: 32px;
-    color: #7f56fd;
+    color: #fff;
     margin-right: 10px;
+    transition: all .4s;
 }
 .navLink{
     cursor: pointer;
@@ -37,6 +38,9 @@
     transition: all .4s;
 }
 .navLink:hover{
+    color: #7f56fd !important;
+}
+.navLink:hover .leftSideProfileIcon{
     color: #7f56fd !important;
 }
 

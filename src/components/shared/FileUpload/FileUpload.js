@@ -1,17 +1,21 @@
 import React from "react";
-import Resizer from "react-image-file-resizer";
 import { Form, Image } from "react-bootstrap";
-import classes from "./FileUpload.module.css";
+import Resizer from "react-image-file-resizer";
 import { deletingImageFile, uploadingImageFile } from "../../../api/cloudinary";
+import classes from "./FileUpload.module.css";
+import { useMutation } from "@apollo/client";
+import { PROFILE_UPDATE } from "../../../graphql/mutations";
 
 const FileUpload = ({
     user,
     values,
     setValues,
     setLoading,
+    loading,
     isProfileImageUpload = false,
 }) => {
-    
+    const [profileUpdate] = useMutation(PROFILE_UPDATE);
+
     const handleFileChange = (event) => {
         setLoading(true);
         let fileInput = false;
@@ -29,10 +33,28 @@ const FileUpload = ({
                 (uri) => {
                     uploadingImageFile(user.token, uri)
                         .then((res) => {
-                            setValues({
-                                ...values,
-                                images: res.data,
-                            });
+                            if (isProfileImageUpload) {
+                                setValues({
+                                    ...values,
+                                    image: {
+                                        url: res.data?.url,
+                                        public_id: res.data?.public_id,
+                                    },
+                                });
+                                const newProfileObject = {
+                                    ...values,
+                                    image: {
+                                        url: res.data?.url,
+                                        public_id: res.data?.public_id,
+                                    },
+                                };
+                                profileUpdate({
+                                    variables: {
+                                        input: newProfileObject,
+                                    },
+                                });
+                            }
+
                             setLoading(false);
                         })
                         .catch((error) => {
@@ -49,7 +71,6 @@ const FileUpload = ({
             setLoading(true);
             deletingImageFile(user.token, public_id)
                 .then((res) => {
-                    const { image } = values;
                     setValues({
                         ...values,
                         image: {
@@ -68,10 +89,18 @@ const FileUpload = ({
     return (
         <>
             <Form.Group className="mb-3" controlId="image">
-                <Form.Label className="text-white">
-                    {isProfileImageUpload
-                        ? "Profile Upload"
-                        : "Service Image Upload"}
+                {values.image && (
+                    <div className={classes.previewImageWrapper}>
+                        <Image
+                            className={classes.previewImage}
+                            src={values.image?.url}
+                            alt=""
+                        />
+                    </div>
+                )}
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="image">
+                <Form.Label className={classes.uploadButton}>
                     <Form.Control
                         hidden
                         accept="image/*"
@@ -79,24 +108,13 @@ const FileUpload = ({
                         name="image"
                         onChange={handleFileChange}
                     />
+
+                    {loading
+                        ? "Uploading "
+                        : isProfileImageUpload
+                        ? "Profile Upload"
+                        : "Service Image Upload"}
                 </Form.Label>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="image">
-                {values.image && (
-                    <div className={classes.previewImageWrapper}>
-                        <span
-                            className={classes.previewCrossIcon}
-                            onClick={handleImageRemove}
-                        >
-                            X
-                        </span>
-                        <Image
-                            className={classes.previewImage}
-                            src={values.image}
-                            alt=""
-                        />
-                    </div>
-                )}
             </Form.Group>
         </>
     );
