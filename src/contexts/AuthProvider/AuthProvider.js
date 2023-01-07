@@ -30,6 +30,8 @@ export const useAuth = () => {
 const authUserReducer = (state, action) => {
     switch (action.type) {
         case "LOGGED_IN_USER":
+            // const a = {...state, user:action.payload}
+            // console.log(a,"abc")
             return { ...state, user: action.payload };
         default:
             return state;
@@ -49,17 +51,16 @@ const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);
             let user = auth.currentUser;
-            if (user) {
+            if (currentUser) {
                 const idTokenResult = await user.getIdTokenResult();
                 dispatch({
                     type: "LOGGED_IN_USER",
                     payload: {
                         token: idTokenResult.token,
-                        name: user.displayName,
-                        email: user.email,
+                        fullName: currentUser.displayName,
+                        email: currentUser.email,
                     },
-                });
-        
+                })
             } else {
                 dispatch({
                     type: "LOGGED_IN_USER",
@@ -110,6 +111,7 @@ const AuthProvider = ({ children }) => {
         setLoading(true);
         return signOut(auth);
     };
+    console.log(state);
 
     const values = {
         user,

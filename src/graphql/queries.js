@@ -3,8 +3,8 @@ import { REVIEW_FIELD, SERVICE_FIELD, USER_FIELD } from "./fragments";
 
 /* -----------------  Users ---------------------------- */
 export const GET_CURRENT_USER = gql`
-    query CurrentUser($email: String!) {
-        currentUser(email: $email) {
+    query CurrentUser{
+        currentUser{
             ...CoreUserFields
         }
     }

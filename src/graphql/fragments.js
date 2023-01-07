@@ -3,8 +3,14 @@ import { gql } from "@apollo/client";
 export const USER_FIELD = gql`
     fragment CoreUserFields on User {
         _id
+        username
+        fullName
         email
-        name
+        image {
+            url
+            public_id
+        }
+        about
         role
     }
 `;

@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import Main from "../../layout/Main/Main";
 import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
 import { useMutation } from "@apollo/client";
-import { CREATE_OR_UPDATE_NEW_USER } from "../../graphql/mutations";
+import { CREATE_NEW_USER } from "../../graphql/mutations";
 
 const Login = () => {
     const [loadingLogin, setLoadingLogin] = useState(false);
@@ -23,9 +23,9 @@ const Login = () => {
         dispatch,
     } = useAuth();
 
-    const [createOrUpdateNewUser] = useMutation(CREATE_OR_UPDATE_NEW_USER, {
+    const [createNewUser] = useMutation(CREATE_NEW_USER, {
         // update the cache of all reviews corresponding by service id
-        update(cache, data) {
+        update: (cache, data)=> {
             Swal.fire({
                 position: "top",
                 icon: "success",
@@ -70,16 +70,16 @@ const Login = () => {
                 dispatch({
                     type: "LOGGED_IN_USER",
                     payload: {
-                        name: user.displayName,
+                        fullName: user.displayName,
                         email: email,
                         token: idTokenResult.token,
                     },
                 });
-                createOrUpdateNewUser({
+                createNewUser({
                     variables: {
                         input: {
-                            name: user.displayName,
-                            email: user.email || email,
+                            fullName: user?.displayName,
+                            email: user?.email || email,
                         },
                     },
                 });
@@ -103,16 +103,25 @@ const Login = () => {
 
     const popupForSignInProvider = (provider) => {
         registerAndLoginWithProvider(provider)
-            .then((result) => {
+            .then(async (result) => {
                 const user = result.user;
 
                 const currentUser = {
-                    name: user?.displayName,
+                    fullName: user?.displayName,
                     email: user?.email,
                 };
-                createOrUpdateNewUser({
+                createNewUser({
                     variables: {
                         input: currentUser,
+                    },
+                });
+                const idTokenResult = await user.getIdTokenResult();
+                dispatch({
+                    type: "LOGGED_IN_USER",
+                    payload: {
+                        fullName: user.displayName,
+                        email: user?.email,
+                        token: idTokenResult.token,
                     },
                 });
             })

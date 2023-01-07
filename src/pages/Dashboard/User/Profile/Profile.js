@@ -1,19 +1,68 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
+import omitDeep from "omit-deep";
 import { toast } from "react-hot-toast";
-import Swal from "sweetalert2";
-import { useMutation } from "@apollo/client";
-import { CREATE_NEW_SERVICE } from "../../../../graphql/mutations";
-import {
-    GET_ALL_SERVICES_BY_PAGE,
-    GET_ALL_SERVICES_UNDER_THE_LIMIT,
-} from "../../../../graphql/queries";
+// import Swal from "sweetalert2";
+import { useMutation, useQuery } from "@apollo/client";
+import { PROFILE_UPDATE } from "../../../../graphql/mutations";
 import Dashboard from "../../../../layout/Dashboard/Dashboard";
+import FileUpload from "../../../../components/shared/FileUpload/FileUpload";
+import { useAuth } from "./../../../../contexts/AuthProvider/AuthProvider";
+import { GET_CURRENT_USER } from "./../../../../graphql/queries";
 
-const Profile = ({ handleSubmit, handleChange, name, email, about }) => {
+const Profile = () => {
+    const [values, setValues] = useState({
+        username: "",
+        fullName: "",
+        images: [],
+        email: "",
+        about: "",
+    });
+    const [loading, setLoading] = useState(false);
 
-    const handle
+    const { state } = useAuth();
+    const { user } = state;
+
+    const { data } = useQuery(GET_CURRENT_USER);
+
+    useMemo(() => {
+        if (data) {
+            setValues({
+                ...values,
+                username: data.currentUser.username,
+                fullName: data.currentUser.fullName,
+                images: omitDeep(data.currentUser.images, ["__typename"]),
+                email: data.currentUser.email,
+                about: data.currentUser.about,
+            });
+        }
+    }, [data]);
+
+    const [profileUpdate] = useMutation(PROFILE_UPDATE, {
+        update: ({ data }) => {
+            toast.success("Profile Updated Successfully!");
+        },
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        profileUpdate({
+            variables: {
+                input: values,
+            },
+        });
+        setLoading(false);
+    };
+    const { username, fullName, email, about } = values;
+    const handleChange = (e) => {
+        setValues({
+            ...values,
+            [e.target.name]: e.target.value,
+        });
+    };
+
     return (
         <Dashboard>
             <Helmet>
@@ -26,6 +75,30 @@ const Profile = ({ handleSubmit, handleChange, name, email, about }) => {
                             Profile Information
                         </h2>
                         <Form onSubmit={handleSubmit}>
+                            <Form.Group className="mb-3" controlId="username">
+                                <Form.Label className="text-white">
+                                    Username
+                                </Form.Label>
+                                <Form.Control
+                                    name="username"
+                                    type="text"
+                                    onChange={handleChange}
+                                    value={username}
+                                    placeholder="Enter Username"
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="fullName">
+                                <Form.Label className="text-white">
+                                    fullName
+                                </Form.Label>
+                                <Form.Control
+                                    name="fullName"
+                                    type="text"
+                                    onChange={handleChange}
+                                    value={fullName}
+                                    placeholder="Enter fullName"
+                                />
+                            </Form.Group>
                             <Form.Group className="mb-3" controlId="email">
                                 <Form.Label className="text-white">
                                     Email
@@ -38,28 +111,14 @@ const Profile = ({ handleSubmit, handleChange, name, email, about }) => {
                                     placeholder="Enter Email"
                                 />
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="image">
-                                <Form.Label className="text-white">
-                                    Image
-                                </Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="image"
-                                    placeholder="Enter Image"
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3" controlId="name">
-                                <Form.Label className="text-white">
-                                    Name
-                                </Form.Label>
-                                <Form.Control
-                                    name="name"
-                                    type="text"
-                                    onChange={handleChange}
-                                    value={name}
-                                    placeholder="Enter name"
-                                />
-                            </Form.Group>
+                            <FileUpload
+                                values={values}
+                                setValues={setValues}
+                                setLoading={setLoading}
+                                isProfileImageUpload={true}
+                                user={user}
+                            />
+
                             <Form.Group className="mb-3" controlId="about">
                                 <Form.Label className="text-white">
                                     About
@@ -78,8 +137,9 @@ const Profile = ({ handleSubmit, handleChange, name, email, about }) => {
                                 className="text-white"
                                 variant="outline-dark"
                                 type="submit"
+                                disabled={loading}
                             >
-                                Save
+                                {loading ? "Loading" : "Save"}
                             </Button>
                         </Form>
                     </Col>

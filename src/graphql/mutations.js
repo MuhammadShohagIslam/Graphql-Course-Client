@@ -2,9 +2,19 @@ import { gql } from "@apollo/client";
 import { REVIEW_FIELD, SERVICE_FIELD, USER_FIELD } from "./fragments";
 
 /* ----- For Users -----  */
-export const CREATE_OR_UPDATE_NEW_USER = gql`
-    mutation CreateOrUpdateNewUser($input: UserCreateInput!) {
-        createOrUpdateNewUser(input: $input) {
+export const CREATE_NEW_USER = gql`
+    mutation CreateNewUser($input: UserCreateInput!) {
+        createNewUser(input: $input) {
+            username
+            fullName
+            email
+        }
+    }
+`;
+
+export const PROFILE_UPDATE = gql`
+    mutation ProfileUpdate($input: ProfileUpdateInput!) {
+        profileUpdate(input: $input) {
             ...CoreUserFields
         }
     }

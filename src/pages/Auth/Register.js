@@ -1,4 +1,3 @@
-import axios from "axios";
 import { GoogleAuthProvider } from "firebase/auth";
 import React, { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
@@ -8,11 +7,13 @@ import { toast } from "react-hot-toast";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import Main from '../../layout/Main/Main';
-import { useAuth } from './../../contexts/AuthProvider/AuthProvider';
+import Main from "../../layout/Main/Main";
+import { useAuth } from "./../../contexts/AuthProvider/AuthProvider";
+import { useMutation } from "@apollo/client";
+import { CREATE_NEW_USER } from "./../../graphql/mutations";
 
 const Register = () => {
-    const [accepted, setAccepted] = useState(false);
+    // const [accepted, setAccepted] = useState(false);
     const {
         handleSubmit,
         register,
@@ -22,10 +23,23 @@ const Register = () => {
         sendForSignInLinkToEmail,
         registerAndLoginWithProvider,
         setLoading,
+        dispatch,
     } = useAuth();
 
     const googleProvider = new GoogleAuthProvider();
     const navigate = useNavigate();
+    const [createNewUser] = useMutation(CREATE_NEW_USER, {
+        // update the cache of all reviews corresponding by service id
+        update: (cache, data) => {
+            Swal.fire({
+                position: "top",
+                icon: "success",
+                title: "Login Successfully",
+                showConfirmButton: false,
+                timer: 2500,
+            });
+        },
+    });
     const actionCodeSettings = {
         url: process.env.REACT_APP_COMPLETED_REGISTRATION,
         handleCodeInApp: true,
@@ -59,27 +73,27 @@ const Register = () => {
 
     const popupForSignInProvider = (provider) => {
         registerAndLoginWithProvider(provider)
-            .then((result) => {
+            .then(async (result) => {
                 const user = result.user;
-                console.log(user);
+
                 const currentUser = {
-                    name: user?.displayName,
+                    fullName: user?.displayName,
                     email: user?.email,
                 };
-                axios
-                    .post(
-                        "https://server-smoky-ten.vercel.app/jwt",
-                        currentUser,
-                        {
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                        }
-                    )
-                    .then((res) => {
-                        const data = res.data;
-                        localStorage.setItem("tutor-token", data.token);
-                    });
+                createNewUser({
+                    variables: {
+                        input: currentUser,
+                    },
+                });
+                const idTokenResult = await user.getIdTokenResult();
+                dispatch({
+                    type: "LOGGED_IN_USER",
+                    payload: {
+                        fullName: user.displayName,
+                        email: user?.email,
+                        token: idTokenResult.token,
+                    },
+                });
                 navigate("/");
             })
             .catch((error) => {

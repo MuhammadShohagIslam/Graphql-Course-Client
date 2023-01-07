@@ -9,7 +9,7 @@ import { Helmet } from "react-helmet-async";
 import { updatePassword } from "firebase/auth";
 import Main from "../../layout/Main/Main";
 import { useMutation } from "@apollo/client";
-import { CREATE_OR_UPDATE_NEW_USER } from "../../graphql/mutations";
+import { CREATE_NEW_USER } from "../../graphql/mutations";
 
 const CompleteRegister = () => {
     const [loadingRegister, setLoadingRegister] = useState(false);
@@ -28,7 +28,7 @@ const CompleteRegister = () => {
 
     const navigate = useNavigate();
 
-    const [createOrUpdateNewUser] = useMutation(CREATE_OR_UPDATE_NEW_USER);
+    const [createNewUser] = useMutation(CREATE_NEW_USER);
 
     useEffect(() => {
         const email = localStorage.getItem("emailForSignIn");
@@ -58,9 +58,9 @@ const CompleteRegister = () => {
                         const idTokenResult = await user.getIdTokenResult();
                         const currentUserObject = {
                             email: email,
-                            name: fullName,
+                            fullName: fullName,
                         };
-                        createOrUpdateNewUser({
+                        createNewUser({
                             variables: {
                                 input: currentUserObject,
                             },
@@ -68,7 +68,7 @@ const CompleteRegister = () => {
                         dispatch({
                             type: "LOGGED_IN_USER",
                             payload: {
-                                name:result.user.displayName || fullName, 
+                                fullName:result.user.displayName || fullName, 
                                 email:result.user.email ||  email,
                                 token: idTokenResult.token
                             },

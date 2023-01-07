@@ -42,7 +42,7 @@ function App() {
         return {
             headers: {
                 ...headers,
-                authorization: user ? user.token : null,
+                authorization: user ? user.token : ""
             },
         };
     });
