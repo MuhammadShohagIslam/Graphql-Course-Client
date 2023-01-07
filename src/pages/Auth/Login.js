@@ -36,6 +36,16 @@ const Login = () => {
             setLoadingLogin(false);
             navigate(from, { replace: true });
         },
+        onError(error) {
+            if (error) {
+                setLoadingLogin(false);
+                dispatch({
+                    type: "LOGGED_IN_USER",
+                    payload: null,
+                });
+                setLoading(false);
+            }
+        },
     });
 
     const googleProvider = new GoogleAuthProvider();
@@ -62,7 +72,7 @@ const Login = () => {
                     payload: {
                         name: user.displayName,
                         email: email,
-                        token: idTokenResult,
+                        token: idTokenResult.token,
                     },
                 });
                 createOrUpdateNewUser({
@@ -77,7 +87,6 @@ const Login = () => {
             })
             .catch((error) => {
                 toast.error(error.message.split("Firebase: ").join(""));
-                setLoadingLogin(false);
             })
             .finally(() => {
                 setLoading(false);

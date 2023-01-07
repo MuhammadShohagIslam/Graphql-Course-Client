@@ -36,11 +36,10 @@ const ForgotPassword = () => {
                 setLoading(false);
                 //clear state
                 setEmail("");
+                navigate("/login")
             })
             .catch((error) => {
-                toast.error(
-                    `Something wrong! for password reset like ${error.message}`
-                );
+                toast.error(error.message.split("Firebase: ").join(""));
                 setLoading(false);
             })
             .finally(() => {

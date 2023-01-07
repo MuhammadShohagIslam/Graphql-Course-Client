@@ -70,7 +70,7 @@ const CompleteRegister = () => {
                             payload: {
                                 name:result.user.displayName || fullName, 
                                 email:result.user.email ||  email,
-                                token: idTokenResult
+                                token: idTokenResult.token
                             },
                         });
                         setLoadingRegister(false);

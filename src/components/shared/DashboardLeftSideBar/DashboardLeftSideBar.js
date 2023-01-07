@@ -33,7 +33,7 @@ const DashboardLeftSideBar = () => {
             <li className="mb-3">
                 <LinkContainer
                     className={classes.leftSideListItemWrapper}
-                    to="/profile"
+                    to="/dashboard/profile"
                 >
                     <Nav.Link className={classes.navLink}>
                         <CgProfile className={classes.leftSideProfileIcon} />

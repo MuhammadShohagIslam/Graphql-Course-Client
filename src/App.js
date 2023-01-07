@@ -31,6 +31,7 @@ import Register from "./pages/Auth/Register";
 import { useAuth } from "./contexts/AuthProvider/AuthProvider";
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import UpdatePassword from './pages/Auth/UpdatePassword';
+import Profile from "./pages/Dashboard/User/Profile/Profile";
 
 function App() {
     const { state } = useAuth();
@@ -105,6 +106,14 @@ function App() {
                     element={
                         <PrivateRouter>
                             <UpdateReview />
+                        </PrivateRouter>
+                    }
+                />
+                 <Route
+                    path="/dashboard/profile"
+                    element={
+                        <PrivateRouter>
+                            <Profile />
                         </PrivateRouter>
                     }
                 />
