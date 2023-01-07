@@ -37,3 +37,20 @@ export const SERVICE_FIELD = gql`
         price
     }
 `;
+
+export const UPDATED_FIELD = gql`
+    fragment CoreUpdatedFields on UpdatedService {
+        acknowledged
+        matchedCount
+        modifiedCount
+        upsertedCount
+        upsertedId
+    }
+`;
+
+export const DELETED_FIELD = gql`
+    fragment CoreDeletedFields on DeleteReview {
+        acknowledged
+        deletedCount
+    }
+`;

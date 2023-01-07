@@ -1,5 +1,11 @@
 import { gql } from "@apollo/client";
-import { REVIEW_FIELD, SERVICE_FIELD, USER_FIELD } from "./fragments";
+import {
+    REVIEW_FIELD,
+    SERVICE_FIELD,
+    USER_FIELD,
+    UPDATED_FIELD,
+    DELETED_FIELD,
+} from "./fragments";
 
 /* ----- For Users -----  */
 export const CREATE_NEW_USER = gql`
@@ -31,6 +37,24 @@ export const CREATE_NEW_SERVICE = gql`
     ${SERVICE_FIELD}
 `;
 
+export const UPDATED_SERVICE = gql`
+    mutation UpdateService($serviceId: ID!, $input: UpdateServiceInput!) {
+        updateService(serviceId: $serviceId, input: $input) {
+            ...CoreUpdatedFields
+        }
+    }
+    ${UPDATED_FIELD}
+`;
+
+export const REMOVED_SERVICE = gql`
+    mutation RemoveService($serviceId: ID!) {
+        removeService(serviceId: $serviceId) {
+            acknowledged
+            deletedCount
+        }
+    }
+`;
+
 /* ----- For Reviews -----  */
 export const CREATE_NEW_REVIEW = gql`
     mutation CreateNewReview($input: CreateNewReviewInput!) {
@@ -45,20 +69,17 @@ export const CREATE_NEW_REVIEW = gql`
 export const REMOVED_REVIEW = gql`
     mutation RemoveReview($reviewId: ID!) {
         removeReview(reviewId: $reviewId) {
-            acknowledged
-            deletedCount
+            ...CoreDeletedFields
         }
     }
+    ${DELETED_FIELD}
 `;
 
 export const UPDATED_REVIEW = gql`
     mutation UpdateReview($reviewId: ID!, $input: UpdateReviewInput!) {
         updateReview(reviewId: $reviewId, input: $input) {
-            acknowledged
-            matchedCount
-            modifiedCount
-            upsertedCount
-            upsertedId
+            ...CoreUpdatedFields
         }
     }
+    ${UPDATED_FIELD}
 `;

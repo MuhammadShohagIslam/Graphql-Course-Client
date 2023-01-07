@@ -24,7 +24,7 @@ import CompleteRegister from "./pages/Auth/CompleteRegister";
 import DashboardHome from "./pages/Dashboard/DashboardHome";
 import MyReviews from "./pages/Dashboard/User/MyReviews/MyReviews";
 import UpdateReview from "./pages/Dashboard/User/MyReviews/UpdateReview/UpdateReview";
-import AddService from "./pages/Dashboard/Admin/AddService/AddService";
+import AddService from "./pages/Dashboard/Admin/Services/AddService/AddService";
 import SearchResult from "./pages/SearchResult/SearchResult";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
@@ -32,6 +32,7 @@ import { useAuth } from "./contexts/AuthProvider/AuthProvider";
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import UpdatePassword from './pages/Auth/UpdatePassword';
 import Profile from "./pages/Dashboard/User/Profile/Profile";
+import AllServices from "./pages/Dashboard/Admin/Services/AllServices/AllServices";
 
 function App() {
     const { state } = useAuth();
@@ -86,10 +87,18 @@ function App() {
                 <Route path="/services/:id" element={<ServiceDetails />} />
                 <Route path="/dashboard" element={<DashboardHome />} />
                 <Route
-                    path="/dashboard/add-service"
+                    path="/dashboard/admin/add-service"
                     element={
                         <PrivateRouter>
                             <AddService />
+                        </PrivateRouter>
+                    }
+                />
+                <Route
+                    path="/dashboard/admin/all-services"
+                    element={
+                        <PrivateRouter>
+                            <AllServices />
                         </PrivateRouter>
                     }
                 />

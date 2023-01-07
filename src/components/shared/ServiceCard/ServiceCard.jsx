@@ -4,13 +4,15 @@ import AOS from "aos";
 import React, { useEffect } from "react";
 import { Button, Card, Col } from "react-bootstrap";
 import { FaArrowRight } from "react-icons/fa";
+import { AiTwotoneDelete } from "react-icons/ai";
+import { BiEdit } from "react-icons/bi";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { Link } from "react-router-dom";
 import { avgRating } from "../../../utils/avgRating";
 import classes from "./ServiceCard.module.css";
 import { GET_ALL_REVIEWS_UNDER_QUERY } from "../../../graphql/queries";
 
-const ServiceCard = ({ service }) => {
+const ServiceCard = ({ service, isAdmin = false, handleServiceDelete }) => {
     const { _id, img, name, description, price } = service;
     const { data, refetch } = useQuery(GET_ALL_REVIEWS_UNDER_QUERY, {
         variables: {
@@ -68,15 +70,45 @@ const ServiceCard = ({ service }) => {
                                 <span>Per Month: </span>${price}
                             </h5>
                         </div>
-                        <Link
-                            className={`${classes.serviceCardButtonWrapper} pt-2`}
-                            to={`/services/${_id}`}
-                        >
-                            <Button className={`${classes.serviceCardButton}`}>
-                                Service Details
-                                <FaArrowRight className="ms-1" />
-                            </Button>
-                        </Link>
+                        {!isAdmin && (
+                            <Link
+                                className={`${classes.serviceCardButtonWrapper} pt-2`}
+                                to={`/services/${_id}`}
+                            >
+                                <Button
+                                    className={`${classes.serviceCardButton}`}
+                                >
+                                    Service Details
+                                    <FaArrowRight className="ms-1" />
+                                </Button>
+                            </Link>
+                        )}
+                        {isAdmin && (
+                            <div className="d-flex justify-content-around pt-3">
+                                <Link
+                                    className={`${classes.editButton}`}
+                                    to={`dashboard/admin/services/${_id}`}
+                                >
+                                    <Button
+                                        className={`${classes.serviceCardButton} bg-warning`}
+                                    >
+                                        <BiEdit className="me-1" />
+                                        Edit Service
+                                    </Button>
+                                </Link>
+                                <div
+                                    className={``}
+                                    onClick={() => handleServiceDelete(_id)}
+                                >
+                                    <Button
+                                        className={`${classes.serviceCardButton} bg-danger`}
+                                    >
+                                        <AiTwotoneDelete className="me-1" />
+                                        Delete Service
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </Card.Body>
                 </Card>
             </Col>

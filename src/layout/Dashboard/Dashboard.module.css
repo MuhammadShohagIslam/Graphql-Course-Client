@@ -3,7 +3,6 @@
     grid-template-columns: 400px auto;
     min-height: 100% !important;
     position: relative !important;
-    max-height: 100%;
 }
 .bottomSideBarShowWrapper {
     position: absolute;

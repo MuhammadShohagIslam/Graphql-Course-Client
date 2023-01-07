@@ -32,12 +32,18 @@
     .serviceCardButtonWrapper {
         bottom: 18px;
     }
+    .serviceCardButton {
+        font-size: 14px !important;
+    }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
     .serviceCard {
         height: 512px !important;
         position: relative;
+    }
+    .serviceCardButton {
+        font-size: 16px !important;
     }
 }
 @media only screen and (min-width: 992px) and (max-width: 1200px) {

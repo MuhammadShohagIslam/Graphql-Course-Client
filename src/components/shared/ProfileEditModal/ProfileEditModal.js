@@ -45,6 +45,7 @@ const ProfileEditModal = ({
                             name="email"
                             onChange={handleChange}
                             value={values?.email}
+                            disabled
                             placeholder="Enter Email"
                         />
                     </Form.Group>

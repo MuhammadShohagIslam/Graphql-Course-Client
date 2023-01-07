@@ -5,6 +5,8 @@ import { deletingImageFile, uploadingImageFile } from "../../../api/cloudinary";
 import classes from "./FileUpload.module.css";
 import { useMutation } from "@apollo/client";
 import { PROFILE_UPDATE } from "../../../graphql/mutations";
+import { toast } from "react-hot-toast";
+import { useAuth } from "./../../../contexts/AuthProvider/AuthProvider";
 
 const FileUpload = ({
     user,
@@ -14,6 +16,7 @@ const FileUpload = ({
     loading,
     isProfileImageUpload = false,
 }) => {
+    const { userProfileUpdate, setLoading: setLoadingForFirebase } = useAuth();
     const [profileUpdate] = useMutation(PROFILE_UPDATE);
 
     const handleFileChange = (event) => {
@@ -48,11 +51,16 @@ const FileUpload = ({
                                         public_id: res.data?.public_id,
                                     },
                                 };
+
                                 profileUpdate({
                                     variables: {
                                         input: newProfileObject,
                                     },
                                 });
+                                updateTheProfileToFirebase(
+                                    values.fullName,
+                                    res?.data?.url
+                                );
                             }
 
                             setLoading(false);
@@ -85,6 +93,23 @@ const FileUpload = ({
                     console.log(error);
                 });
         }
+    };
+
+    const updateTheProfileToFirebase = (fullName, photoImage) => {
+        const profile = {
+            displayName: fullName,
+            photoURL: photoImage,
+        };
+        userProfileUpdate(profile)
+            .then((result) => {
+                setLoadingForFirebase(false);
+            })
+            .catch((error) => {
+                toast.error(error);
+            })
+            .finally(() => {
+                setLoadingForFirebase(false);
+            });
     };
     return (
         <>
