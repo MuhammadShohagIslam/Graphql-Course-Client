@@ -53,7 +53,11 @@ const ServiceCard = ({ service, isAdmin = false, handleServiceDelete }) => {
                                 className={`${classes.serviceCardImage} rounded-0`}
                                 variant="top"
                                 alt={name}
-                                src={img}
+                                src={
+                                    img?.url
+                                        ? img?.url
+                                        : "https://via.placeholder.com/200x200.png?text=Service-Image"
+                                }
                             />
                         </PhotoView>
                     </PhotoProvider>
@@ -84,10 +88,10 @@ const ServiceCard = ({ service, isAdmin = false, handleServiceDelete }) => {
                             </Link>
                         )}
                         {isAdmin && (
-                            <div className="d-flex justify-content-around pt-3">
+                            <div className="d-flex justify-content-around">
                                 <Link
                                     className={`${classes.editButton}`}
-                                    to={`dashboard/admin/services/${_id}`}
+                                    to={`/dashboard/admin/edit-service/${_id}`}
                                 >
                                     <Button
                                         className={`${classes.serviceCardButton} bg-warning`}

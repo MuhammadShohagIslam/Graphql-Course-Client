@@ -28,6 +28,10 @@
     width: 100%;
     border-radius: 5px;
 }
+.previewServiceImage{
+    width: 100%;
+    height: 240px !important;
+}
 .uploadButton {
     color: #fff;
     padding: 10px 37px;

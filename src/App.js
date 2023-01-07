@@ -33,6 +33,7 @@ import ForgotPassword from './pages/Auth/ForgotPassword';
 import UpdatePassword from './pages/Auth/UpdatePassword';
 import Profile from "./pages/Dashboard/User/Profile/Profile";
 import AllServices from "./pages/Dashboard/Admin/Services/AllServices/AllServices";
+import UpdateService from "./pages/Dashboard/Admin/Services/UpdateService/UpdateService";
 
 function App() {
     const { state } = useAuth();
@@ -87,6 +88,14 @@ function App() {
                 <Route path="/services/:id" element={<ServiceDetails />} />
                 <Route path="/dashboard" element={<DashboardHome />} />
                 <Route
+                    path="/dashboard/admin/all-services"
+                    element={
+                        <PrivateRouter>
+                            <AllServices />
+                        </PrivateRouter>
+                    }
+                />
+                <Route
                     path="/dashboard/admin/add-service"
                     element={
                         <PrivateRouter>
@@ -95,10 +104,10 @@ function App() {
                     }
                 />
                 <Route
-                    path="/dashboard/admin/all-services"
+                    path="/dashboard/admin/edit-service/:serviceId"
                     element={
                         <PrivateRouter>
-                            <AllServices />
+                            <UpdateService />
                         </PrivateRouter>
                     }
                 />

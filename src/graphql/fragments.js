@@ -33,7 +33,10 @@ export const SERVICE_FIELD = gql`
         _id
         name
         description
-        img
+        img {
+            public_id
+            url
+        }
         price
     }
 `;

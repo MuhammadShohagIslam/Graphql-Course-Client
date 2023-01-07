@@ -61,8 +61,15 @@ const FileUpload = ({
                                     values.fullName,
                                     res?.data?.url
                                 );
+                            } else {
+                                setValues({
+                                    ...values,
+                                    img: {
+                                        url: res.data?.url,
+                                        public_id: res.data?.public_id,
+                                    },
+                                });
                             }
-
                             setLoading(false);
                         })
                         .catch((error) => {
@@ -76,20 +83,17 @@ const FileUpload = ({
     };
     const handleImageRemove = (public_id) => {
         if (user) {
-            setLoading(true);
             deletingImageFile(user.token, public_id)
                 .then((res) => {
                     setValues({
                         ...values,
-                        image: {
+                        img: {
                             url: "",
                             public_id: "",
                         },
                     });
-                    setLoading(false);
                 })
                 .catch((error) => {
-                    setLoading(false);
                     console.log(error);
                 });
         }
@@ -113,13 +117,34 @@ const FileUpload = ({
     };
     return (
         <>
-            <Form.Group className="mb-3" controlId="image">
-                {values.image && (
+            <Form.Group className="mb-3 position-relative" controlId="image">
+                {values.img && !isProfileImageUpload && (
+                    <>
+                        <span
+                            className={classes.previewCrossIcon}
+                            onClick={() =>
+                                handleImageRemove(values?.img.public_id)
+                            }
+                        >
+                            X
+                        </span>
+                        <Image
+                            className={classes.previewServiceImage}
+                            src={
+                                values.img?.url
+                                    ? values.img?.url
+                                    : "https://via.placeholder.com/200x200.png?text=Service-Image"
+                            }
+                            alt={values?.name}
+                        />
+                    </>
+                )}
+                {values.image && isProfileImageUpload && (
                     <div className={classes.previewImageWrapper}>
                         <Image
                             className={classes.previewImage}
-                            src={values.image?.url}
-                            alt=""
+                            src={values?.image.url}
+                            alt={values?.username}
                         />
                     </div>
                 )}

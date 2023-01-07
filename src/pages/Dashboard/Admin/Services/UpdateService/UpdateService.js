@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
-import Swal from "sweetalert2";
-import { useMutation } from "@apollo/client";
-import { CREATE_NEW_SERVICE } from "../../../../../graphql/mutations";
-import {
-    GET_ALL_SERVICES_BY_PAGE,
-    GET_ALL_SERVICES_UNDER_THE_LIMIT,
-} from "../../../../../graphql/queries";
-import Dashboard from "../../../../../layout/Dashboard/Dashboard";
-import FileUpload from "./../../../../../components/shared/FileUpload/FileUpload";
+import { useMutation, useQuery } from "@apollo/client";
+import Dashboard from "./../../../../../layout/Dashboard/Dashboard";
+import { useParams } from "react-router-dom";
+import { UPDATED_SERVICE } from "../../../../../graphql/mutations";
+import { GET_SERVICE_BY_ID } from "../../../../../graphql/queries";
+import FileUpload from "../../../../../components/shared/FileUpload/FileUpload";
 import { useAuth } from "./../../../../../contexts/AuthProvider/AuthProvider";
 
-const AddService = () => {
+const UpdateService = () => {
     const [values, setValues] = useState({
         name: "",
         description: "",
@@ -24,83 +21,60 @@ const AddService = () => {
         price: "",
     });
     const [loading, setLoading] = useState(false);
-    const [active, setActive] = useState(true);
+    const { serviceId } = useParams();
     const { state } = useAuth();
     const { user } = state;
-
-    const [createNewService] = useMutation(CREATE_NEW_SERVICE, {
-        // update the cache of all reviews corresponding by service id
-        update: (cache, data) => {
-            // read the data of all reviews corresponding by service id
-            const { getAllServicesUnderLimit } = cache.readQuery({
-                query: GET_ALL_SERVICES_UNDER_THE_LIMIT,
-                variables: {
-                    limit: 3,
-                },
-            });
-            // write the cached
-            cache.writeQuery({
-                query: GET_ALL_SERVICES_UNDER_THE_LIMIT,
-                variables: {
-                    limit: 3,
-                },
-                data: {
-                    getAllServicesUnderLimit: [
-                        data?.data.createNewService,
-                        ...getAllServicesUnderLimit,
-                    ],
-                },
-            });
-            Swal.fire({
-                position: "top",
-                icon: "success",
-                title: "Service Created Successfully",
-                showConfirmButton: false,
-                timer: 2500,
-            });
-        },
-        onError: (error) => {
-            setLoading(false);
+ 
+    const { data } = useQuery(GET_SERVICE_BY_ID, {
+        variables: {
+            serviceId: serviceId,
         },
     });
 
-    const handleServiceSubmit = (event) => {
-        event.preventDefault();
-        const form = event.target;
-        console.log(values);
+    useMemo(() => {
+        if (data) {
+            setValues({
+                ...values,
+                name: data.getService.name,
+                description: data.getService.description,
+                img: {
+                    url: data.getService.img?.url,
+                    public_id: data.getService.img?.public_id,
+                },
+                price: data.getService.price,
+            });
+        }
+    }, [data]);
 
-        // validation
-        if (!values.name) {
-            return toast.error("Please Enter Service Name!");
-        }
-        if (!values.img.url) {
-            return toast.error("Please Enter Image!");
-        }
-        if (!values.price) {
-            return toast.error("Please Enter Price!");
-        }
-        if (!values.description) {
-            return toast.error("Please Enter Description!");
-        }
+    const [updateService] = useMutation(UPDATED_SERVICE, {
+        update: (cache, data) => {
+            if (data?.data.updateService.modifiedCount > 0) {
+                toast.success("Service Updated");
+            }
+            setLoading(false);
+        },
+        refetchQueries: [
+            {
+                query: GET_SERVICE_BY_ID,
+                variables: {
+                    serviceId: serviceId,
+                },
+            },
+        ],
+    });
+
+    const handleServiceSubmit = (e) => {
+        e.preventDefault();
         setLoading(true);
-        createNewService({
+        updateService({
             variables: {
+                serviceId: serviceId,
                 input: values,
             },
-            refetchQueries: [
-                {
-                    query: GET_ALL_SERVICES_BY_PAGE,
-                    variables: {
-                        page: 1,
-                    },
-                },
-            ],
         });
-        form.reset();
-        setLoading(false);
     };
+
     const handleChange = (e) => {
-        setActive(false);
         setValues({
             ...values,
             [e.target.name]: e.target.value,
@@ -109,23 +83,27 @@ const AddService = () => {
     return (
         <Dashboard>
             <Helmet>
-                <title>AddService</title>
+                <title>Update Service</title>
             </Helmet>
             <Container className="my-5">
                 <Row className="m-0">
                     <Col lg={7} className="m-auto bg-dark p-lg-5 p-4">
                         <h2 className="text-white text-center mb-4">
-                            Let's Create New Service
+                            Let's Update {values.name} Service
                         </h2>
                         <Form onSubmit={handleServiceSubmit}>
-                            <Form.Group className="mb-3" controlId="name">
+                            <Form.Group
+                                className="mb-3"
+                                controlId="name"
+                            >
                                 <Form.Label className="text-white">
                                     Service Name
                                 </Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="name"
+                                    value={values.name}
                                     onChange={handleChange}
+                                    name="name"
                                     placeholder="Enter Service Name"
                                 />
                             </Form.Group>
@@ -143,6 +121,7 @@ const AddService = () => {
                                 <Form.Control
                                     name="price"
                                     type="text"
+                                    value={values.price}
                                     onChange={handleChange}
                                     placeholder="Enter Price"
                                 />
@@ -157,17 +136,18 @@ const AddService = () => {
                                 <Form.Control
                                     name="description"
                                     as="textarea"
+                                    value={values.description}
                                     onChange={handleChange}
                                     placeholder="Enter Description"
                                 />
                             </Form.Group>
 
                             <Button
+                                disabled={loading}
                                 size="lg"
                                 className="text-white"
                                 variant="outline-dark"
                                 type="submit"
-                                disabled={active || loading}
                             >
                                 {loading ? "Loading" : "Save"}
                             </Button>
@@ -179,4 +159,4 @@ const AddService = () => {
     );
 };
 
-export default AddService;
+export default UpdateService;

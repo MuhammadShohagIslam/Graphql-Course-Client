@@ -11,7 +11,7 @@ import { useAuth } from "../../../contexts/AuthProvider/AuthProvider";
 import { avgRating } from "./../../../utils/avgRating";
 import classes from "./ServiceDetails.module.css";
 import { CREATE_NEW_REVIEW } from "./../../../graphql/mutations";
-import Main from './../../../layout/Main/Main';
+import Main from "./../../../layout/Main/Main";
 import {
     GET_REVIEWS_BY_SERVICE_ID,
     GET_SERVICE_BY_ID,
@@ -170,7 +170,11 @@ const ServiceDetails = () => {
                                             className={
                                                 classes.serviceDetailsImg
                                             }
-                                            src={img}
+                                            src={
+                                                img?.url
+                                                    ? img?.url
+                                                    : "https://via.placeholder.com/200x200.png?text=Service-Image"
+                                            }
                                         />
                                     </div>
                                 </Col>
@@ -191,7 +195,7 @@ const ServiceDetails = () => {
                                                 handleReviewShowModal()
                                             }
                                         >
-                                            {user && user?.name && user?.token
+                                            {user && user?.fullName
                                                 ? "Review The Service"
                                                 : "Please login to add a review"}
                                         </Button>
