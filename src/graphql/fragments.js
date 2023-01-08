@@ -50,7 +50,7 @@ export const SERVICE_FIELD = gql`
 `;
 
 export const UPDATED_FIELD = gql`
-    fragment CoreUpdatedFields on UpdatedService {
+    fragment CoreUpdatedFields on UpdatedReview {
         acknowledged
         matchedCount
         modifiedCount

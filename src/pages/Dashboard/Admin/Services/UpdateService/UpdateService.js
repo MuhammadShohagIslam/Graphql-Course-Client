@@ -48,7 +48,7 @@ const UpdateService = () => {
 
     const [updateService] = useMutation(UPDATED_SERVICE, {
         update: (cache, data) => {
-            if (data?.data.updateService.modifiedCount > 0) {
+            if (data?.data.updateService) {
                 toast.success("Service Updated");
             }
             setLoading(false);

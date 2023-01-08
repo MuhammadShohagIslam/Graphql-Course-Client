@@ -40,10 +40,10 @@ export const CREATE_NEW_SERVICE = gql`
 export const UPDATED_SERVICE = gql`
     mutation UpdateService($serviceId: ID!, $input: UpdateServiceInput!) {
         updateService(serviceId: $serviceId, input: $input) {
-            ...CoreUpdatedFields
+            ...CoreServiceFields
         }
     }
-    ${UPDATED_FIELD}
+    ${SERVICE_FIELD}
 `;
 
 export const REMOVED_SERVICE = gql`

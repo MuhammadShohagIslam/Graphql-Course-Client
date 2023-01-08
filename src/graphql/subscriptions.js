@@ -3,7 +3,7 @@ import { SERVICE_FIELD } from "./fragments";
 
 
 /* ----------------- Service Subscription ---------------------------- */
-export const SERVICE_CREATED_SUBSCRIPTION = gql`
+export const SERVICE_ADDED = gql`
     subscription ServiceAdded {
         serviceAdded {
             ...CoreServiceFields
@@ -12,7 +12,7 @@ export const SERVICE_CREATED_SUBSCRIPTION = gql`
     ${SERVICE_FIELD}
 `;
 
-export const SERVICE_UPDATED_SUBSCRIPTION = gql`
+export const SERVICE_UPDATED = gql`
     subscription ServiceUpdated {
         serviceUpdated {
             ...CoreServiceFields
@@ -21,7 +21,7 @@ export const SERVICE_UPDATED_SUBSCRIPTION = gql`
     ${SERVICE_FIELD}
 `;
 
-export const SERVICE_REMOVED_SUBSCRIPTION = gql`
+export const SERVICE_REMOVED = gql`
     subscription ServiceRemoved {
         serviceRemoved {
             ...CoreServiceFields
