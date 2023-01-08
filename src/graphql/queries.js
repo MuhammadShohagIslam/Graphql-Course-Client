@@ -3,8 +3,8 @@ import { REVIEW_FIELD, SERVICE_FIELD, USER_FIELD } from "./fragments";
 
 /* -----------------  Users ---------------------------- */
 export const GET_CURRENT_USER = gql`
-    query CurrentUser{
-        currentUser{
+    query CurrentUser {
+        currentUser {
             ...CoreUserFields
         }
     }
@@ -96,4 +96,17 @@ export const GET_SINGLE_REVIEW = gql`
         }
     }
     ${REVIEW_FIELD}
+`;
+
+/* -----------------  Blogs ---------------------------- */
+export const GET_ALL_BLOGS = gql`
+    query GetAllBlogs {
+        getAllBlogs {
+            _id
+            title
+            description
+            author
+            createdAt
+        }
+    }
 `;

@@ -16,7 +16,7 @@ const Blog = ({ blog }) => {
                 <h2 className={classes.blogTitle}>{blog.title}</h2>
                 <h6 className="mb-4">
                     Author: {blog.author} - Published:{" "}
-                    {new Date(blog.publishedAt).toString().substr(4, 11)}
+                    {new Date(blog.createdAt).toString().substr(4, 11)}
                 </h6>
                 <p className={classes.blogDescription}>{blog.description}</p>
             </div>
