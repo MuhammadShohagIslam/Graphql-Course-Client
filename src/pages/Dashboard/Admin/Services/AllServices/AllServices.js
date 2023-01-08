@@ -6,16 +6,19 @@ import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
 import PaginationBar from "./../../../../../components/shared/PaginationBar/PaginationBar";
 import Dashboard from "../../../../../layout/Dashboard/Dashboard";
-import { GET_ALL_SERVICES_BY_PAGE } from "../../../../../graphql/queries";
+import {
+    GET_ALL_SERVICES_BY_PAGE,
+    GET_ALL_SERVICES_UNDER_THE_LIMIT,
+} from "../../../../../graphql/queries";
 import ServiceCard from "./../../../../../components/shared/ServiceCard/ServiceCard";
 import { REMOVED_SERVICE } from "./../../../../../graphql/mutations";
+
 
 const AllServices = () => {
     const [page, setPage] = useState(1);
 
-    const [getAllServiceByPage, { loading, error, data }] = useLazyQuery(
-        GET_ALL_SERVICES_BY_PAGE
-    );
+    const [getAllServiceByPage, { loading, error, data }] =
+        useLazyQuery(GET_ALL_SERVICES_BY_PAGE);
     const pages =
         data?.getAllServiceByPage?.totalService &&
         Math.ceil(data?.getAllServiceByPage?.totalService / 3);

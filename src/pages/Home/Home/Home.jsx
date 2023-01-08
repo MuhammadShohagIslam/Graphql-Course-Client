@@ -5,43 +5,41 @@ import Services from "../Services/Services";
 import Jumbotron from "./../../../components/shared/Jumbotron/Jumbotron";
 import { Helmet } from "react-helmet-async";
 import Main from "./../../../layout/Main/Main";
-import { useSubscription } from "@apollo/client";
+import { useSubscription,useQuery } from "@apollo/client";
 import {
     SERVICE_ADDED,
     SERVICE_UPDATED,
     SERVICE_REMOVED,
 } from "./../../../graphql/subscriptions";
-import {
-    GET_ALL_SERVICES_UNDER_THE_LIMIT,
-    GET_ALL_SERVICES_BY_PAGE,
-} from "./../../../graphql/queries";
+import { GET_ALL_SERVICES_UNDER_THE_LIMIT, GET_ALL_SERVICES_BY_PAGE } from "./../../../graphql/queries";
 import { toast } from "react-hot-toast";
 
 const Home = () => {
+    const { loading, error, data, subscribeToMore } = useQuery(GET_ALL_SERVICES_UNDER_THE_LIMIT, {
+        variables: { limit: 3 },
+    });
     // service added
     const { data: newPost } = useSubscription(SERVICE_ADDED, {
-        onData: async ({ client: { cache }, data }) => {
-            const { getAllServicesUnderLimit } = cache.readQuery({
+        onData: ({ client, data }) => {
+            const { getAllServicesUnderLimit } = client.readQuery({
                 query: GET_ALL_SERVICES_UNDER_THE_LIMIT,
                 variables: {
                     limit: 3,
                 },
             });
             // write the cached
-            cache.writeQuery({
+            client.writeQuery({
                 query: GET_ALL_SERVICES_UNDER_THE_LIMIT,
-                variables: {
-                    limit: 3,
-                },
                 data: {
                     getAllServicesUnderLimit: [
-                        data?.serviceAdded,
+                        data.data.serviceAdded,
                         ...getAllServicesUnderLimit,
                     ],
                 },
+                variables: {
+                    limit: 3,
+                },
             });
-
-            console.log(getAllServicesUnderLimit, data);
             toast.success("New Service Added!");
         },
     });
@@ -55,32 +53,35 @@ const Home = () => {
 
     // service removed
     useSubscription(SERVICE_REMOVED, {
-        onData: async ({ client: { cache }, data }) => {
-            const { getAllServiceByPage } = cache.readQuery(
-                GET_ALL_SERVICES_BY_PAGE,
-                {
-                    variables: {
-                        page: 1,
-                    },
-                }
-            );
-
-            console.log(data);
-
-            // removed the service the service
-            const filteredServices = getAllServiceByPage.filter(
-                (service) => service._id !== data.serviceRemoved._id
-            );
-
-            cache.writeQuery({
-                query: getAllServiceByPage,
+        onData: async ({
+            client, data 
+        }) => {
+            // console.log(data)
+            // readQuery from cache
+            const { getAllServicesUnderLimit } = client.readQuery({
+                query: GET_ALL_SERVICES_UNDER_THE_LIMIT,
                 variables: {
-                    page: 1,
-                },
-                data: {
-                    getAllServiceByPage: filteredServices,
+                    limit: 3,
                 },
             });
+            console.log(getAllServicesUnderLimit,client);
+
+            let filteredService = getAllServicesUnderLimit.filter(
+                (p) => p._id !== data.data.serviceRemoved._id
+            );
+
+           // write the cached
+           client.writeQuery({
+            query: GET_ALL_SERVICES_UNDER_THE_LIMIT,
+            data: {
+                getAllServicesUnderLimit: filteredService,
+            },
+            variables: {
+                limit: 3,
+            },
+        });
+            // show toast notification
+            toast.error("Service deleted!");
         },
     });
 
