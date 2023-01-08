@@ -66,7 +66,7 @@ const DashboardLeftSideBar = () => {
             <li className="mb-3">
                 <LinkContainer
                     className={classes.leftSideListItemWrapper}
-                    to="/dashboard/my-reviews"
+                    to="/dashboard/user/my-reviews"
                 >
                     <Nav.Link className={classes.navLink}>
                         <HiOutlineUserGroup
@@ -79,7 +79,7 @@ const DashboardLeftSideBar = () => {
             <li className="mb-3">
                 <LinkContainer
                     className={classes.leftSideListItemWrapper}
-                    to="/recent-post"
+                    to="/dashboard/user/most-recent"
                 >
                     <Nav.Link className={classes.navLink}>
                         <GiTimeSynchronization

@@ -34,6 +34,7 @@ import UpdatePassword from './pages/Auth/UpdatePassword';
 import Profile from "./pages/Dashboard/User/Profile/Profile";
 import AllServices from "./pages/Dashboard/Admin/Services/AllServices/AllServices";
 import UpdateService from "./pages/Dashboard/Admin/Services/UpdateService/UpdateService";
+import MostRecent from "./pages/Dashboard/User/MostRecent/MostRecent";
 
 function App() {
     const { state } = useAuth();
@@ -112,7 +113,7 @@ function App() {
                     }
                 />
                 <Route
-                    path="/dashboard/my-reviews"
+                    path="/dashboard/user/my-reviews"
                     element={
                         <PrivateRouter>
                             <MyReviews />
@@ -120,7 +121,7 @@ function App() {
                     }
                 />
                 <Route
-                    path="/dashboard/my-reviews/update/:id"
+                    path="/dashboard/user/my-reviews/update/:id"
                     element={
                         <PrivateRouter>
                             <UpdateReview />
@@ -132,6 +133,14 @@ function App() {
                     element={
                         <PrivateRouter>
                             <Profile />
+                        </PrivateRouter>
+                    }
+                />
+                 <Route
+                    path="/dashboard/user/most-recent"
+                    element={
+                        <PrivateRouter>
+                            <MostRecent />
                         </PrivateRouter>
                     }
                 />
