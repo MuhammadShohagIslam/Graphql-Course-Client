@@ -65,6 +65,11 @@ const ServiceDetails = () => {
                     timer: 2500,
                 });
             },
+            onError: (error)=>{
+                if (error?.message) {
+                    toast.error("Already You Reviewed This Service")
+                }
+            },
         }
     );
 
@@ -110,11 +115,8 @@ const ServiceDetails = () => {
         try {
             event.preventDefault();
             const reviewObj = {
-                _service: _id,
-                serviceName: name,
-                name: user?.name,
+                serviceId: _id,
                 email: user?.email,
-                img: currentUser?.photoURL,
                 comment,
                 star,
             };
@@ -141,7 +143,7 @@ const ServiceDetails = () => {
             toast.error(error.message);
         }
     };
-    if (error || errorReviews || createdReviewError) return `Error! ${error}`;
+    // if (error || errorReviews || createdReviewError) return `Error! ${error}`;
 
     return (
         <Main>

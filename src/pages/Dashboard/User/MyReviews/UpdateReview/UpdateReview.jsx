@@ -93,7 +93,7 @@ const UpdateReview = () => {
                             </h2>
                             <h5 className="text-center">
                                 The Service Name Of{" "}
-                                {data?.getReview.serviceName}
+                                {data?.getReview?._service?.name}
                             </h5>
                             <Form>
                                 <Form.Group

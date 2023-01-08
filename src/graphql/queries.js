@@ -83,7 +83,6 @@ export const GET_REVIEWS_BY_SERVICE_ID = gql`
 export const GET_REVIEWS_BY_SPECIFIC_USER = gql`
     query GetReviewBySpecificUser($email: String!, $name: String) {
         getReviewBySpecificUser(email: $email, name: $name) {
-            email
             ...CoreReviewFields
         }
     }
@@ -93,7 +92,6 @@ export const GET_REVIEWS_BY_SPECIFIC_USER = gql`
 export const GET_SINGLE_REVIEW = gql`
     query GetReview($reviewId: ID!) {
         getReview(reviewId: $reviewId) {
-            email
             ...CoreReviewFields
         }
     }

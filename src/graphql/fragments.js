@@ -18,10 +18,18 @@ export const USER_FIELD = gql`
 export const REVIEW_FIELD = gql`
     fragment CoreReviewFields on Review {
         _id
-        _service
-        name
-        img
-        serviceName
+        _service {
+            _id
+            name
+        }
+        _user {
+            _id
+            fullName
+            image {
+                public_id
+                url
+            }
+        }
         comment
         star
         createdAt

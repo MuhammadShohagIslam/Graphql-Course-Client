@@ -19,7 +19,7 @@ const ReviewTable = ({ reviewsBySpecificUser, handleReviewDelete }) => {
             <tbody>
                 {reviewsBySpecificUser.map((userReview) => (
                     <tr key={userReview._id}>
-                        <td>{userReview.serviceName}</td>
+                        <td>{userReview?._service?.name}</td>
                         <td>
                             <StarRatings
                                 rating={userReview.star}
@@ -43,7 +43,7 @@ const ReviewTable = ({ reviewsBySpecificUser, handleReviewDelete }) => {
                                     handleReviewDelete(
                                         e,
                                         userReview._id,
-                                        userReview.serviceName
+                                        userReview?._service?.name
                                     )
                                 }
                                 className={`${classes.dangerButton} btn`}

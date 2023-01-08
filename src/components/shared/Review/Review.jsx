@@ -5,7 +5,7 @@ import StarRatings from "react-star-ratings";
 import ReviewedImg from "../../../images/tutor.png";
 const Review = ({ review }) => {
 
-    const { name, comment, img, star, createdAt } = review;
+    const { _user, comment, _service, star, createdAt } = review;
     return (
         <Card className="mb-3">
             <Card.Body>
@@ -13,8 +13,8 @@ const Review = ({ review }) => {
                     <Image
                         roundedCircle
                         className={classes.reviewImg}
-                        src={img ? img : ReviewedImg}
-                        alt={name}
+                        src={_user ? _user.image?.url : ReviewedImg}
+                        alt={_service?.name}
                     />
                     <StarRatings
                         rating={star}
@@ -25,7 +25,7 @@ const Review = ({ review }) => {
                         starSpacing="2px"
                     />
                 </div>
-                <Card.Title className="pt-2">{name}</Card.Title>
+                <Card.Title className="pt-2">{_user?.fullName}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">
                     ReviewedAt:{" "}
                     {new Date(createdAt).toString().substring(4, 16)}

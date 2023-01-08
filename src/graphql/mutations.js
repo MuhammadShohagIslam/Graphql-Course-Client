@@ -59,7 +59,6 @@ export const REMOVED_SERVICE = gql`
 export const CREATE_NEW_REVIEW = gql`
     mutation CreateNewReview($input: CreateNewReviewInput!) {
         createNewReview(input: $input) {
-            email
             ...CoreReviewFields
         }
     }

@@ -16,7 +16,7 @@ const MyReviews = () => {
     const { loading, error, data, refetch } = useQuery(
         GET_REVIEWS_BY_SPECIFIC_USER,
         {
-            variables: { email: user?.email, name: user?.name },
+            variables: { email: user?.email, name: user?.fullName },
         }
     );
 
@@ -61,7 +61,7 @@ const MyReviews = () => {
             <Container className="mt-4">
                 <h3 className="text-center py-3">
                     '''{data?.getReviewBySpecificUser.length} Reviews On Service
-                    By {user?.name}'''
+                    By {user?.fullName}'''
                 </h3>
                 <Row className="m-0">
                     {loading ? (
