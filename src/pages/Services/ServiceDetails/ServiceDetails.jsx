@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
+import {
+    useMutation,
+    useQuery,
+    useLazyQuery,
+    useSubscription,
+} from "@apollo/client";
 import { Button, Col, Container, Image, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
@@ -16,6 +21,11 @@ import {
     GET_REVIEWS_BY_SERVICE_ID,
     GET_SERVICE_BY_ID,
 } from "../../../graphql/queries";
+import {
+    ADDED_REVIEW,
+    UPDATED_REVIEW,
+    REMOVED_REVIEW,
+} from "../../../graphql/subscriptions";
 
 const ServiceDetails = () => {
     const [showReviewModal, setShowReviewModal] = useState(false);
@@ -35,39 +45,9 @@ const ServiceDetails = () => {
     const [createNewReview, { error: createdReviewError }] = useMutation(
         CREATE_NEW_REVIEW,
         {
-            // update the cache of all reviews corresponding by service id
-            update(cache, data) {
-                // read the data of all reviews corresponding by service id
-                const { getAllReview } = cache.readQuery({
-                    query: GET_REVIEWS_BY_SERVICE_ID,
-                    variables: {
-                        query: id,
-                    },
-                });
-                // write the cached
-                cache.writeQuery({
-                    query: GET_REVIEWS_BY_SERVICE_ID,
-                    variables: {
-                        query: id,
-                    },
-                    data: {
-                        getAllReview: [
-                            data.data.createNewReview,
-                            ...getAllReview,
-                        ],
-                    },
-                });
-                Swal.fire({
-                    position: "top",
-                    icon: "success",
-                    title: "Review Created Successfully",
-                    showConfirmButton: false,
-                    timer: 2500,
-                });
-            },
-            onError: (error)=>{
+            onError: (error) => {
                 if (error?.message) {
-                    toast.error("Already You Reviewed This Service")
+                    toast.error("Already You Reviewed This Service");
                 }
             },
         }
@@ -76,7 +56,7 @@ const ServiceDetails = () => {
     const {
         loading: loadingReviews,
         error: errorReviews,
-        data: reviewsData,
+        data: reviewsData
     } = useQuery(GET_REVIEWS_BY_SERVICE_ID, {
         variables: { query: id },
     });
@@ -143,6 +123,65 @@ const ServiceDetails = () => {
             toast.error(error.message);
         }
     };
+
+    // subscription
+    useSubscription(ADDED_REVIEW, {
+        onData: ({ client, data }) => {
+            const { getAllReview } = client.readQuery({
+                query: GET_REVIEWS_BY_SERVICE_ID,
+                variables: {
+                    query: id,
+                },
+            });
+            // write the cached
+            client.writeQuery({
+                query: GET_REVIEWS_BY_SERVICE_ID,
+                variables: {
+                    query: id,
+                },
+                data: {
+                    getAllReview: [data.data.addedReview, ...getAllReview],
+                },
+            });
+            toast.success("New Review Added!");
+        },
+    });
+
+    // review updated
+    useSubscription(UPDATED_REVIEW, {
+        onData: async ({ client: { cache }, data }) => {
+            toast.success("Review Updated!");
+        },
+    });
+
+    // review removed
+    useSubscription(REMOVED_REVIEW, {
+        onData: ({ client, data }) => {
+            // readQuery from cache
+            const { getAllReview } = client.readQuery({
+                query: GET_REVIEWS_BY_SERVICE_ID,
+                variables: {
+                    query: id,
+                },
+            });
+            let filteredReview = getAllReview.filter(
+                (review) => review._id !== data.data.deletedReview._id
+            );
+            // write the cached
+            client.writeQuery({
+                query: GET_REVIEWS_BY_SERVICE_ID,
+                variables: {
+                    query: id,
+                },
+                data: {
+                    getAllReview: [...filteredReview],
+                },
+            });
+            // show toast notification
+            toast.error("One Review deleted!");
+        },
+    });
+
     // if (error || errorReviews || createdReviewError) return `Error! ${error}`;
 
     return (

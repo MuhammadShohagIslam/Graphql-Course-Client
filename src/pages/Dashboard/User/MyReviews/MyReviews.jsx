@@ -46,7 +46,7 @@ const MyReviews = () => {
             refetchQueries: [
                 {
                     query: GET_REVIEWS_BY_SPECIFIC_USER,
-                    variables: { email: user?.email, name: user?.name },
+                    variables: { email: user?.email, name: user?.fullName },
                 },
             ],
         });

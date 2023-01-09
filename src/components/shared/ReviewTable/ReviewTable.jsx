@@ -31,7 +31,7 @@ const ReviewTable = ({ reviewsBySpecificUser, handleReviewDelete }) => {
                             />
                         </td>
                         <td>
-                            <Link to={`/dashboard/my-reviews/update/${userReview._id}`}>
+                            <Link to={`/dashboard/user/my-reviews/update/${userReview._id}`}>
                                 <Button className="btn">
                                     <AiOutlineEdit />
                                 </Button>

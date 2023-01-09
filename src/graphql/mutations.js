@@ -74,11 +74,11 @@ export const REMOVED_REVIEW = gql`
     ${DELETED_FIELD}
 `;
 
-export const UPDATED_REVIEW = gql`
-    mutation UpdateReview($reviewId: ID!, $input: UpdateReviewInput!) {
-        updateReview(reviewId: $reviewId, input: $input) {
-            ...CoreUpdatedFields
+export const REVIEW_UPDATED = gql`
+    mutation ReviewUpdated($reviewId: ID!, $input: UpdateReviewInput!) {
+        reviewUpdated(reviewId: $reviewId, input: $input) {
+            ...CoreReviewFields
         }
     }
-    ${UPDATED_FIELD}
+    ${REVIEW_FIELD}
 `;

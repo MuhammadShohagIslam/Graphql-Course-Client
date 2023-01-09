@@ -1,31 +1,30 @@
 import { gql } from "@apollo/client";
-import { SERVICE_FIELD } from "./fragments";
+import { REVIEW_FIELD } from "./fragments";
 
-
-/* ----------------- Service Subscription ---------------------------- */
-export const SERVICE_ADDED = gql`
-    subscription ServiceAdded {
-        serviceAdded {
-            ...CoreServiceFields
+/* ----------------- Review Subscription ---------------------------- */
+export const ADDED_REVIEW = gql`
+    subscription AddedReview {
+        addedReview {
+            ...CoreReviewFields
         }
     }
-    ${SERVICE_FIELD}
+    ${REVIEW_FIELD}
 `;
 
-export const SERVICE_UPDATED = gql`
-    subscription ServiceUpdated {
-        serviceUpdated {
-            ...CoreServiceFields
+export const UPDATED_REVIEW = gql`
+    subscription UpdatedReview {
+        updatedReview {
+            ...CoreReviewFields
         }
     }
-    ${SERVICE_FIELD}
+    ${REVIEW_FIELD}
 `;
 
-export const SERVICE_REMOVED = gql`
-    subscription ServiceRemoved {
-        serviceRemoved {
-            ...CoreServiceFields
+export const REMOVED_REVIEW = gql`
+    subscription DeletedReview {
+        deletedReview {
+            ...CoreReviewFields
         }
     }
-    ${SERVICE_FIELD}
+    ${REVIEW_FIELD}
 `;

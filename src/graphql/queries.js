@@ -22,25 +22,19 @@ export const GET_IS_USER = gql`
 `;
 
 /* -----------------  Services ---------------------------- */
-export const GET_ALL_SERVICES_BY_PAGE = gql`
-    query GetAllServiceByPage($page: Int!) {
-        getAllServiceByPage(page: $page) {
-            servicesByPagination {
-                ...CoreServiceFields
-            }
-            totalService
+export const GET_ALL_SERVICES = gql`
+    query GetAllService($page: Int) {
+        getAllService(page: $page) {
+            ...CoreServiceFields
         }
     }
     ${SERVICE_FIELD}
 `;
 
-export const GET_ALL_SERVICES_UNDER_THE_LIMIT = gql`
-    query GetAllServicesUnderLimit($limit: Int) {
-        getAllServicesUnderLimit(limit: $limit) {
-            ...CoreServiceFields
-        }
+export const GET_TOTAL_SERVICES = gql`
+    query TotalServices {
+        totalServices
     }
-    ${SERVICE_FIELD}
 `;
 
 export const GET_SERVICE_BY_ID = gql`

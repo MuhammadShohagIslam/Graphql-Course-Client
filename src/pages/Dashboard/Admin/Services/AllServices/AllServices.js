@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import AOS from "aos";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
@@ -7,21 +7,23 @@ import Swal from "sweetalert2";
 import PaginationBar from "./../../../../../components/shared/PaginationBar/PaginationBar";
 import Dashboard from "../../../../../layout/Dashboard/Dashboard";
 import {
-    GET_ALL_SERVICES_BY_PAGE,
-    GET_ALL_SERVICES_UNDER_THE_LIMIT,
+    GET_ALL_SERVICES,
+    GET_TOTAL_SERVICES,
 } from "../../../../../graphql/queries";
 import ServiceCard from "./../../../../../components/shared/ServiceCard/ServiceCard";
 import { REMOVED_SERVICE } from "./../../../../../graphql/mutations";
 
-
 const AllServices = () => {
     const [page, setPage] = useState(1);
 
-    const [getAllServiceByPage, { loading, error, data }] =
-        useLazyQuery(GET_ALL_SERVICES_BY_PAGE);
+    const [getAllService, { loading, error, data }] =
+        useLazyQuery(GET_ALL_SERVICES);
+        
+    const { data: totalServiceData } = useQuery(GET_TOTAL_SERVICES);
+
     const pages =
-        data?.getAllServiceByPage?.totalService &&
-        Math.ceil(data?.getAllServiceByPage?.totalService / 3);
+        totalServiceData?.totalServices &&
+        Math.ceil(totalServiceData?.totalServices / 3);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -29,12 +31,12 @@ const AllServices = () => {
     }, []);
 
     useEffect(() => {
-        getAllServiceByPage({
+        getAllService({
             variables: {
                 page: page,
             },
         });
-    }, [page, getAllServiceByPage]);
+    }, [page, getAllService]);
 
     const [removeService] = useMutation(REMOVED_SERVICE, {
         update: (cache, data) => {
@@ -57,7 +59,7 @@ const AllServices = () => {
             },
             refetchQueries: [
                 {
-                    query: GET_ALL_SERVICES_BY_PAGE,
+                    query: GET_ALL_SERVICES,
                     variables: { page: page },
                 },
             ],

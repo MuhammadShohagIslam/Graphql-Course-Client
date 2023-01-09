@@ -1,22 +1,23 @@
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import AOS from "aos";
 import React, { useEffect, useState } from "react";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import ServiceCard from "../../components/shared/ServiceCard/ServiceCard";
-import { GET_ALL_SERVICES_BY_PAGE } from "../../graphql/queries";
+import { GET_ALL_SERVICES, GET_TOTAL_SERVICES } from "../../graphql/queries";
 import PaginationBar from "./../../components/shared/PaginationBar/PaginationBar";
-import Main from './../../layout/Main/Main';
+import Main from "./../../layout/Main/Main";
 
 const Services = () => {
     const [page, setPage] = useState(1);
 
-    const [getAllServiceByPage, { loading, error, data }] = useLazyQuery(
-        GET_ALL_SERVICES_BY_PAGE
-    );
+    const [getAllService, { loading, error, data }] =
+        useLazyQuery(GET_ALL_SERVICES);
+    const { data: totalServiceData } = useQuery(GET_TOTAL_SERVICES);
+
     const pages =
-        data?.getAllServiceByPage?.totalService &&
-        Math.ceil(data?.getAllServiceByPage?.totalService / 3);
+        totalServiceData?.totalServices &&
+        Math.ceil(totalServiceData?.totalServices / 3);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -24,12 +25,12 @@ const Services = () => {
     }, []);
 
     useEffect(() => {
-        getAllServiceByPage({
+        getAllService({
             variables: {
                 page: page,
             },
         });
-    }, [page, getAllServiceByPage]);
+    }, [page]);
 
     if (error) return `Error! ${error.message}`;
 
@@ -52,11 +53,10 @@ const Services = () => {
                         </div>
                     ) : (
                         <>
-                            {data?.getAllServiceByPage?.servicesByPagination &&
-                            data?.getAllServiceByPage?.servicesByPagination
-                                .length > 0 ? (
+                            {data?.getAllService &&
+                            data?.getAllService.length > 0 ? (
                                 <>
-                                    {data?.getAllServiceByPage.servicesByPagination.map(
+                                    {data?.getAllService.map(
                                         (service) => (
                                             <ServiceCard
                                                 key={service._id}

@@ -6,7 +6,7 @@ import StarRatings from "react-star-ratings";
 import Swal from "sweetalert2";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_SINGLE_REVIEW } from "../../../../../graphql/queries";
-import {UPDATED_REVIEW} from "../../../../../graphql/mutations"
+import { REVIEW_UPDATED } from "../../../../../graphql/mutations";
 import Dashboard from "../../../../../layout/Dashboard/Dashboard";
 
 const UpdateReview = () => {
@@ -19,9 +19,9 @@ const UpdateReview = () => {
     const [getReview, { data, error, loading, refetch }] =
         useLazyQuery(GET_SINGLE_REVIEW);
 
-    const [updateReview] = useMutation(UPDATED_REVIEW, {
+    const [reviewUpdated] = useMutation(REVIEW_UPDATED, {
         update(cache, data) {
-            if (data?.data.updateReview.modifiedCount > 0) {
+            if (data?.data.reviewUpdated) {
                 Swal.fire({
                     position: "top",
                     icon: "success",
@@ -60,7 +60,7 @@ const UpdateReview = () => {
             comment,
             star,
         };
-        updateReview({
+        reviewUpdated({
             variables: {
                 reviewId: id,
                 input: reviewUpdateObj,

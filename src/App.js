@@ -29,8 +29,8 @@ import SearchResult from "./pages/SearchResult/SearchResult";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import { useAuth } from "./contexts/AuthProvider/AuthProvider";
-import ForgotPassword from './pages/Auth/ForgotPassword';
-import UpdatePassword from './pages/Auth/UpdatePassword';
+import ForgotPassword from "./pages/Auth/ForgotPassword";
+import UpdatePassword from "./pages/Auth/UpdatePassword";
 import Profile from "./pages/Dashboard/User/Profile/Profile";
 import AllServices from "./pages/Dashboard/Admin/Services/AllServices/AllServices";
 import UpdateService from "./pages/Dashboard/Admin/Services/UpdateService/UpdateService";
@@ -45,7 +45,7 @@ function App() {
         return {
             headers: {
                 ...headers,
-                authorization: user ? user.token : ""
+                authorization: user ? user.token : "",
             },
         };
     });
@@ -77,12 +77,18 @@ function App() {
     const client = new ApolloClient({
         uri: process.env.REACT_APP_GRAPHQL_API,
         link: splitLink,
-        cache: new InMemoryCache(),
+        cache: new InMemoryCache({
+            typePolicies: {
+                GetAllReview: {
+                    merge: true,
+                },
+            },
+        }),
     });
 
     return (
         <ApolloProvider client={client}>
-            <Toaster />
+            <Toaster position="top-right" reverseOrder={false} />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/services" element={<Services />} />
@@ -128,7 +134,7 @@ function App() {
                         </PrivateRouter>
                     }
                 />
-                 <Route
+                <Route
                     path="/dashboard/profile"
                     element={
                         <PrivateRouter>
@@ -136,7 +142,7 @@ function App() {
                         </PrivateRouter>
                     }
                 />
-                 <Route
+                <Route
                     path="/dashboard/user/most-recent"
                     element={
                         <PrivateRouter>
@@ -151,14 +157,8 @@ function App() {
                     path="/complete-registration"
                     element={<CompleteRegister />}
                 />
-                <Route
-                    path="/forgot-password"
-                    element={<ForgotPassword />}
-                />
-                <Route
-                    path="/update-password"
-                    element={<UpdatePassword />}
-                />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/update-password" element={<UpdatePassword />} />
                 <Route path="/search/:searchQuery" element={<SearchResult />} />
                 <Route path="/term-condition" element={<TermCondition />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
