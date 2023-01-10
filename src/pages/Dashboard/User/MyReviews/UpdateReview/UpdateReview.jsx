@@ -1,13 +1,12 @@
+import { useLazyQuery, useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import Swal from "sweetalert2";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { GET_SINGLE_REVIEW } from "../../../../../graphql/queries";
 import { REVIEW_UPDATED } from "../../../../../graphql/mutations";
-import Dashboard from "../../../../../layout/Dashboard/Dashboard";
+import { GET_SINGLE_REVIEW } from "../../../../../graphql/queries";
 
 const UpdateReview = () => {
     const [comment, setComment] = useState("");
@@ -70,7 +69,7 @@ const UpdateReview = () => {
     };
 
     return (
-        <Dashboard>
+        <>
             <Helmet>
                 <title>UpdateReview</title>
             </Helmet>
@@ -140,7 +139,7 @@ const UpdateReview = () => {
                     )}
                 </Row>
             </Container>
-        </Dashboard>
+        </>
     );
 };
 

@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
 import {
-    useMutation,
-    useQuery,
-    useLazyQuery,
-    useSubscription,
+    useLazyQuery, useMutation,
+    useQuery, useSubscription
 } from "@apollo/client";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Col, Container, Image, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
@@ -13,19 +11,16 @@ import Swal from "sweetalert2";
 import Review from "../../../components/shared/Review/Review";
 import ReviewModal from "../../../components/shared/ReviewModal/ReviewModal";
 import { useAuth } from "../../../contexts/AuthProvider/AuthProvider";
-import { avgRating } from "./../../../utils/avgRating";
-import classes from "./ServiceDetails.module.css";
-import { CREATE_NEW_REVIEW } from "./../../../graphql/mutations";
-import Main from "./../../../layout/Main/Main";
 import {
     GET_REVIEWS_BY_SERVICE_ID,
-    GET_SERVICE_BY_ID,
+    GET_SERVICE_BY_ID
 } from "../../../graphql/queries";
 import {
-    ADDED_REVIEW,
-    UPDATED_REVIEW,
-    REMOVED_REVIEW,
+    ADDED_REVIEW, REMOVED_REVIEW, UPDATED_REVIEW
 } from "../../../graphql/subscriptions";
+import { CREATE_NEW_REVIEW } from "./../../../graphql/mutations";
+import { avgRating } from "./../../../utils/avgRating";
+import classes from "./ServiceDetails.module.css";
 
 const ServiceDetails = () => {
     const [showReviewModal, setShowReviewModal] = useState(false);
@@ -36,7 +31,7 @@ const ServiceDetails = () => {
     const { id } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
-    const { state, user: currentUser } = useAuth();
+    const { state } = useAuth();
     const { user } = state;
 
     const [getService, { loading, error, data }] =
@@ -149,8 +144,27 @@ const ServiceDetails = () => {
 
     // review updated
     useSubscription(UPDATED_REVIEW, {
-        onData: async ({ client: { cache }, data }) => {
-            toast.success("Review Updated!");
+        onData: ({ client, data }) => {
+            const { getAllReview } = client.readQuery({
+                query: GET_REVIEWS_BY_SERVICE_ID,
+                variables: {
+                    query: id,
+                },
+            });
+            let filteredReview = getAllReview.filter(
+                (review) => review._id !== data.data.updatedReview._id
+            );
+            // write the cached
+            client.writeQuery({
+                query: GET_REVIEWS_BY_SERVICE_ID,
+                variables: {
+                    query: id,
+                },
+                data: {
+                    getAllReview: [data.data.updatedReview, ...filteredReview],
+                },
+            });
+            toast.success("Review Updated Added!");
         },
     });
 
@@ -185,7 +199,7 @@ const ServiceDetails = () => {
     // if (error || errorReviews || createdReviewError) return `Error! ${error}`;
 
     return (
-        <Main>
+        <>
             <Helmet>
                 <title>ServiceDetails</title>
             </Helmet>
@@ -299,7 +313,7 @@ const ServiceDetails = () => {
                 setComment={setComment}
                 star={star}
             />
-        </Main>
+        </>
     );
 };
 

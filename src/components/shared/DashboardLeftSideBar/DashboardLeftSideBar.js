@@ -8,9 +8,12 @@ import { HiOutlineUserGroup } from "react-icons/hi";
 import { GiTimeSynchronization } from "react-icons/gi";
 import classes from "./DashboardLeftSideBar.module.css";
 import { useAuth } from "../../../contexts/AuthProvider/AuthProvider";
+import { useQuery } from "@apollo/client";
+import { GET_CURRENT_USER } from "./../../../graphql/queries";
 
 const DashboardLeftSideBar = () => {
     const { user } = useAuth();
+    const { data } = useQuery(GET_CURRENT_USER);
     return (
         <ul className={`${classes.leftSideListWrapper} pt-4`}>
             <li className={classes.leftSideTopListItemWrapper}>
@@ -41,54 +44,66 @@ const DashboardLeftSideBar = () => {
                     </Nav.Link>
                 </LinkContainer>
             </li>
-            <li className="mb-3">
-                <LinkContainer
-                    className={classes.leftSideListItemWrapper}
-                    to="/dashboard/admin/all-services"
-                >
-                    <Nav.Link className={classes.navLink}>
-                        <ImBlogger className={classes.leftSideProfileIcon} />
-                        All Services
-                    </Nav.Link>
-                </LinkContainer>
-            </li>
-            <li className="mb-3">
-                <LinkContainer
-                    className={classes.leftSideListItemWrapper}
-                    to="/dashboard/admin/add-service"
-                >
-                    <Nav.Link className={classes.navLink}>
-                        <ImBlogger className={classes.leftSideProfileIcon} />
-                        Add Service
-                    </Nav.Link>
-                </LinkContainer>
-            </li>
-            <li className="mb-3">
-                <LinkContainer
-                    className={classes.leftSideListItemWrapper}
-                    to="/dashboard/user/my-reviews"
-                >
-                    <Nav.Link className={classes.navLink}>
-                        <HiOutlineUserGroup
-                            className={classes.leftSideProfileIcon}
-                        />
-                        My Reviews
-                    </Nav.Link>
-                </LinkContainer>
-            </li>
-            <li className="mb-3">
-                <LinkContainer
-                    className={classes.leftSideListItemWrapper}
-                    to="/dashboard/user/most-recent"
-                >
-                    <Nav.Link className={classes.navLink}>
-                        <GiTimeSynchronization
-                            className={classes.leftSideProfileIcon}
-                        />
-                        Most Recent
-                    </Nav.Link>
-                </LinkContainer>
-            </li>
+            {data?.currentUser && data?.currentUser.role === "admin" && (
+                <>
+                    <li className="mb-3">
+                        <LinkContainer
+                            className={classes.leftSideListItemWrapper}
+                            to="/dashboard/admin/all-services"
+                        >
+                            <Nav.Link className={classes.navLink}>
+                                <ImBlogger
+                                    className={classes.leftSideProfileIcon}
+                                />
+                                All Services
+                            </Nav.Link>
+                        </LinkContainer>
+                    </li>
+                    <li className="mb-3">
+                        <LinkContainer
+                            className={classes.leftSideListItemWrapper}
+                            to="/dashboard/admin/add-service"
+                        >
+                            <Nav.Link className={classes.navLink}>
+                                <ImBlogger
+                                    className={classes.leftSideProfileIcon}
+                                />
+                                Add Service
+                            </Nav.Link>
+                        </LinkContainer>
+                    </li>
+                </>
+            )}
+            {data?.currentUser && data?.currentUser.role === "user" && (
+                <>
+                    <li className="mb-3">
+                        <LinkContainer
+                            className={classes.leftSideListItemWrapper}
+                            to="/dashboard/user/my-reviews"
+                        >
+                            <Nav.Link className={classes.navLink}>
+                                <HiOutlineUserGroup
+                                    className={classes.leftSideProfileIcon}
+                                />
+                                My Reviews
+                            </Nav.Link>
+                        </LinkContainer>
+                    </li>
+                    <li className="mb-3">
+                        <LinkContainer
+                            className={classes.leftSideListItemWrapper}
+                            to="/dashboard/user/most-recent"
+                        >
+                            <Nav.Link className={classes.navLink}>
+                                <GiTimeSynchronization
+                                    className={classes.leftSideProfileIcon}
+                                />
+                                Most Recent
+                            </Nav.Link>
+                        </LinkContainer>
+                    </li>
+                </>
+            )}
         </ul>
     );
 };

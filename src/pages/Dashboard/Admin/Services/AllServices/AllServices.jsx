@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import AOS from "aos";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
-import PaginationBar from "./../../../../../components/shared/PaginationBar/PaginationBar";
-import Dashboard from "../../../../../layout/Dashboard/Dashboard";
 import {
     GET_ALL_SERVICES,
-    GET_TOTAL_SERVICES,
+    GET_TOTAL_SERVICES
 } from "../../../../../graphql/queries";
-import ServiceCard from "./../../../../../components/shared/ServiceCard/ServiceCard";
-import { REMOVED_SERVICE } from "./../../../../../graphql/mutations";
+import PaginationBar from "../../../../../components/shared/PaginationBar/PaginationBar";
+import ServiceCard from "../../../../../components/shared/ServiceCard/ServiceCard";
+import { REMOVED_SERVICE } from "../../../../../graphql/mutations";
 
 const AllServices = () => {
     const [page, setPage] = useState(1);
@@ -68,7 +67,7 @@ const AllServices = () => {
 
     if (error) return `Error! ${error.message}`;
     return (
-        <Dashboard>
+        <>
             <Helmet>
                 <title>Admin-Services</title>
             </Helmet>
@@ -118,7 +117,7 @@ const AllServices = () => {
                     />
                 </Row>
             </Container>
-        </Dashboard>
+        </>
     );
 };
 

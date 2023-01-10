@@ -1,11 +1,10 @@
-import React from "react";
-import Main from "../../layout/Main/Main";
-import { useParams } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import { Container, Row, Spinner } from "react-bootstrap";
 import { useQuery } from "@apollo/client";
-import ServiceCard from "./../../components/shared/ServiceCard/ServiceCard";
+import React from "react";
+import { Container, Row, Spinner } from "react-bootstrap";
+import { Helmet } from "react-helmet-async";
+import { useParams } from "react-router-dom";
 import { GET_SEARCH_DATA } from "../../graphql/queries";
+import ServiceCard from "../../components/shared/ServiceCard/ServiceCard";
 
 const SearchResult = () => {
     const { searchQuery } = useParams();
@@ -13,7 +12,7 @@ const SearchResult = () => {
         variables: { search: searchQuery },
     });
     return (
-        <Main>
+        <>
             <Helmet>
                 <title>Search Result</title>
             </Helmet>
@@ -50,7 +49,7 @@ const SearchResult = () => {
                     )}
                 </Row>
             </Container>
-        </Main>
+        </>
     );
 };
 

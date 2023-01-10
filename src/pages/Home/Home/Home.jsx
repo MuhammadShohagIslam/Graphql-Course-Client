@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import AboutMe from "../AboutMe/AboutMe";
 import Contact from "../Contact/Contact";
 import Services from "../Services/Services";
 import Jumbotron from "./../../../components/shared/Jumbotron/Jumbotron";
-import { Helmet } from "react-helmet-async";
-import Main from "./../../../layout/Main/Main";
 
 const Home = () => {
     useEffect(() => {
@@ -12,7 +11,7 @@ const Home = () => {
     }, []);
 
     return (
-        <Main>
+        <>
             <Helmet>
                 <title>ShohagTutor</title>
             </Helmet>
@@ -20,7 +19,7 @@ const Home = () => {
             <AboutMe />
             <Services />
             <Contact />
-        </Main>
+        </>
     );
 };
 

@@ -1,8 +1,7 @@
 import { useState } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { toast } from "react-hot-toast";
-import { Container, Button, Row, Col, Form } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
-import Dashboard from "../../layout/Dashboard/Dashboard";
 
 const UpdatePassword = () => {
     const [newPassword, setNewPassword] = useState("");
@@ -38,7 +37,7 @@ const UpdatePassword = () => {
     };
 
     return (
-        <Dashboard>
+        <>
             <Container className="my-5">
                 <Row className="m-0">
                     <Col lg={6} className="m-auto bg-dark p-lg-5 p-4">
@@ -76,7 +75,7 @@ const UpdatePassword = () => {
                     </Col>
                 </Row>
             </Container>
-        </Dashboard>
+        </>
     );
 };
 

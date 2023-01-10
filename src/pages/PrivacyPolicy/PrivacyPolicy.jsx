@@ -1,11 +1,8 @@
 import React, { useEffect } from "react";
-import { Container } from "react-bootstrap";
-import { Col } from "react-bootstrap";
-import { Row } from "react-bootstrap";
-import classes from "./PrivacyPolicy.module.css";
-import SectionTitle from "../../components/shared/SectionTitle/SectionTitle";
+import { Col, Container, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
-import Main from './../../layout/Main/Main';
+import SectionTitle from "../../components/shared/SectionTitle/SectionTitle";
+import classes from "./PrivacyPolicy.module.css";
 
 const PrivacyPolicy = () => {
     
@@ -14,7 +11,7 @@ const PrivacyPolicy = () => {
     }, []);
 
     return (
-        <Main>
+        <>
             <Helmet>
                 <title>PrivacyPolicy</title>
             </Helmet>
@@ -143,7 +140,7 @@ const PrivacyPolicy = () => {
                     </Col>
                 </Row>
             </Container>
-        </Main>
+        </>
     );
 };
 

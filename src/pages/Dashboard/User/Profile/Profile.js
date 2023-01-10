@@ -1,17 +1,15 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
-import omitDeep from "omit-deep";
 import { toast } from "react-hot-toast";
 import { BiEdit } from "react-icons/bi";
 // import Swal from "sweetalert2";
 import { useMutation, useQuery } from "@apollo/client";
-import { PROFILE_UPDATE } from "../../../../graphql/mutations";
-import Dashboard from "../../../../layout/Dashboard/Dashboard";
 import FileUpload from "../../../../components/shared/FileUpload/FileUpload";
+import { PROFILE_UPDATE } from "../../../../graphql/mutations";
+import ProfileEditModal from "./../../../../components/shared/ProfileEditModal/ProfileEditModal";
 import { useAuth } from "./../../../../contexts/AuthProvider/AuthProvider";
 import { GET_CURRENT_USER } from "./../../../../graphql/queries";
-import ProfileEditModal from "./../../../../components/shared/ProfileEditModal/ProfileEditModal";
 import classes from "./Profile.module.css";
 
 const Profile = () => {
@@ -101,7 +99,7 @@ const Profile = () => {
     };
 
     return (
-        <Dashboard>
+        <>
             <Helmet>
                 <title>Profile</title>
             </Helmet>
@@ -169,7 +167,7 @@ const Profile = () => {
                 handleChange={handleChange}
                 modalName="Profile Information Update"
             />
-        </Dashboard>
+        </>
     );
 };
 

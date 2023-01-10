@@ -1,13 +1,15 @@
 import React from "react";
-import { useAuth } from "./../context/AuthProvider/AuthProvider";
-import { Navigate, useLocation } from "react-router-dom";
-import useAdmin from "./../hooks/useAdmin";
 import { Spinner } from "react-bootstrap";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from './../../contexts/AuthProvider/AuthProvider';
+import useAdmin from './../../hooks/useAdmin';
+
 
 const AdminRoute = ({ children }) => {
     const { user, loading } = useAuth();
     const [isAdmin, isAdminLoading] = useAdmin();
     const location = useLocation();
+    console.log(isAdmin, isAdminLoading, "admin router");
 
     if (loading || isAdminLoading) {
         return (

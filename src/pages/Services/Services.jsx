@@ -5,8 +5,7 @@ import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import ServiceCard from "../../components/shared/ServiceCard/ServiceCard";
 import { GET_ALL_SERVICES, GET_TOTAL_SERVICES } from "../../graphql/queries";
-import PaginationBar from "./../../components/shared/PaginationBar/PaginationBar";
-import Main from "./../../layout/Main/Main";
+import PaginationBar from "../../components/shared/PaginationBar/PaginationBar";
 
 const Services = () => {
     const [page, setPage] = useState(1);
@@ -35,7 +34,7 @@ const Services = () => {
     if (error) return `Error! ${error.message}`;
 
     return (
-        <Main>
+        <>
             <Helmet>
                 <title>Services</title>
             </Helmet>
@@ -80,7 +79,7 @@ const Services = () => {
                     />
                 </Row>
             </Container>
-        </Main>
+        </>
     );
 };
 

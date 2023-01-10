@@ -3,15 +3,13 @@ import React from "react";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import Blog from "../../components/shared/Blog/Blog";
-import Main from "./../../layout/Main/Main";
 import { GET_ALL_BLOGS } from "../../graphql/queries";
 
 const Blogs = () => {
     const { loading, data, error } = useQuery(GET_ALL_BLOGS);
-    console.log(data)
 
     return (
-        <Main>
+        <>
             <Helmet>
                 <title>Blog</title>
             </Helmet>
@@ -46,7 +44,7 @@ const Blogs = () => {
                     </Row>
                 </Container>
             </article>
-        </Main>
+        </>
     );
 };
 

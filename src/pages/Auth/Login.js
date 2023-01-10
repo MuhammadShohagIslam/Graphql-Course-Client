@@ -6,7 +6,6 @@ import { toast } from "react-hot-toast";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import Main from "../../layout/Main/Main";
 import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
 import { useMutation } from "@apollo/client";
 import { CREATE_NEW_USER } from "../../graphql/mutations";
@@ -25,7 +24,7 @@ const Login = () => {
 
     const [createNewUser] = useMutation(CREATE_NEW_USER, {
         // update the cache of all reviews corresponding by service id
-        update: (cache, data)=> {
+        update: (cache, data) => {
             Swal.fire({
                 position: "top",
                 icon: "success",
@@ -133,7 +132,7 @@ const Login = () => {
             });
     };
     return (
-        <Main>
+        <>
             <Helmet>
                 <title>Login</title>
             </Helmet>
@@ -218,7 +217,7 @@ const Login = () => {
                     </Col>
                 </Row>
             </Container>
-        </Main>
+        </>
     );
 };
 

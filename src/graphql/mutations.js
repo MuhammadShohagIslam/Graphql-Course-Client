@@ -3,8 +3,7 @@ import {
     REVIEW_FIELD,
     SERVICE_FIELD,
     USER_FIELD,
-    UPDATED_FIELD,
-    DELETED_FIELD,
+    DELETED_FIELD
 } from "./fragments";
 
 /* ----- For Users -----  */

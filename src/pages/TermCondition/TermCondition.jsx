@@ -1,11 +1,8 @@
 import React, { useEffect } from "react";
-import { Container } from "react-bootstrap";
-import { Row } from "react-bootstrap";
-import { Col } from "react-bootstrap";
-import classes from "./TermCondition.module.css";
-import SectionTitle from "../../components/shared/SectionTitle/SectionTitle";
+import { Col, Container, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
-import Main from './../../layout/Main/Main';
+import SectionTitle from "../../components/shared/SectionTitle/SectionTitle";
+import classes from "./TermCondition.module.css";
 
 const TermCondition = () => {
     
@@ -14,7 +11,7 @@ const TermCondition = () => {
     }, []);
 
     return (
-        <Main>
+        <>
             <Helmet>
                 <title>TermCondition</title>
             </Helmet>
@@ -282,7 +279,7 @@ const TermCondition = () => {
                     </Col>
                 </Row>
             </Container>
-        </Main>
+        </>
     );
 };
 

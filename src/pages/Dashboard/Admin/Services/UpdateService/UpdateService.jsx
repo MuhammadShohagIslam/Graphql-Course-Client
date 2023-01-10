@@ -1,14 +1,13 @@
+import { useMutation, useQuery } from "@apollo/client";
 import React, { useMemo, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
-import { useMutation, useQuery } from "@apollo/client";
-import Dashboard from "./../../../../../layout/Dashboard/Dashboard";
 import { useParams } from "react-router-dom";
+import FileUpload from "../../../../../components/shared/FileUpload/FileUpload";
 import { UPDATED_SERVICE } from "../../../../../graphql/mutations";
 import { GET_SERVICE_BY_ID } from "../../../../../graphql/queries";
-import FileUpload from "../../../../../components/shared/FileUpload/FileUpload";
-import { useAuth } from "./../../../../../contexts/AuthProvider/AuthProvider";
+import { useAuth } from "../../../../../contexts/AuthProvider/AuthProvider";
 
 const UpdateService = () => {
     const [values, setValues] = useState({
@@ -81,7 +80,7 @@ const UpdateService = () => {
         });
     };
     return (
-        <Dashboard>
+        <>
             <Helmet>
                 <title>Update Service</title>
             </Helmet>
@@ -155,7 +154,7 @@ const UpdateService = () => {
                     </Col>
                 </Row>
             </Container>
-        </Dashboard>
+        </>
     );
 };
 

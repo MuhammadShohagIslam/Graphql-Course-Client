@@ -1,16 +1,16 @@
 import React from "react";
-import { useAuth } from "./../context/AuthProvider/AuthProvider";
+import { useAuth } from './../../contexts/AuthProvider/AuthProvider';
 import { Navigate, useLocation } from "react-router-dom";
-import useBuyer from "./../hooks/useBuyer";
 import { Spinner } from "react-bootstrap";
+import useUser from './../../hooks/useUser';
 
 const UserRoute = ({ children }) => {
     const { user, loading } = useAuth();
-    const [isBuyer, isBuyerLoading] = useBuyer();
-
+    const [isUser, isUserLoading] = useUser();
     const location = useLocation();
+    console.log(isUser, "isUser")
 
-    if (loading || isBuyerLoading) {
+    if (loading || isUserLoading) {
         return (
             <div
                 style={{ height: "400px" }}
@@ -20,7 +20,7 @@ const UserRoute = ({ children }) => {
             </div>
         );
     }
-    if (user && isBuyer) {
+    if (user && isUser) {
         return children;
     }
 

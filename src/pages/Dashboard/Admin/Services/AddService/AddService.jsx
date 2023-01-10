@@ -1,14 +1,13 @@
+import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
-import { useMutation } from "@apollo/client";
 import { CREATE_NEW_SERVICE } from "../../../../../graphql/mutations";
 import {
     GET_ALL_SERVICES
 } from "../../../../../graphql/queries";
-import Dashboard from "../../../../../layout/Dashboard/Dashboard";
 import FileUpload from "./../../../../../components/shared/FileUpload/FileUpload";
 import { useAuth } from "./../../../../../contexts/AuthProvider/AuthProvider";
 
@@ -100,7 +99,7 @@ const AddService = () => {
         });
     };
     return (
-        <Dashboard>
+        <>
             <Helmet>
                 <title>AddService</title>
             </Helmet>
@@ -168,7 +167,7 @@ const AddService = () => {
                     </Col>
                 </Row>
             </Container>
-        </Dashboard>
+        </>
     );
 };
 

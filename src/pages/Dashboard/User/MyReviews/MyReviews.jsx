@@ -1,11 +1,10 @@
+import { useMutation, useQuery } from "@apollo/client";
 import React, { useEffect } from "react";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
-import { useMutation, useQuery } from "@apollo/client";
-import { GET_REVIEWS_BY_SPECIFIC_USER } from "../../../../graphql/queries";
 import { REMOVED_REVIEW } from "../../../../graphql/mutations";
-import Dashboard from './../../../../layout/Dashboard/Dashboard';
+import { GET_REVIEWS_BY_SPECIFIC_USER } from "../../../../graphql/queries";
 import ReviewTable from './../../../../components/shared/ReviewTable/ReviewTable';
 import { useAuth } from './../../../../contexts/AuthProvider/AuthProvider';
 
@@ -54,7 +53,7 @@ const MyReviews = () => {
     if (error) return `Error! ${error}`;
 
     return (
-        <Dashboard>
+        <>
             <Helmet>
                 <title>MyReviews</title>
             </Helmet>
@@ -93,7 +92,7 @@ const MyReviews = () => {
                     )}
                 </Row>
             </Container>
-        </Dashboard>
+        </>
     );
 };
 

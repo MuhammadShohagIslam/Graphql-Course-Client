@@ -3,12 +3,12 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Container, Button, Row, Col, Form } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthProvider/AuthProvider";
-import Main from "../../layout/Main/Main";
+import { Helmet } from 'react-helmet-async';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
-    const { state, forgotPassword } = useAuth();
+    const { forgotPassword } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
                 setLoading(false);
                 //clear state
                 setEmail("");
-                navigate("/login")
+                navigate("/login");
             })
             .catch((error) => {
                 toast.error(error.message.split("Firebase: ").join(""));
@@ -47,7 +47,10 @@ const ForgotPassword = () => {
             });
     };
     return (
-        <Main>
+        <>
+            <Helmet>
+                <title>Login</title>
+            </Helmet>
             <Container className="my-5">
                 <Row className="m-0">
                     <Col lg={6} className="m-auto bg-dark p-lg-5 p-4">
@@ -83,7 +86,7 @@ const ForgotPassword = () => {
                     </Col>
                 </Row>
             </Container>
-        </Main>
+        </>
     );
 };
 

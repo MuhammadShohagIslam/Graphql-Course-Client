@@ -1,5 +1,5 @@
 import { GoogleAuthProvider } from "firebase/auth";
-import React, { useState } from "react";
+import React from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
@@ -7,7 +7,6 @@ import { toast } from "react-hot-toast";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import Main from "../../layout/Main/Main";
 import { useAuth } from "./../../contexts/AuthProvider/AuthProvider";
 import { useMutation } from "@apollo/client";
 import { CREATE_NEW_USER } from "./../../graphql/mutations";
@@ -109,7 +108,7 @@ const Register = () => {
     };
 
     return (
-        <Main>
+        <>
             <Helmet>
                 <title>SignUp</title>
             </Helmet>
@@ -178,7 +177,7 @@ const Register = () => {
                     </Col>
                 </Row>
             </Container>
-        </Main>
+        </>
     );
 };
 

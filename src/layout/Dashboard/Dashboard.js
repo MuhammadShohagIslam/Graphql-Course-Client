@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
 import { AiOutlineBars } from "react-icons/ai";
 import classes from "./Dashboard.module.css";
 import Footer from "../../components/shared/Footer/Footer";
-import DashboardLeftSideBar from './../../components/shared/DashboardLeftSideBar/DashboardLeftSideBar';
-import NavBar from './../../components/shared/NavBar/NavBar';
+import DashboardLeftSideBar from "./../../components/shared/DashboardLeftSideBar/DashboardLeftSideBar";
+import NavBar from "./../../components/shared/NavBar/NavBar";
 
-const Dashboard = ({ children }) => {
+const Dashboard = () => {
     const [openLeftSideBar, setOpenLeftSideBar] = useState(false);
 
     const handleOpenMenu = () => {
@@ -39,7 +40,9 @@ const Dashboard = ({ children }) => {
                 >
                     <DashboardLeftSideBar />
                 </div>
-                <div className="pt-4">{children}</div>
+                <div className="pt-4">
+                    <Outlet />
+                </div>
             </main>
             <Footer />
         </>

@@ -7,7 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { updatePassword } from "firebase/auth";
-import Main from "../../layout/Main/Main";
 import { useMutation } from "@apollo/client";
 import { CREATE_NEW_USER } from "../../graphql/mutations";
 
@@ -68,9 +67,9 @@ const CompleteRegister = () => {
                         dispatch({
                             type: "LOGGED_IN_USER",
                             payload: {
-                                fullName:result.user.displayName || fullName, 
-                                email:result.user.email ||  email,
-                                token: idTokenResult.token
+                                fullName: result.user.displayName || fullName,
+                                email: result.user.email || email,
+                                token: idTokenResult.token,
                             },
                         });
                         setLoadingRegister(false);
@@ -111,155 +110,147 @@ const CompleteRegister = () => {
             <Helmet>
                 <title>Register</title>
             </Helmet>
-            <Main>
-                <Container className="my-5">
-                    <Row className="m-0">
-                        <Col lg={5} className="m-auto bg-dark p-lg-5 p-4">
-                            <h2 className="text-white text-center fs-lg-3 fs-5 mb-lg-5 mb-3">
-                                Sign Up Connected With Me
-                            </h2>
-                            <Form onSubmit={handleSubmit(handleCompleteSignUp)}>
-                                <Form.Group className="mb-3" controlId="email">
-                                    <Form.Label className="text-white">
-                                        Email address
-                                    </Form.Label>
-                                    <Form.Control
-                                        {...register("email")}
-                                        name="email"
-                                        defaultValue={email}
-                                        readOnly
-                                        type="email"
-                                        placeholder="Enter Email"
-                                    />
-                                    {errors.email && (
-                                        <p className="text-danger">
-                                            {errors.email?.message}
-                                        </p>
-                                    )}
-                                </Form.Group>
-                                <Form.Group
-                                    className="mb-3"
-                                    controlId="fullName"
-                                >
-                                    <Form.Label className="text-white">
-                                        Full Name
-                                    </Form.Label>
-                                    <Form.Control
-                                        {...register("fullName", {
-                                            required: "Full Name Is Required!",
-                                        })}
-                                        type="text"
-                                        name="fullName"
-                                        placeholder="Enter Full Name"
-                                    />
-                                    {errors.fullName && (
-                                        <p className="text-danger">
-                                            {errors.fullName?.message}
-                                        </p>
-                                    )}
-                                </Form.Group>
+            <Container className="my-5">
+                <Row className="m-0">
+                    <Col lg={5} className="m-auto bg-dark p-lg-5 p-4">
+                        <h2 className="text-white text-center fs-lg-3 fs-5 mb-lg-5 mb-3">
+                            Sign Up Connected With Me
+                        </h2>
+                        <Form onSubmit={handleSubmit(handleCompleteSignUp)}>
+                            <Form.Group className="mb-3" controlId="email">
+                                <Form.Label className="text-white">
+                                    Email address
+                                </Form.Label>
+                                <Form.Control
+                                    {...register("email")}
+                                    name="email"
+                                    defaultValue={email}
+                                    readOnly
+                                    type="email"
+                                    placeholder="Enter Email"
+                                />
+                                {errors.email && (
+                                    <p className="text-danger">
+                                        {errors.email?.message}
+                                    </p>
+                                )}
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="fullName">
+                                <Form.Label className="text-white">
+                                    Full Name
+                                </Form.Label>
+                                <Form.Control
+                                    {...register("fullName", {
+                                        required: "Full Name Is Required!",
+                                    })}
+                                    type="text"
+                                    name="fullName"
+                                    placeholder="Enter Full Name"
+                                />
+                                {errors.fullName && (
+                                    <p className="text-danger">
+                                        {errors.fullName?.message}
+                                    </p>
+                                )}
+                            </Form.Group>
 
-                                <Form.Group
-                                    className="mb-3"
-                                    controlId="profileUpload"
-                                >
-                                    <Form.Label className="text-white">
-                                        Profile Picture
-                                    </Form.Label>
-                                    <Form.Control
-                                        {...register("profileImg", {
-                                            required:
-                                                "Profile Picture Is Required!",
-                                        })}
-                                        type="file"
-                                    />
-                                    {errors.profileImg && (
-                                        <p className="text-danger">
-                                            {errors.profileImg?.message}
-                                        </p>
-                                    )}
-                                </Form.Group>
+                            <Form.Group
+                                className="mb-3"
+                                controlId="profileUpload"
+                            >
+                                <Form.Label className="text-white">
+                                    Profile Picture
+                                </Form.Label>
+                                <Form.Control
+                                    {...register("profileImg", {
+                                        required:
+                                            "Profile Picture Is Required!",
+                                    })}
+                                    type="file"
+                                />
+                                {errors.profileImg && (
+                                    <p className="text-danger">
+                                        {errors.profileImg?.message}
+                                    </p>
+                                )}
+                            </Form.Group>
 
-                                <Form.Group
-                                    className="mb-3"
-                                    controlId="password"
-                                >
-                                    <Form.Label className="text-white">
-                                        Password
-                                    </Form.Label>
-                                    <Form.Control
-                                        {...register("password", {
-                                            required: "Password is required",
-                                            minLength: {
-                                                value: 6,
-                                                message:
-                                                    "Password should be 6 characters or longer",
-                                            },
-                                        })}
-                                        name="password"
-                                        type="password"
-                                        placeholder="Password"
-                                    />
-                                    {errors.password && (
-                                        <p className="text-danger">
-                                            {errors.password?.message}
-                                        </p>
-                                    )}
-                                </Form.Group>
-                                <Form.Group
-                                    className="mb-3"
-                                    controlId="formBasicCheckbox"
-                                >
-                                    <Form.Check
-                                        className="text-white"
-                                        type="checkbox"
-                                        onClick={(e) =>
-                                            setAccepted(e.target.checked)
-                                        }
-                                        label={
-                                            <>
-                                                By Register, you agree to our
-                                                <Link
-                                                    className="mx-1 text-decoration-underline"
-                                                    to="/term-condition"
-                                                >
-                                                    Terms of Use
-                                                </Link>
-                                                and
-                                                <Link
-                                                    className="ms-1 text-decoration-underline"
-                                                    to="/privacy-policy"
-                                                >
-                                                    Privacy Policy
-                                                </Link>
-                                            </>
-                                        }
-                                    />
-                                </Form.Group>
-                                <Button
-                                    size="lg"
+                            <Form.Group className="mb-3" controlId="password">
+                                <Form.Label className="text-white">
+                                    Password
+                                </Form.Label>
+                                <Form.Control
+                                    {...register("password", {
+                                        required: "Password is required",
+                                        minLength: {
+                                            value: 6,
+                                            message:
+                                                "Password should be 6 characters or longer",
+                                        },
+                                    })}
+                                    name="password"
+                                    type="password"
+                                    placeholder="Password"
+                                />
+                                {errors.password && (
+                                    <p className="text-danger">
+                                        {errors.password?.message}
+                                    </p>
+                                )}
+                            </Form.Group>
+                            <Form.Group
+                                className="mb-3"
+                                controlId="formBasicCheckbox"
+                            >
+                                <Form.Check
                                     className="text-white"
-                                    variant="outline-dark"
-                                    type="submit"
-                                    disabled={!accepted}
+                                    type="checkbox"
+                                    onClick={(e) =>
+                                        setAccepted(e.target.checked)
+                                    }
+                                    label={
+                                        <>
+                                            By Register, you agree to our
+                                            <Link
+                                                className="mx-1 text-decoration-underline"
+                                                to="/term-condition"
+                                            >
+                                                Terms of Use
+                                            </Link>
+                                            and
+                                            <Link
+                                                className="ms-1 text-decoration-underline"
+                                                to="/privacy-policy"
+                                            >
+                                                Privacy Policy
+                                            </Link>
+                                        </>
+                                    }
+                                />
+                            </Form.Group>
+                            <Button
+                                size="lg"
+                                className="text-white"
+                                variant="outline-dark"
+                                type="submit"
+                                disabled={!accepted}
+                            >
+                                {loadingRegister ? "Loading" : "Register"}
+                            </Button>
+                            <hr className="border border-white border-1 opacity-50 mt-4"></hr>
+                            <p className="text-white text-center">
+                                Already have an account?{" "}
+                                <Link
+                                    className="text-decoration-underline"
+                                    to="/login"
                                 >
-                                    {loadingRegister ? "Loading" : "Register"}
-                                </Button>
-                                <hr className="border border-white border-1 opacity-50 mt-4"></hr>
-                                <p className="text-white text-center">
-                                    Already have an account?{" "}
-                                    <Link
-                                        className="text-decoration-underline"
-                                        to="/login"
-                                    >
-                                        Log in
-                                    </Link>
-                                </p>
-                            </Form>
-                        </Col>
-                    </Row>
-                </Container>
-            </Main>
+                                    Log in
+                                </Link>
+                            </p>
+                        </Form>
+                    </Col>
+                </Row>
+            </Container>
         </>
     );
 };
