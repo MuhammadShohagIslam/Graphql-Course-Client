@@ -10,6 +10,7 @@ import {
 } from "../../../../../graphql/queries";
 import FileUpload from "./../../../../../components/shared/FileUpload/FileUpload";
 import { useAuth } from "./../../../../../contexts/AuthProvider/AuthProvider";
+import DisplayError from './../../../../DisplayError/DisplayError';
 
 const AddService = () => {
     const [values, setValues] = useState({
@@ -26,7 +27,7 @@ const AddService = () => {
     const { state } = useAuth();
     const { user } = state;
 
-    const [createNewService] = useMutation(CREATE_NEW_SERVICE, {
+    const [createNewService, {error}] = useMutation(CREATE_NEW_SERVICE, {
         // update the cache of all reviews corresponding by service id
         update: (cache, data) => {
             // read the data of all reviews corresponding by service id
@@ -98,6 +99,14 @@ const AddService = () => {
             [e.target.name]: e.target.value,
         });
     };
+    if (error) {
+        return (
+            <DisplayError
+                message={error.message.split(":")[0]}
+                statusCode={error.message.split(":")[1].split(" ").slice(-1)}
+            />
+        );
+    }
     return (
         <>
             <Helmet>

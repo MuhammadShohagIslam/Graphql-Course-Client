@@ -16,22 +16,21 @@ import MyReviews from "./../../pages/Dashboard/User/MyReviews/MyReviews";
 import UserRoute from "../UserRouter/UserRoute";
 import UpdateReview from "./../../pages/Dashboard/User/MyReviews/UpdateReview/UpdateReview";
 import Profile from "./../../pages/Dashboard/User/Profile/Profile";
-import MostRecent from './../../pages/Dashboard/User/MostRecent/MostRecent';
-import ServiceDetails from './../../pages/Services/ServiceDetails/ServiceDetails';
-import CompleteRegister from './../../pages/Auth/CompleteRegister';
-import ForgotPassword from './../../pages/Auth/ForgotPassword';
-import UpdatePassword from './../../pages/Auth/UpdatePassword';
-import SearchResult from './../../pages/SearchResult/SearchResult';
-import TermCondition from './../../pages/TermCondition/TermCondition';
-import PrivacyPolicy from './../../pages/PrivacyPolicy/PrivacyPolicy';
-import NotFound from './../../pages/NotFound/NotFound';
-import DisplayError from './../../pages/DisplayError/DisplayError';
+import MostRecent from "./../../pages/Dashboard/User/MostRecent/MostRecent";
+import ServiceDetails from "./../../pages/Services/ServiceDetails/ServiceDetails";
+import CompleteRegister from "./../../pages/Auth/CompleteRegister";
+import ForgotPassword from "./../../pages/Auth/ForgotPassword";
+import UpdatePassword from "./../../pages/Auth/UpdatePassword";
+import SearchResult from "./../../pages/SearchResult/SearchResult";
+import TermCondition from "./../../pages/TermCondition/TermCondition";
+import PrivacyPolicy from "./../../pages/PrivacyPolicy/PrivacyPolicy";
+import DisplayError from "./../../pages/DisplayError/DisplayError";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Main />,
-        errorElement: <NotFound />,
+        errorElement: <DisplayError />,
         children: [
             {
                 path: "/",
@@ -80,7 +79,7 @@ const router = createBrowserRouter([
             {
                 path: "/privacy-policy",
                 element: <PrivacyPolicy />,
-            }
+            },
         ],
     },
     {

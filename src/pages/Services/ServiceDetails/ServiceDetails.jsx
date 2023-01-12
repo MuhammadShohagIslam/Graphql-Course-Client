@@ -1,6 +1,8 @@
 import {
-    useLazyQuery, useMutation,
-    useQuery, useSubscription
+    useLazyQuery,
+    useMutation,
+    useQuery,
+    useSubscription,
 } from "@apollo/client";
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Col, Container, Image, Row, Spinner } from "react-bootstrap";
@@ -13,14 +15,19 @@ import ReviewModal from "../../../components/shared/ReviewModal/ReviewModal";
 import { useAuth } from "../../../contexts/AuthProvider/AuthProvider";
 import {
     GET_REVIEWS_BY_SERVICE_ID,
-    GET_SERVICE_BY_ID
+    GET_SERVICE_BY_ID,
 } from "../../../graphql/queries";
 import {
-    ADDED_REVIEW, REMOVED_REVIEW, UPDATED_REVIEW
+    ADDED_REVIEW,
+    REMOVED_REVIEW,
+    UPDATED_REVIEW,
 } from "../../../graphql/subscriptions";
 import { CREATE_NEW_REVIEW } from "./../../../graphql/mutations";
 import { avgRating } from "./../../../utils/avgRating";
 import classes from "./ServiceDetails.module.css";
+import DisplayError from "./../../DisplayError/DisplayError";
+import QueryError from "./../../../components/shared/Errors/QueryError/QueryError";
+import NetworkError from "./../../../components/shared/Errors/NetworkError/NetworkError";
 
 const ServiceDetails = () => {
     const [showReviewModal, setShowReviewModal] = useState(false);
@@ -51,7 +58,7 @@ const ServiceDetails = () => {
     const {
         loading: loadingReviews,
         error: errorReviews,
-        data: reviewsData
+        data: reviewsData,
     } = useQuery(GET_REVIEWS_BY_SERVICE_ID, {
         variables: { query: id },
     });
@@ -196,7 +203,22 @@ const ServiceDetails = () => {
         },
     });
 
-    // if (error || errorReviews || createdReviewError) return `Error! ${error}`;
+    if (error || errorReviews || createdReviewError) {
+        error?.graphQLErrors.length !== 0 && <QueryError error={error?.graphQLErrors} />
+        error?.graphQLErrors.length !== 0 && <QueryError error={error?.graphQLErrors} />
+        error?.graphQLErrors.length !== 0 && <QueryError error={error?.graphQLErrors} />
+        if (
+            error?.graphQLErrors.length !== 0 ||
+            errorReviews?.graphQLErrors.length !== 0 ||
+            createdReviewError?.graphQLErrors.length !== 0
+        ) {
+            let errorGraphQl =  errorReviews?.graphQLErrors 
+            return <QueryError error={error?.graphQLErrors} />;
+        }
+        if (error?.networkError) {
+            return <NetworkError networkError={error?.networkError} />;
+        }
+    }
 
     return (
         <>

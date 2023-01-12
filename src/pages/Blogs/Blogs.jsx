@@ -4,10 +4,20 @@ import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import Blog from "../../components/shared/Blog/Blog";
 import { GET_ALL_BLOGS } from "../../graphql/queries";
+import DisplayError from "./../DisplayError/DisplayError";
 
 const Blogs = () => {
     const { loading, data, error } = useQuery(GET_ALL_BLOGS);
 
+    if (error) {
+        return (
+            <DisplayError
+                message={error.message.split(":")[0]}
+                statusCode={error.message.split(":")[1].split(" ").slice(-1)}
+                isShouldLogin={true}
+            />
+        );
+    }
     return (
         <>
             <Helmet>

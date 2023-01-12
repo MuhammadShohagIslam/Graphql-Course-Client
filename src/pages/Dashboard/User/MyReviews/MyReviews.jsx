@@ -5,8 +5,9 @@ import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
 import { REMOVED_REVIEW } from "../../../../graphql/mutations";
 import { GET_REVIEWS_BY_SPECIFIC_USER } from "../../../../graphql/queries";
-import ReviewTable from './../../../../components/shared/ReviewTable/ReviewTable';
-import { useAuth } from './../../../../contexts/AuthProvider/AuthProvider';
+import ReviewTable from "./../../../../components/shared/ReviewTable/ReviewTable";
+import { useAuth } from "./../../../../contexts/AuthProvider/AuthProvider";
+import DisplayError from "./../../../DisplayError/DisplayError";
 
 const MyReviews = () => {
     const { state } = useAuth();
@@ -23,19 +24,22 @@ const MyReviews = () => {
         refetch();
     }, [refetch]);
 
-    const [removeReview] = useMutation(REMOVED_REVIEW, {
-        update(cache, data) {
-            if (data?.data?.removeReview?.deletedCount > 0) {
-                Swal.fire({
-                    position: "top",
-                    icon: "error",
-                    title: `Review Deleted Successfully`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
-            }
-        },
-    });
+    const [removeReview, { error: removedReviewError }] = useMutation(
+        REMOVED_REVIEW,
+        {
+            update(cache, data) {
+                if (data?.data?.removeReview?.deletedCount > 0) {
+                    Swal.fire({
+                        position: "top",
+                        icon: "error",
+                        title: `Review Deleted Successfully`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                }
+            },
+        }
+    );
 
     const handleReviewDelete = async (e, id, serviceName) => {
         removeReview({
@@ -50,7 +54,26 @@ const MyReviews = () => {
             ],
         });
     };
-    if (error) return `Error! ${error}`;
+    if (error || removedReviewError) {
+        const errorObj = {
+            status: null,
+            message: "",
+        };
+        if (error || removedReviewError) {
+            errorObj.message =
+                error.message.split(":")[0] ||
+                removedReviewError.message.split(":")[0];
+            errorObj.status =
+                error.message.split(":")[1].split(" ").slice(-1) ||
+                removedReviewError.message.split(":")[1].split(" ").slice(-1);
+        }
+        return (
+            <DisplayError
+                message={errorObj?.message}
+                statusCode={errorObj?.status}
+            />
+        );
+    }
 
     return (
         <>

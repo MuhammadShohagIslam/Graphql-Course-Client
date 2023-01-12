@@ -1,17 +1,15 @@
 import React from "react";
-import { Spinner } from "react-bootstrap";
+import { useAuth } from '../../contexts/AuthProvider/AuthProvider';
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from './../../contexts/AuthProvider/AuthProvider';
-import useAdmin from './../../hooks/useAdmin';
+import { Spinner } from "react-bootstrap";
+import useUser from '../../hooks/useUser';
 
-
-const AdminRoute = ({ children }) => {
+const UserRoute = ({ children }) => {
     const { user, loading } = useAuth();
-    const [isAdmin, isAdminLoading] = useAdmin();
+    const [isUser, isUserLoading] = useUser();
     const location = useLocation();
-    console.log(isAdmin, isAdminLoading, "admin router");
 
-    if (loading || isAdminLoading) {
+    if (loading || isUserLoading) {
         return (
             <div
                 style={{ height: "400px" }}
@@ -21,11 +19,11 @@ const AdminRoute = ({ children }) => {
             </div>
         );
     }
-    if (user && isAdmin) {
+    if (user && isUser) {
         return children;
     }
 
     return <Navigate to="/login" state={{ from: location }} replace={true} />;
 };
 
-export default AdminRoute;
+export default UserRoute;

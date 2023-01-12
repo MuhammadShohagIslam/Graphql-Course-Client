@@ -7,11 +7,11 @@ import {
     ApolloProvider,
     HttpLink,
     split,
+    ApolloLink,
 } from "@apollo/client";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 import { getMainDefinition } from "@apollo/client/utilities";
-
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "./contexts/AuthProvider/AuthProvider";
 
@@ -29,8 +29,7 @@ function App() {
         };
     });
 
-    // 4. concat http and authtoken link
-    const httpAuthLink = authLink.concat(httpLink);
+    const httpAuthLink = ApolloLink.from([authLink, httpLink]);
 
     const wsLink = new GraphQLWsLink(
         createClient({
@@ -63,6 +62,13 @@ function App() {
                 },
             },
         }),
+        defaultOptions: {
+            watchQuery: {
+                fetchPolicy: "network-only",
+                errorPolicy: "all",
+            },
+        },
+        connectToDevTools: true,
     });
 
     return (

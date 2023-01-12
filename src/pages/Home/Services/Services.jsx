@@ -6,11 +6,20 @@ import SectionTitle from "./../../../components/shared/SectionTitle/SectionTitle
 import ServiceCard from "./../../../components/shared/ServiceCard/ServiceCard";
 import classes from "./Services.module.css";
 import { GET_ALL_SERVICES } from "./../../../graphql/queries";
+import DisplayError from './../../DisplayError/DisplayError';
 
 const Services = () => {
     const { loading, error, data } = useQuery(GET_ALL_SERVICES);
 
-    if (error) return `Error! ${error}`;
+    if (error) {
+        return (
+            <DisplayError
+                message={error.message.split(":")[0]}
+                statusCode={error.message.split(":")[1].split(" ").slice(-1)}
+                isShouldLogin={true}
+            />
+        );
+    }
 
     return (
         <>

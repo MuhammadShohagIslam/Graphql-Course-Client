@@ -3,7 +3,6 @@ import { Col, Container, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-hot-toast";
 import { BiEdit } from "react-icons/bi";
-// import Swal from "sweetalert2";
 import { useMutation, useQuery } from "@apollo/client";
 import FileUpload from "../../../../components/shared/FileUpload/FileUpload";
 import { PROFILE_UPDATE } from "../../../../graphql/mutations";
@@ -11,11 +10,14 @@ import ProfileEditModal from "./../../../../components/shared/ProfileEditModal/P
 import { useAuth } from "./../../../../contexts/AuthProvider/AuthProvider";
 import { GET_CURRENT_USER } from "./../../../../graphql/queries";
 import classes from "./Profile.module.css";
+import DisplayError from "./../../../DisplayError/DisplayError";
 
 const Profile = () => {
     const [showModal, setShowModal] = useState(false);
-    const [loadingForUpdateProfile, setLoadingForUpdateProfile] = useState(false);
-    const [loadingForUpdateProfileImg, setLoadingForUpdateProfileImg] = useState(false);
+    const [loadingForUpdateProfile, setLoadingForUpdateProfile] =
+        useState(false);
+    const [loadingForUpdateProfileImg, setLoadingForUpdateProfileImg] =
+        useState(false);
     const [values, setValues] = useState({
         username: "",
         fullName: "",
@@ -27,10 +29,10 @@ const Profile = () => {
         about: "",
     });
 
-    const { state, userProfileUpdate,setLoading } = useAuth();
+    const { state, userProfileUpdate, setLoading } = useAuth();
     const { user } = state;
 
-    const { data, refetch } = useQuery(GET_CURRENT_USER);
+    const { data, error, refetch } = useQuery(GET_CURRENT_USER);
 
     useMemo(() => {
         if (data) {
@@ -52,11 +54,14 @@ const Profile = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, []);
 
-    const [profileUpdate] = useMutation(PROFILE_UPDATE, {
-        update: ({ data }) => {
-            toast.success("Profile Updated Successfully!");
-        },
-    });
+    const [profileUpdate, { error: profileUpdateError }] = useMutation(
+        PROFILE_UPDATE,
+        {
+            update: ({ data }) => {
+                toast.success("Profile Updated Successfully!");
+            },
+        }
+    );
 
     const handleShowModal = () => {
         setShowModal((prev) => !prev);
@@ -86,7 +91,8 @@ const Profile = () => {
             })
             .catch((error) => {
                 toast.error(error);
-            }).finally(()=>{
+            })
+            .finally(() => {
                 setLoading(false);
             });
     };
@@ -97,6 +103,27 @@ const Profile = () => {
             [e.target.name]: e.target.value,
         });
     };
+
+    if (error || profileUpdateError) {
+        const errorObj = {
+            status: null,
+            message: "",
+        };
+        if (error || profileUpdateError) {
+            errorObj.message =
+                error.message.split(":")[0] ||
+                profileUpdateError.message.split(":")[0];
+            errorObj.status =
+                error.message.split(":")[1].split(" ").slice(-1) ||
+                profileUpdateError.message.split(":")[1].split(" ").slice(-1);
+        }
+        return (
+            <DisplayError
+                message={errorObj?.message}
+                statusCode={errorObj?.status}
+            />
+        );
+    }
 
     return (
         <>
@@ -124,7 +151,7 @@ const Profile = () => {
                                 className={classes.editIcon}
                                 onClick={handleShowModal}
                             >
-                                <BiEdit/>
+                                <BiEdit />
                             </span>
                         </div>
                         <div>

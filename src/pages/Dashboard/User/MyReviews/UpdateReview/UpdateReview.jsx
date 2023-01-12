@@ -7,6 +7,7 @@ import StarRatings from "react-star-ratings";
 import Swal from "sweetalert2";
 import { REVIEW_UPDATED } from "../../../../../graphql/mutations";
 import { GET_SINGLE_REVIEW } from "../../../../../graphql/queries";
+import DisplayError from "./../../../../DisplayError/DisplayError";
 
 const UpdateReview = () => {
     const [comment, setComment] = useState("");
@@ -18,20 +19,23 @@ const UpdateReview = () => {
     const [getReview, { data, error, loading, refetch }] =
         useLazyQuery(GET_SINGLE_REVIEW);
 
-    const [reviewUpdated] = useMutation(REVIEW_UPDATED, {
-        update(cache, data) {
-            if (data?.data.reviewUpdated) {
-                Swal.fire({
-                    position: "top",
-                    icon: "success",
-                    title: `Review Updated`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
-                refetch();
-            }
-        },
-    });
+    const [reviewUpdated, { error: updateReviewError }] = useMutation(
+        REVIEW_UPDATED,
+        {
+            update(cache, data) {
+                if (data?.data.reviewUpdated) {
+                    Swal.fire({
+                        position: "top",
+                        icon: "success",
+                        title: `Review Updated`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    refetch();
+                }
+            },
+        }
+    );
 
     useEffect(() => {
         getReview({
@@ -67,6 +71,27 @@ const UpdateReview = () => {
         });
         setActive(true);
     };
+
+    if (error || updateReviewError) {
+        const errorObj = {
+            status: null,
+            message: "",
+        };
+        if (error || updateReviewError) {
+            errorObj.message =
+                error.message.split(":")[0] ||
+                updateReviewError.message.split(":")[0];
+            errorObj.status =
+                error.message.split(":")[1].split(" ").slice(-1) ||
+                updateReviewError.message.split(":")[1].split(" ").slice(-1);
+        }
+        return (
+            <DisplayError
+                message={errorObj?.message}
+                statusCode={errorObj?.status}
+            />
+        );
+    }
 
     return (
         <>

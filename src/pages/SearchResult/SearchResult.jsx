@@ -5,12 +5,23 @@ import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
 import { GET_SEARCH_DATA } from "../../graphql/queries";
 import ServiceCard from "../../components/shared/ServiceCard/ServiceCard";
+import QueryError from "./../../components/shared/Errors/QueryError/QueryError";
+import NetworkError from "./../../components/shared/Errors/NetworkError/NetworkError";
 
 const SearchResult = () => {
     const { searchQuery } = useParams();
     const { loading, error, data } = useQuery(GET_SEARCH_DATA, {
         variables: { search: searchQuery },
     });
+
+    if (error) {
+        if (error?.graphQLErrors.length !== 0) {
+            return <QueryError error={error?.graphQLErrors} />;
+        }
+        if (error?.networkError) {
+            return <NetworkError networkError={error?.networkError} />;
+        }
+    }
     return (
         <>
             <Helmet>

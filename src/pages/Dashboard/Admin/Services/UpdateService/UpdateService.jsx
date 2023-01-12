@@ -8,6 +8,7 @@ import FileUpload from "../../../../../components/shared/FileUpload/FileUpload";
 import { UPDATED_SERVICE } from "../../../../../graphql/mutations";
 import { GET_SERVICE_BY_ID } from "../../../../../graphql/queries";
 import { useAuth } from "../../../../../contexts/AuthProvider/AuthProvider";
+import DisplayError from "./../../../../DisplayError/DisplayError";
 
 const UpdateService = () => {
     const [values, setValues] = useState({
@@ -23,8 +24,8 @@ const UpdateService = () => {
     const { serviceId } = useParams();
     const { state } = useAuth();
     const { user } = state;
- 
-    const { data } = useQuery(GET_SERVICE_BY_ID, {
+
+    const { data, error } = useQuery(GET_SERVICE_BY_ID, {
         variables: {
             serviceId: serviceId,
         },
@@ -45,22 +46,25 @@ const UpdateService = () => {
         }
     }, [data]);
 
-    const [updateService] = useMutation(UPDATED_SERVICE, {
-        update: (cache, data) => {
-            if (data?.data.updateService) {
-                toast.success("Service Updated");
-            }
-            setLoading(false);
-        },
-        refetchQueries: [
-            {
-                query: GET_SERVICE_BY_ID,
-                variables: {
-                    serviceId: serviceId,
-                },
+    const [updateService, { error: updatedServiceError }] = useMutation(
+        UPDATED_SERVICE,
+        {
+            update: (cache, data) => {
+                if (data?.data.updateService) {
+                    toast.success("Service Updated");
+                }
+                setLoading(false);
             },
-        ],
-    });
+            refetchQueries: [
+                {
+                    query: GET_SERVICE_BY_ID,
+                    variables: {
+                        serviceId: serviceId,
+                    },
+                },
+            ],
+        }
+    );
 
     const handleServiceSubmit = (e) => {
         e.preventDefault();
@@ -79,6 +83,27 @@ const UpdateService = () => {
             [e.target.name]: e.target.value,
         });
     };
+
+    if (error || updatedServiceError) {
+        const errorObj = {
+            status: null,
+            message: "",
+        };
+        if (error || updatedServiceError) {
+            errorObj.message =
+                error.message.split(":")[0] ||
+                updatedServiceError.message.split(":")[0];
+            errorObj.status =
+                error.message.split(":")[1].split(" ").slice(-1) ||
+                updatedServiceError.message.split(":")[1].split(" ").slice(-1);
+        }
+        return (
+            <DisplayError
+                message={errorObj?.message}
+                statusCode={errorObj?.status}
+            />
+        );
+    }
     return (
         <>
             <Helmet>
@@ -91,10 +116,7 @@ const UpdateService = () => {
                             Let's Update {values.name} Service
                         </h2>
                         <Form onSubmit={handleServiceSubmit}>
-                            <Form.Group
-                                className="mb-3"
-                                controlId="name"
-                            >
+                            <Form.Group className="mb-3" controlId="name">
                                 <Form.Label className="text-white">
                                     Service Name
                                 </Form.Label>

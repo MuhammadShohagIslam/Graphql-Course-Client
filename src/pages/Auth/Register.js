@@ -1,5 +1,5 @@
 import { GoogleAuthProvider } from "firebase/auth";
-import React from "react";
+import React, { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
@@ -12,7 +12,7 @@ import { useMutation } from "@apollo/client";
 import { CREATE_NEW_USER } from "./../../graphql/mutations";
 
 const Register = () => {
-    // const [accepted, setAccepted] = useState(false);
+    const [loadingRegister, setLoadingRegister] = useState(false);
     const {
         handleSubmit,
         register,
@@ -78,10 +78,10 @@ const Register = () => {
                 const currentUser = {
                     fullName: user?.displayName,
                     email: user?.email,
-                    image:{
+                    image: {
                         url: user?.photoURL,
-                        public_id: `${Date.now()}`
-                    }
+                        public_id: `${Date.now()}`,
+                    },
                 };
                 createNewUser({
                     variables: {
@@ -160,8 +160,9 @@ const Register = () => {
                                 className="text-white"
                                 variant="outline-dark"
                                 type="submit"
+                                disabled={setLoadingRegister}
                             >
-                                Register
+                                {loadingRegister ? "Loading" : "Register"}
                             </Button>
                             <hr className="border border-white border-1 opacity-50 mt-4"></hr>
                             <p className="text-white text-center">

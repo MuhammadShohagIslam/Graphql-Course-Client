@@ -6,18 +6,19 @@ import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
 import {
     GET_ALL_SERVICES,
-    GET_TOTAL_SERVICES
+    GET_TOTAL_SERVICES,
 } from "../../../../../graphql/queries";
 import PaginationBar from "../../../../../components/shared/PaginationBar/PaginationBar";
 import ServiceCard from "../../../../../components/shared/ServiceCard/ServiceCard";
 import { REMOVED_SERVICE } from "../../../../../graphql/mutations";
+import DisplayError from "./../../../../DisplayError/DisplayError";
 
 const AllServices = () => {
     const [page, setPage] = useState(1);
 
     const [getAllService, { loading, error, data }] =
         useLazyQuery(GET_ALL_SERVICES);
-        
+
     const { data: totalServiceData } = useQuery(GET_TOTAL_SERVICES);
 
     const pages =
@@ -37,19 +38,22 @@ const AllServices = () => {
         });
     }, [page, getAllService]);
 
-    const [removeService] = useMutation(REMOVED_SERVICE, {
-        update: (cache, data) => {
-            if (data?.data?.removeService?.deletedCount > 0) {
-                Swal.fire({
-                    position: "top",
-                    icon: "error",
-                    title: `Service Deleted Successfully`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
-            }
-        },
-    });
+    const [removeService, { error: removedServiceError }] = useMutation(
+        REMOVED_SERVICE,
+        {
+            update: (cache, data) => {
+                if (data?.data?.removeService?.deletedCount > 0) {
+                    Swal.fire({
+                        position: "top",
+                        icon: "error",
+                        title: `Service Deleted Successfully`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                }
+            },
+        }
+    );
 
     const handleServiceDelete = (id) => {
         removeService({
@@ -65,7 +69,26 @@ const AllServices = () => {
         });
     };
 
-    if (error) return `Error! ${error.message}`;
+    if (error || removedServiceError) {
+        const errorObj = {
+            status: null,
+            message: "",
+        };
+        if (error || removedServiceError) {
+            errorObj.message =
+                error.message.split(":")[0] ||
+                removedServiceError.message.split(":")[0];
+            errorObj.status =
+                error.message.split(":")[1].split(" ").slice(-1) ||
+                removedServiceError.message.split(":")[1].split(" ").slice(-1);
+        }
+        return (
+            <DisplayError
+                message={errorObj?.message}
+                statusCode={errorObj?.status}
+            />
+        );
+    }
     return (
         <>
             <Helmet>
