@@ -6,19 +6,19 @@ import SectionTitle from "./../../../components/shared/SectionTitle/SectionTitle
 import ServiceCard from "./../../../components/shared/ServiceCard/ServiceCard";
 import classes from "./Services.module.css";
 import { GET_ALL_SERVICES } from "./../../../graphql/queries";
-import DisplayError from './../../DisplayError/DisplayError';
+import QueryError from "./../../../components/shared/Errors/QueryError/QueryError";
+import NetworkError from "./../../../components/shared/Errors/NetworkError/NetworkError";
 
 const Services = () => {
     const { loading, error, data } = useQuery(GET_ALL_SERVICES);
 
     if (error) {
-        return (
-            <DisplayError
-                message={error.message.split(":")[0]}
-                statusCode={error.message.split(":")[1].split(" ").slice(-1)}
-                isShouldLogin={true}
-            />
-        );
+        if (error?.graphQLErrors.length !== 0) {
+            return <QueryError error={error?.graphQLErrors} />;
+        }
+        if (error?.networkError) {
+            return <NetworkError networkError={error?.networkError} />;
+        }
     }
 
     return (

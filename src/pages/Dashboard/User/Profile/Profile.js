@@ -10,7 +10,8 @@ import ProfileEditModal from "./../../../../components/shared/ProfileEditModal/P
 import { useAuth } from "./../../../../contexts/AuthProvider/AuthProvider";
 import { GET_CURRENT_USER } from "./../../../../graphql/queries";
 import classes from "./Profile.module.css";
-import DisplayError from "./../../../DisplayError/DisplayError";
+import QueryError from "./../../../../components/shared/Errors/QueryError/QueryError";
+import NetworkError from "./../../../../components/shared/Errors/NetworkError/NetworkError";
 
 const Profile = () => {
     const [showModal, setShowModal] = useState(false);
@@ -105,24 +106,22 @@ const Profile = () => {
     };
 
     if (error || profileUpdateError) {
-        const errorObj = {
-            status: null,
-            message: "",
-        };
-        if (error || profileUpdateError) {
-            errorObj.message =
-                error.message.split(":")[0] ||
-                profileUpdateError.message.split(":")[0];
-            errorObj.status =
-                error.message.split(":")[1].split(" ").slice(-1) ||
-                profileUpdateError.message.split(":")[1].split(" ").slice(-1);
+        if (error?.graphQLErrors.length !== 0) {
+            return <QueryError error={error?.graphQLErrors} />;
+        } else if (profileUpdateError?.graphQLErrors.length !== 0) {
+            return <QueryError error={profileUpdateError?.graphQLErrors} />;
+        } else {
+            if (error?.networkError || profileUpdateError?.networkError) {
+                return (
+                    <NetworkError
+                        networkError={
+                            error?.networkError ||
+                            profileUpdateError?.networkError
+                        }
+                    />
+                );
+            }
         }
-        return (
-            <DisplayError
-                message={errorObj?.message}
-                statusCode={errorObj?.status}
-            />
-        );
     }
 
     return (

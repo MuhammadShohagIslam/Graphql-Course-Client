@@ -4,19 +4,19 @@ import { Container, Row, Spinner } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import Blog from "../../components/shared/Blog/Blog";
 import { GET_ALL_BLOGS } from "../../graphql/queries";
-import DisplayError from "./../DisplayError/DisplayError";
+import QueryError from "./../../components/shared/Errors/QueryError/QueryError";
+import NetworkError from "./../../components/shared/Errors/NetworkError/NetworkError";
 
 const Blogs = () => {
     const { loading, data, error } = useQuery(GET_ALL_BLOGS);
 
     if (error) {
-        return (
-            <DisplayError
-                message={error.message.split(":")[0]}
-                statusCode={error.message.split(":")[1].split(" ").slice(-1)}
-                isShouldLogin={true}
-            />
-        );
+        if (error?.graphQLErrors.length !== 0) {
+            return <QueryError error={error?.graphQLErrors} />;
+        }
+        if (error?.networkError) {
+            return <NetworkError networkError={error?.networkError} />;
+        }
     }
     return (
         <>

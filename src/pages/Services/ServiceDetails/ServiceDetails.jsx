@@ -198,25 +198,33 @@ const ServiceDetails = () => {
                     getAllReview: [...filteredReview],
                 },
             });
-            // show toast notification
             toast.error("One Review deleted!");
         },
     });
 
     if (error || errorReviews || createdReviewError) {
-        error?.graphQLErrors.length !== 0 && <QueryError error={error?.graphQLErrors} />
-        error?.graphQLErrors.length !== 0 && <QueryError error={error?.graphQLErrors} />
-        error?.graphQLErrors.length !== 0 && <QueryError error={error?.graphQLErrors} />
-        if (
-            error?.graphQLErrors.length !== 0 ||
-            errorReviews?.graphQLErrors.length !== 0 ||
-            createdReviewError?.graphQLErrors.length !== 0
-        ) {
-            let errorGraphQl =  errorReviews?.graphQLErrors 
+        if (error?.graphQLErrors.length !== 0) {
             return <QueryError error={error?.graphQLErrors} />;
-        }
-        if (error?.networkError) {
-            return <NetworkError networkError={error?.networkError} />;
+        } else if (errorReviews?.graphQLErrors.length !== 0) {
+            return <QueryError error={errorReviews?.graphQLErrors} />;
+        } else if (createdReviewError?.graphQLErrors.length !== 0) {
+            return <QueryError error={createdReviewError?.graphQLErrors} />;
+        } else {
+            if (
+                error?.networkError ||
+                errorReviews?.networkError ||
+                createdReviewError?.networkError
+            ) {
+                return (
+                    <NetworkError
+                        networkError={
+                            error?.networkError ||
+                            errorReviews?.networkError ||
+                            createdReviewError?.networkError
+                        }
+                    />
+                );
+            }
         }
     }
 

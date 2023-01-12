@@ -8,7 +8,8 @@ import FileUpload from "../../../../../components/shared/FileUpload/FileUpload";
 import { UPDATED_SERVICE } from "../../../../../graphql/mutations";
 import { GET_SERVICE_BY_ID } from "../../../../../graphql/queries";
 import { useAuth } from "../../../../../contexts/AuthProvider/AuthProvider";
-import DisplayError from "./../../../../DisplayError/DisplayError";
+import QueryError from "./../../../../../components/shared/Errors/QueryError/QueryError";
+import NetworkError from "./../../../../../components/shared/Errors/NetworkError/NetworkError";
 
 const UpdateService = () => {
     const [values, setValues] = useState({
@@ -85,24 +86,22 @@ const UpdateService = () => {
     };
 
     if (error || updatedServiceError) {
-        const errorObj = {
-            status: null,
-            message: "",
-        };
-        if (error || updatedServiceError) {
-            errorObj.message =
-                error.message.split(":")[0] ||
-                updatedServiceError.message.split(":")[0];
-            errorObj.status =
-                error.message.split(":")[1].split(" ").slice(-1) ||
-                updatedServiceError.message.split(":")[1].split(" ").slice(-1);
+        if (error?.graphQLErrors.length !== 0) {
+            return <QueryError error={error?.graphQLErrors} />;
+        } else if (updatedServiceError?.graphQLErrors.length !== 0) {
+            return <QueryError error={updatedServiceError?.graphQLErrors} />;
+        } else {
+            if (error?.networkError || updatedServiceError?.networkError) {
+                return (
+                    <NetworkError
+                        networkError={
+                            error?.networkError ||
+                            updatedServiceError?.networkError
+                        }
+                    />
+                );
+            }
         }
-        return (
-            <DisplayError
-                message={errorObj?.message}
-                statusCode={errorObj?.status}
-            />
-        );
     }
     return (
         <>

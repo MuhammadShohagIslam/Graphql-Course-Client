@@ -15,10 +15,10 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "./contexts/AuthProvider/AuthProvider";
 
+
 function App() {
     const { state } = useAuth();
     const { user } = state;
-
     const httpLink = new HttpLink({ uri: process.env.REACT_APP_GRAPHQL_API });
     const authLink = setContext((_, { headers }) => {
         return {

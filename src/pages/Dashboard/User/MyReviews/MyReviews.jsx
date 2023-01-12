@@ -7,7 +7,8 @@ import { REMOVED_REVIEW } from "../../../../graphql/mutations";
 import { GET_REVIEWS_BY_SPECIFIC_USER } from "../../../../graphql/queries";
 import ReviewTable from "./../../../../components/shared/ReviewTable/ReviewTable";
 import { useAuth } from "./../../../../contexts/AuthProvider/AuthProvider";
-import DisplayError from "./../../../DisplayError/DisplayError";
+import QueryError from "./../../../../components/shared/Errors/QueryError/QueryError";
+import NetworkError from "./../../../../components/shared/Errors/NetworkError/NetworkError";
 
 const MyReviews = () => {
     const { state } = useAuth();
@@ -55,24 +56,22 @@ const MyReviews = () => {
         });
     };
     if (error || removedReviewError) {
-        const errorObj = {
-            status: null,
-            message: "",
-        };
-        if (error || removedReviewError) {
-            errorObj.message =
-                error.message.split(":")[0] ||
-                removedReviewError.message.split(":")[0];
-            errorObj.status =
-                error.message.split(":")[1].split(" ").slice(-1) ||
-                removedReviewError.message.split(":")[1].split(" ").slice(-1);
+        if (error?.graphQLErrors.length !== 0) {
+            return <QueryError error={error?.graphQLErrors} />;
+        } else if (removedReviewError?.graphQLErrors.length !== 0) {
+            return <QueryError error={removedReviewError?.graphQLErrors} />;
+        } else {
+            if (error?.networkError || removedReviewError?.networkError) {
+                return (
+                    <NetworkError
+                        networkError={
+                            error?.networkError ||
+                            removedReviewError?.networkError
+                        }
+                    />
+                );
+            }
         }
-        return (
-            <DisplayError
-                message={errorObj?.message}
-                statusCode={errorObj?.status}
-            />
-        );
     }
 
     return (

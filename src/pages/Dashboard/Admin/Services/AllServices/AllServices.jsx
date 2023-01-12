@@ -11,7 +11,8 @@ import {
 import PaginationBar from "../../../../../components/shared/PaginationBar/PaginationBar";
 import ServiceCard from "../../../../../components/shared/ServiceCard/ServiceCard";
 import { REMOVED_SERVICE } from "../../../../../graphql/mutations";
-import DisplayError from "./../../../../DisplayError/DisplayError";
+import QueryError from "./../../../../../components/shared/Errors/QueryError/QueryError";
+import NetworkError from "./../../../../../components/shared/Errors/NetworkError/NetworkError";
 
 const AllServices = () => {
     const [page, setPage] = useState(1);
@@ -70,24 +71,22 @@ const AllServices = () => {
     };
 
     if (error || removedServiceError) {
-        const errorObj = {
-            status: null,
-            message: "",
-        };
-        if (error || removedServiceError) {
-            errorObj.message =
-                error.message.split(":")[0] ||
-                removedServiceError.message.split(":")[0];
-            errorObj.status =
-                error.message.split(":")[1].split(" ").slice(-1) ||
-                removedServiceError.message.split(":")[1].split(" ").slice(-1);
+        if (error?.graphQLErrors.length !== 0) {
+            return <QueryError error={error?.graphQLErrors} />;
+        } else if (removedServiceError?.graphQLErrors.length !== 0) {
+            return <QueryError error={removedServiceError?.graphQLErrors} />;
+        } else {
+            if (error?.networkError || removedServiceError?.networkError) {
+                return (
+                    <NetworkError
+                        networkError={
+                            error?.networkError ||
+                            removedServiceError?.networkError
+                        }
+                    />
+                );
+            }
         }
-        return (
-            <DisplayError
-                message={errorObj?.message}
-                statusCode={errorObj?.status}
-            />
-        );
     }
     return (
         <>

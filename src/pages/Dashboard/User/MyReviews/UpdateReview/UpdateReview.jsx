@@ -7,7 +7,8 @@ import StarRatings from "react-star-ratings";
 import Swal from "sweetalert2";
 import { REVIEW_UPDATED } from "../../../../../graphql/mutations";
 import { GET_SINGLE_REVIEW } from "../../../../../graphql/queries";
-import DisplayError from "./../../../../DisplayError/DisplayError";
+import QueryError from "./../../../../../components/shared/Errors/QueryError/QueryError";
+import NetworkError from "./../../../../../components/shared/Errors/NetworkError/NetworkError";
 
 const UpdateReview = () => {
     const [comment, setComment] = useState("");
@@ -73,24 +74,22 @@ const UpdateReview = () => {
     };
 
     if (error || updateReviewError) {
-        const errorObj = {
-            status: null,
-            message: "",
-        };
-        if (error || updateReviewError) {
-            errorObj.message =
-                error.message.split(":")[0] ||
-                updateReviewError.message.split(":")[0];
-            errorObj.status =
-                error.message.split(":")[1].split(" ").slice(-1) ||
-                updateReviewError.message.split(":")[1].split(" ").slice(-1);
+        if (error?.graphQLErrors.length !== 0) {
+            return <QueryError error={error?.graphQLErrors} />;
+        } else if (updateReviewError?.graphQLErrors.length !== 0) {
+            return <QueryError error={updateReviewError?.graphQLErrors} />;
+        } else {
+            if (error?.networkError || updateReviewError?.networkError) {
+                return (
+                    <NetworkError
+                        networkError={
+                            error?.networkError ||
+                            updateReviewError?.networkError
+                        }
+                    />
+                );
+            }
         }
-        return (
-            <DisplayError
-                message={errorObj?.message}
-                statusCode={errorObj?.status}
-            />
-        );
     }
 
     return (

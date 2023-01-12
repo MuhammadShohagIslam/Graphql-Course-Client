@@ -11,6 +11,7 @@ const QueryError = ({ error }) => {
             statusCode = message?.split(":")[1]?.split(" ")?.slice(-1);
         });
     }
+    console.log({error});
     return (
         <>
             <Helmet>

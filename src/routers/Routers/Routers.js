@@ -6,7 +6,6 @@ import Login from "./../../pages/Auth/Login";
 import Register from "./../../pages/Auth/Register";
 import PrivateRouter from "./../PrivateRouter/PrivateRouter";
 import Dashboard from "./../../layout/Dashboard/Dashboard";
-import DashboardHome from "../../pages/Dashboard/DashboardHome";
 import Services from "./../../pages/Services/Services";
 import AllServices from "./../../pages/Dashboard/Admin/Services/AllServices/AllServices";
 import AdminRoute from "./../AdminRouter/AdminRoute";
@@ -25,6 +24,9 @@ import SearchResult from "./../../pages/SearchResult/SearchResult";
 import TermCondition from "./../../pages/TermCondition/TermCondition";
 import PrivacyPolicy from "./../../pages/PrivacyPolicy/PrivacyPolicy";
 import DisplayError from "./../../pages/DisplayError/DisplayError";
+import DashboardHome from './../../pages/Dashboard/DashboardHome/DashboardHome';
+
+
 
 const router = createBrowserRouter([
     {
