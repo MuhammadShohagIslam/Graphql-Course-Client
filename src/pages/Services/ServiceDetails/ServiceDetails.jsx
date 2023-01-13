@@ -25,7 +25,6 @@ import {
 import { CREATE_NEW_REVIEW } from "./../../../graphql/mutations";
 import { avgRating } from "./../../../utils/avgRating";
 import classes from "./ServiceDetails.module.css";
-import DisplayError from "./../../DisplayError/DisplayError";
 import QueryError from "./../../../components/shared/Errors/QueryError/QueryError";
 import NetworkError from "./../../../components/shared/Errors/NetworkError/NetworkError";
 

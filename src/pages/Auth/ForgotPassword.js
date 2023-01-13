@@ -49,7 +49,7 @@ const ForgotPassword = () => {
     return (
         <>
             <Helmet>
-                <title>Login</title>
+                <title>Forgot Password</title>
             </Helmet>
             <Container className="my-5">
                 <Row className="m-0">

@@ -111,7 +111,6 @@ const AuthProvider = ({ children }) => {
         setLoading(true);
         return signOut(auth);
     };
-    console.log(state);
 
     const values = {
         user,

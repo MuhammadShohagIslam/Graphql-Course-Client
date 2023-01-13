@@ -110,7 +110,7 @@ const Register = () => {
     return (
         <>
             <Helmet>
-                <title>SignUp</title>
+                <title>Start-Register</title>
             </Helmet>
             <Container className="my-5">
                 <Row className="m-0">

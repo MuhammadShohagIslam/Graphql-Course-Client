@@ -23,9 +23,7 @@ const UpdatePassword = () => {
         updateThePassword(newPassword)
             .then(() => {
                 toast.success("Password Is Updated!");
-                // set loading false
                 setLoading(false);
-                //clear state
                 setNewPassword("");
             })
             .catch((error) => {
@@ -42,7 +40,7 @@ const UpdatePassword = () => {
                 <Row className="m-0">
                     <Col lg={6} className="m-auto bg-dark p-lg-5 p-4">
                         <h2 className="text-white text-center mb-3">
-                            Forgot Password
+                            Updated Password
                         </h2>
                         <Form onSubmit={handleSubmit}>
                             <Form.Group

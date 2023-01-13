@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useLazyQuery, useQuery } from "@apollo/client";
 import AOS from "aos";
 import React, { useEffect, useState } from "react";

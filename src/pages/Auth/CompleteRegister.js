@@ -108,7 +108,7 @@ const CompleteRegister = () => {
     return (
         <>
             <Helmet>
-                <title>Register</title>
+                <title>Complete-Register</title>
             </Helmet>
             <Container className="my-5">
                 <Row className="m-0">

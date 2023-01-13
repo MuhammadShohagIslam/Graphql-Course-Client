@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useMutation, useQuery } from "@apollo/client";
 import React, { useMemo, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
@@ -45,6 +46,7 @@ const UpdateService = () => {
                 price: data.getService.price,
             });
         }
+   
     }, [data]);
 
     const [updateService, { error: updatedServiceError }] = useMutation(

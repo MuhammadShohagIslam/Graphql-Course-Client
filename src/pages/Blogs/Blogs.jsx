@@ -21,7 +21,7 @@ const Blogs = () => {
     return (
         <>
             <Helmet>
-                <title>Blog</title>
+                <title>Blogs</title>
             </Helmet>
             <article className="mt-5 mb-4">
                 <Container>
