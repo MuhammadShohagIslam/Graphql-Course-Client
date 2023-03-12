@@ -48,7 +48,7 @@ const DisplayError = ({ message, statusCode, isShouldLogin = false }) => {
             errorObj.message = error.statusText;
         }
     }
-    console.log(errorObj);
+
     return (
         <>
             <Helmet>

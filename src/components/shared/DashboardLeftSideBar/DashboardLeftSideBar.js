@@ -17,13 +17,15 @@ const DashboardLeftSideBar = () => {
     return (
         <ul className={`${classes.leftSideListWrapper} pt-4`}>
             <li className={classes.leftSideTopListItemWrapper}>
-                {user?.photoURL ? (
+                {user?.photoURL || data?.data?.currentUser.image.url ? (
                     <Image
                         width={100}
                         height={100}
                         className={classes.commentImg}
                         roundedCircle
-                        src={`${user?.photoURL}`}
+                        src={`${
+                            data?.data?.currentUser?.image.url || user?.photoURL
+                        }`}
                     />
                 ) : (
                     <FaUserAlt className="text-white fs-1" />

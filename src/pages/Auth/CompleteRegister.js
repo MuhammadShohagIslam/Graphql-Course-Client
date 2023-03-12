@@ -47,8 +47,6 @@ const CompleteRegister = () => {
             .post(url, formData)
             .then((imgData) => {
                 const productImgUrl = imgData.data.data.url;
-                console.log(window.location.href, productImgUrl, email);
-
                 createUser(email, window.location.href).then(async (result) => {
                     if (result.user.emailVerified) {
                         handleProfileUpdate(fullName, productImgUrl);

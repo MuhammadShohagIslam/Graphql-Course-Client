@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useLazyQuery, useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
@@ -45,7 +46,7 @@ const UpdateReview = () => {
         setReview(data?.getReview);
         setStar(data?.getReview.star);
         setComment(data?.getReview.comment);
-    }, [id, data, getReview]);
+    }, [id]);
 
     const handleClickRating = (newRating) => {
         setStar(newRating);

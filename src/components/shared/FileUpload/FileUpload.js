@@ -1,12 +1,12 @@
 import React from "react";
 import { Form, Image } from "react-bootstrap";
 import Resizer from "react-image-file-resizer";
-import { deletingImageFile, uploadingImageFile } from "../../../api/cloudinary";
 import classes from "./FileUpload.module.css";
 import { useMutation } from "@apollo/client";
 import { PROFILE_UPDATE } from "../../../graphql/mutations";
 import { toast } from "react-hot-toast";
 import { useAuth } from "./../../../contexts/AuthProvider/AuthProvider";
+import { UPLOAD_IMAGE, REMOVED_IMAGE } from "./../../../graphql/mutations";
 
 const FileUpload = ({
     user,
@@ -18,7 +18,61 @@ const FileUpload = ({
 }) => {
     const { userProfileUpdate, setLoading: setLoadingForFirebase } = useAuth();
     const [profileUpdate] = useMutation(PROFILE_UPDATE);
+    const [uploadImage] = useMutation(UPLOAD_IMAGE, {
+        update: (cache, data) => {
+            if (isProfileImageUpload) {
+                setValues({
+                    ...values,
+                    image: {
+                        url: data.data?.uploadImage?.url,
+                        public_id: data.data?.uploadImage?.public_id,
+                    },
+                });
+                const newProfileObject = {
+                    ...values,
+                    image: {
+                        url: data.data?.uploadImage?.url,
+                        public_id: data.data?.uploadImage.public_id,
+                    },
+                };
 
+                profileUpdate({
+                    variables: {
+                        input: newProfileObject,
+                    },
+                });
+                updateTheProfileToFirebase(
+                    values.fullName,
+                    data.data?.uploadImage?.url
+                );
+            } else {
+                setValues({
+                    ...values,
+                    img: {
+                        url: data.data?.uploadImage?.url,
+                        public_id: data.data?.uploadImage.public_id,
+                    },
+                });
+            }
+            setLoading(false);
+        },
+        onError: (error) => {
+            setLoading(false);
+        },
+    });
+    const [removeImage] = useMutation(REMOVED_IMAGE, {
+        update: (cache, data) => {
+            if (user) {
+                setValues({
+                    ...values,
+                    img: {
+                        url: "",
+                        public_id: "",
+                    },
+                });
+            }
+        },
+    });
     const handleFileChange = (event) => {
         setLoading(true);
         let fileInput = false;
@@ -34,48 +88,11 @@ const FileUpload = ({
                 100,
                 0,
                 (uri) => {
-                    uploadingImageFile(user.token, uri)
-                        .then((res) => {
-                            if (isProfileImageUpload) {
-                                setValues({
-                                    ...values,
-                                    image: {
-                                        url: res.data?.url,
-                                        public_id: res.data?.public_id,
-                                    },
-                                });
-                                const newProfileObject = {
-                                    ...values,
-                                    image: {
-                                        url: res.data?.url,
-                                        public_id: res.data?.public_id,
-                                    },
-                                };
-
-                                profileUpdate({
-                                    variables: {
-                                        input: newProfileObject,
-                                    },
-                                });
-                                updateTheProfileToFirebase(
-                                    values.fullName,
-                                    res?.data?.url
-                                );
-                            } else {
-                                setValues({
-                                    ...values,
-                                    img: {
-                                        url: res.data?.url,
-                                        public_id: res.data?.public_id,
-                                    },
-                                });
-                            }
-                            setLoading(false);
-                        })
-                        .catch((error) => {
-                            setLoading(false);
-                            console.log(error);
-                        });
+                    uploadImage({
+                        variables: {
+                            uploadImageFile: uri,
+                        },
+                    });
                 },
                 "base64"
             );
@@ -83,19 +100,11 @@ const FileUpload = ({
     };
     const handleImageRemove = (public_id) => {
         if (user) {
-            deletingImageFile(user.token, public_id)
-                .then((res) => {
-                    setValues({
-                        ...values,
-                        img: {
-                            url: "",
-                            public_id: "",
-                        },
-                    });
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            removeImage({
+                variables: {
+                    publicId: public_id,
+                },
+            });
         }
     };
 
@@ -115,6 +124,7 @@ const FileUpload = ({
                 setLoadingForFirebase(false);
             });
     };
+
     return (
         <>
             <Form.Group className="mb-3 position-relative" controlId="image">

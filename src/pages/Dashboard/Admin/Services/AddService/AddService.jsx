@@ -98,14 +98,14 @@ const AddService = () => {
             [e.target.name]: e.target.value,
         });
     };
-    // if (error) {
-    //     return (
-    //         <DisplayError
-    //             message={error.message.split(":")[0]}
-    //             statusCode={error.message.split(":")[1].split(" ").slice(-1)}
-    //         />
-    //     );
-    // }
+    if (error) {
+        return (
+            <DisplayError
+                message={error.message.split(":")[0]}
+                statusCode={error.message.split(":")[1].split(" ").slice(-1)}
+            />
+        );
+    }
     return (
         <>
             <Helmet>

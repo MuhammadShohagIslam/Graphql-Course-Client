@@ -56,7 +56,7 @@ const AllServices = () => {
             },
         }
     );
-    console.log(data, "getAllService", totalServiceData)
+
     const handleServiceDelete = (id) => {
         removeService({
             variables: {
@@ -89,7 +89,6 @@ const AllServices = () => {
             }
         }
     }
-    console.log(data, "getAllService", totalServiceData)
     return (
         <>
             <Helmet>

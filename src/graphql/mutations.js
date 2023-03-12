@@ -3,7 +3,7 @@ import {
     REVIEW_FIELD,
     SERVICE_FIELD,
     USER_FIELD,
-    DELETED_FIELD
+    DELETED_FIELD,
 } from "./fragments";
 
 /* ----- For Users -----  */
@@ -80,4 +80,22 @@ export const REVIEW_UPDATED = gql`
         }
     }
     ${REVIEW_FIELD}
+`;
+
+/* ----- For Upload Image -----  */
+export const UPLOAD_IMAGE = gql`
+    mutation UploadImage($uploadImageFile: String!) {
+        uploadImage(uploadImageFile: $uploadImageFile) {
+            public_id
+            url
+        }
+    }
+`;
+export const REMOVED_IMAGE = gql`
+    mutation RemoveImage($publicId: String!) {
+        removeImage(publicId: $publicId) {
+            message
+            success
+        }
+    }
 `;

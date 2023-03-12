@@ -7,7 +7,6 @@ const NetworkError = ({ networkError }) => {
     if (networkError) {
         message = networkError.message;
     }
-    console.log({networkError});
     return (
         <>
             <Helmet>
