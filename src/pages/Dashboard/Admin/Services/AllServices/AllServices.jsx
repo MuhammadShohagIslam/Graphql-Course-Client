@@ -17,7 +17,7 @@ import NetworkError from "./../../../../../components/shared/Errors/NetworkError
 const AllServices = () => {
     const [page, setPage] = useState(1);
 
-    const [getAllService, { loading, error, data }] =
+    const [getAllService, { loading, error, data, refetch }] =
         useLazyQuery(GET_ALL_SERVICES);
 
     const { data: totalServiceData } = useQuery(GET_TOTAL_SERVICES);
@@ -51,11 +51,12 @@ const AllServices = () => {
                         showConfirmButton: false,
                         timer: 1500,
                     });
+                    refetch();
                 }
             },
         }
     );
-
+    console.log(data, "getAllService", totalServiceData)
     const handleServiceDelete = (id) => {
         removeService({
             variables: {
@@ -88,6 +89,7 @@ const AllServices = () => {
             }
         }
     }
+    console.log(data, "getAllService", totalServiceData)
     return (
         <>
             <Helmet>
@@ -107,11 +109,9 @@ const AllServices = () => {
                         </div>
                     ) : (
                         <>
-                            {data?.getAllServiceByPage?.servicesByPagination &&
-                            data?.getAllServiceByPage?.servicesByPagination
-                                .length > 0 ? (
+                            {data?.getAllService.length > 0 ? (
                                 <>
-                                    {data?.getAllServiceByPage.servicesByPagination.map(
+                                    {data?.getAllService?.map(
                                         (service) => (
                                             <ServiceCard
                                                 key={service._id}

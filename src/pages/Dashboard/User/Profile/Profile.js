@@ -10,7 +10,6 @@ import { PROFILE_UPDATE } from "../../../../graphql/mutations";
 import ProfileEditModal from "./../../../../components/shared/ProfileEditModal/ProfileEditModal";
 import { useAuth } from "./../../../../contexts/AuthProvider/AuthProvider";
 import { GET_CURRENT_USER } from "./../../../../graphql/queries";
-import classes from "./Profile.module.css";
 import QueryError from "./../../../../components/shared/Errors/QueryError/QueryError";
 import NetworkError from "./../../../../components/shared/Errors/NetworkError/NetworkError";
 
@@ -148,7 +147,6 @@ const Profile = () => {
                     <Col lg={9} className="m-auto bg-dark p-lg-5 p-4">
                         <div className="position-relative">
                             <span
-                                className={classes.editIcon}
                                 onClick={handleShowModal}
                             >
                                 <BiEdit />

@@ -20,7 +20,7 @@ function App() {
     const { user } = state;
     const httpLink = new createHttpLink({
         uri: process.env.REACT_APP_GRAPHQL_API,
-        withCredentials:false
+        withCredentials: false,
     });
     const authLink = setContext((_, { headers }) => {
         return {
@@ -69,6 +69,9 @@ function App() {
                 fetchPolicy: "network-only",
                 errorPolicy: "all",
             },
+        },
+        fetchOptions: {
+            mode: "no-cors",
         },
         connectToDevTools: true,
     });
